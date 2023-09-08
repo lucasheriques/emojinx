@@ -238,15 +238,27 @@ const emojis = {
   ],
 };
 
-export function generateGrid(size: number) {
+function getRandomEmojisFromAllCategories(size: number) {
   const emojisList = Object.values(emojis).flat();
   const emojisLength = emojisList.length;
-  const grid: string[] = [];
+  const emojisToReturn: string[] = [];
 
   for (let i = 0; i < size; i++) {
     const randomIndex = Math.floor(Math.random() * emojisLength);
     const emoji = emojisList[randomIndex];
-    grid.push(emoji);
+    emojisToReturn.push(emoji);
+  }
+
+  return emojisToReturn;
+}
+
+export function generateGrid(size: number) {
+  const emojis = getRandomEmojisFromAllCategories(size * size);
+  const grid: string[][] = [];
+
+  for (let i = 0; i < size; i++) {
+    const line = emojis.splice(0, size);
+    grid.push(line);
   }
 
   return grid;

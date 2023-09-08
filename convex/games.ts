@@ -6,7 +6,7 @@ import { generateGrid } from "./helper";
 export const createGame = mutation({
   handler: async (ctx) => {
     const game = await ctx.db.insert("games", {
-      grid: generateGrid(5),
+      grid: generateGrid(4),
     });
     return game;
   },
@@ -15,5 +15,18 @@ export const createGame = mutation({
 export const getGames = query({
   handler: async (ctx) => {
     return ctx.db.query("games").collect();
+  },
+});
+
+export const getGame = query({
+  args: { gameId: v.string() },
+  handler(ctx, args) {
+    const gameId = ctx.db.normalizeId("games", args.gameId);
+
+    if (gameId === null) {
+      throw new Error("Game not found");
+    }
+
+    return ctx.db.get(gameId);
   },
 });

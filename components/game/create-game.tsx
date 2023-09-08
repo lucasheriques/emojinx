@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
+import Link from "next/link";
 
 export default function Game() {
   const createGame = useMutation(api.games.createGame);
@@ -13,13 +14,17 @@ export default function Game() {
   return (
     <>
       <ThemeToggle />
-      {games?.map((game) => (
-        <Card key={game._id}>
-          <CardHeader>
-            <CardTitle>{game._creationTime}</CardTitle>
-          </CardHeader>
-        </Card>
-      ))}
+      <div className="flex gap-4">
+        {games?.map((game) => (
+          <Link href={`/games/${game._id}`} key={game._id}>
+            <Card>
+              <CardHeader>
+                <CardTitle>{game._creationTime}</CardTitle>
+              </CardHeader>
+            </Card>
+          </Link>
+        ))}
+      </div>
 
       <Button
         onClick={async () => {
