@@ -252,12 +252,35 @@ function getRandomEmojisFromAllCategories(size: number) {
   return emojisToReturn;
 }
 
+function getRandomUniqueEmojisFromAllCategories(size: number) {}
+
+function shuffleArray<T>(array: T[]): T[] {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+type GridItem = {
+  value: string;
+  foundBy?: string;
+  status: "hidden" | "revealed" | "found";
+};
+
 export function generateGrid(size: number) {
-  const emojis = getRandomEmojisFromAllCategories(size * size);
-  const grid: string[][] = [];
+  const emojis = getRandomEmojisFromAllCategories((size * size) / 2);
+
+  const duplicatedEmojis = shuffleArray([...emojis, ...emojis]);
+  const grid: Array<GridItem[]> = [];
 
   for (let i = 0; i < size; i++) {
-    const line = emojis.splice(0, size);
+    const line = duplicatedEmojis.splice(0, size).map((emoji) => {
+      return {
+        value: emoji,
+        status: "hidden" as const,
+      };
+    });
     grid.push(line);
   }
 

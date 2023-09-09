@@ -25,10 +25,9 @@ export default function Game() {
           </Link>
         ))}
       </div>
-
       <Button
         onClick={async () => {
-          const game = await createGame();
+          await createGame();
         }}
       >
         Create game
