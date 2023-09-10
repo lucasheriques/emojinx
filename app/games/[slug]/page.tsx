@@ -9,6 +9,7 @@ import Link from "next/link";
 export default function GamePage({ params }: { params: { slug: string } }) {
   const game = useQuery(api.games.getGame, { gameId: params.slug });
   const makeInitialPlay = useMutation(api.games.makeInitialPlay);
+  const joinGame = useMutation(api.games.joinGame);
 
   const canStartGame =
     game?.players.length > 1 && game?.status === GameStatus.NotStarted;

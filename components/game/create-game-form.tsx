@@ -14,7 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
-import useLocalStorageState from "use-local-storage-state";
+import { useSetAtom } from "jotai";
+import { playerIdAtom } from "@/atoms/playerId";
 
 const formSchema = z.object({
   roomName: z.string().min(2, {
@@ -30,9 +31,7 @@ type FormSchema = z.infer<typeof formSchema>;
 export default function CreateGameForm() {
   const createGame = useMutation(api.games.createGame);
   const createPlayer = useMutation(api.players.createPlayer);
-  const [userId, setUserId] = useLocalStorageState("userId", {
-    defaultValue: "",
-  });
+  const setUserId = useSetAtom(playerIdAtom);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -48,7 +47,7 @@ export default function CreateGameForm() {
 
     const player = await createPlayer({ username });
     setUserId(player);
-    const game = await createGame({ roomName });
+    await createGame({ roomName });
   }
 
   return (

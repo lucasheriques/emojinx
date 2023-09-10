@@ -17,13 +17,13 @@ export const getPlayer = query({
     const playerId = ctx.db.normalizeId("players", args.playerId);
 
     if (!playerId) {
-      return { error: "Player not found" };
+      throw new Error("Player ID invalid or not found");
     }
 
     const player = ctx.db.get(playerId);
 
     if (!player) {
-      return { error: "Player not found" };
+      throw new Error("Player invalid or not found");
     }
 
     return ctx.db.get(playerId);

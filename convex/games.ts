@@ -28,6 +28,38 @@ export const getGames = query({
   },
 });
 
+export const joinGame = mutation({
+  args: {
+    gameId: v.string(),
+    playerId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const gameId = ctx.db.normalizeId("games", args.gameId);
+
+    if (gameId === null) {
+      throw new Error("Game not found");
+    }
+
+    const game = await ctx.db.get(gameId);
+
+    if (game === null) {
+      throw new Error("Game not found");
+    }
+
+    const players = game.players;
+
+    if (players.includes(args.playerId)) {
+      throw new Error("Player already joined");
+    }
+
+    players.push(args.playerId);
+
+    await ctx.db.patch(gameId, { players });
+
+    return game;
+  },
+});
+
 export const getGame = query({
   args: { gameId: v.string() },
   handler(ctx, args) {

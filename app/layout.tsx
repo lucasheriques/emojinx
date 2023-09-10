@@ -1,9 +1,8 @@
-import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import ConvexClientProvider from "./convex-client-provider";
-import { ThemeToggle } from "@/components/theme-toggle";
+import Providers from "./providers";
+import Header from "@/components/header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,11 +19,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ConvexClientProvider>
-          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-            <div className="min-h-full flex flex-col p-8">{children}</div>
-          </ThemeProvider>
-        </ConvexClientProvider>
+        <Providers>
+          <div className="min-h-full flex flex-col">
+            <Header />
+            <main className="flex-1">{children}</main>
+            <footer className="py-4 text-sm bg-slate-900 flex justify-center">
+              © 2023-present Emoji Match.
+            </footer>
+          </div>
+        </Providers>
       </body>
     </html>
   );
