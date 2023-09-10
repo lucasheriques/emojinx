@@ -22,7 +22,7 @@ export default function RootLayout({
         <Providers>
           <div className="min-h-full flex flex-col">
             <Header />
-            <main className="flex flex-1">{children}</main>
+            <main className="flex flex-1 p-8">{children}</main>
             <footer className="py-4 text-sm bg-slate-900 flex justify-center">
               © 2023-present Emoji Match.
             </footer>
