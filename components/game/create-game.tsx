@@ -10,25 +10,30 @@ import {
   DialogTrigger,
   DialogContent,
   DialogTitle,
-  DialogDescription,
   DialogHeader,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
 import CreateGameForm from "./create-game-form";
 
 export default function Game() {
   const games = useQuery(api.games.getGames);
 
   return (
-    <>
-      <div className="flex gap-4">
+    <div className="flex items-center flex-col flex-1 gap-4 py-8 justify-center">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {games?.map((game) => (
           <Link href={`/games/${game._id}`} key={game._id}>
             <Card>
               <CardHeader>
-                <CardTitle>{game._creationTime}</CardTitle>
+                <CardTitle>{game.roomName}</CardTitle>
+              </CardHeader>
+            </Card>
+          </Link>
+        ))}
+        {games?.map((game) => (
+          <Link href={`/games/${game._id}`} key={game._id}>
+            <Card>
+              <CardHeader>
+                <CardTitle>{game.roomName}</CardTitle>
               </CardHeader>
             </Card>
           </Link>
@@ -46,6 +51,6 @@ export default function Game() {
           <CreateGameForm />
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }

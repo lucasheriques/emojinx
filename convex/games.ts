@@ -52,7 +52,7 @@ export const joinGame = mutation({
       throw new Error("Player already joined");
     }
 
-    players.push(args.playerId);
+    players.push({ id: args.playerId, points: 0 });
 
     await ctx.db.patch(gameId, { players });
 

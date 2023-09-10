@@ -1,3 +1,5 @@
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
@@ -13,8 +15,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
-import { useMutation } from "convex/react";
-import { useSetAtom } from "jotai";
+import { useMutation, useQuery } from "convex/react";
+import { useAtom, useSetAtom } from "jotai";
 import { playerIdAtom } from "@/atoms/playerId";
 
 const formSchema = z.object({
@@ -30,8 +32,9 @@ type FormSchema = z.infer<typeof formSchema>;
 
 export default function CreateGameForm() {
   const createGame = useMutation(api.games.createGame);
-  const createPlayer = useMutation(api.players.createPlayer);
-  const setUserId = useSetAtom(playerIdAtom);
+  const createOrGetPlayer = useMutation(api.players.createOrGetPlayer);
+  const [playerId, setPlayerId] = useAtom(playerIdAtom);
+  const player = useQuery(api.players.getPlayer, { playerId: playerId });
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -45,8 +48,10 @@ export default function CreateGameForm() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
 
-    const player = await createPlayer({ username });
-    setUserId(player);
+    if (!player) {
+      const player = await createOrGetPlayer({ username });
+      setPlayerId(player._id ?? player);
+    }
     await createGame({ roomName });
   }
 

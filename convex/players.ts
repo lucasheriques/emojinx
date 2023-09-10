@@ -1,9 +1,16 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
-export const createPlayer = mutation({
+export const createOrGetPlayer = mutation({
   args: { username: v.string() },
   handler: async (ctx, args) => {
+    const existingPlayer = await ctx.db
+      .query("players")
+      .filter((player) => player.eq(player.field("username"), args.username))
+      .first();
+    if (existingPlayer) {
+      return existingPlayer;
+    }
     const player = await ctx.db.insert("players", {
       username: args.username,
     });
@@ -17,13 +24,13 @@ export const getPlayer = query({
     const playerId = ctx.db.normalizeId("players", args.playerId);
 
     if (!playerId) {
-      throw new Error("Player ID invalid or not found");
+      return "PLAYER_ID_NOT_FOUND" as const;
     }
 
     const player = ctx.db.get(playerId);
 
     if (!player) {
-      throw new Error("Player invalid or not found");
+      return "PLAYER_NOT_FOUND" as const;
     }
 
     return ctx.db.get(playerId);
