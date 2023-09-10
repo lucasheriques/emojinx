@@ -1,15 +1,21 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { generateGrid } from "./helper";
+import { GameStatus } from "./types";
 
 // Create a new task with the given text
 export const createGame = mutation({
-  handler: async (ctx) => {
+  args: {
+    roomName: v.string(),
+  },
+  handler: async (ctx, args) => {
     const game = await ctx.db.insert("games", {
+      roomName: args.roomName,
       grid: generateGrid(4),
-      gameStatus: "not-started",
+      gameStatus: GameStatus.NotStarted,
       players: [],
       currentPlayerId: null,
+      currentAction: null,
       winnerId: null,
     });
     return game;
