@@ -263,7 +263,7 @@ function getRandomUniqueEmojisFromAllCategories(amount: number) {
     emojisSet.add(emoji);
   }
 
-  return [...emojisSet];
+  return Array.from(emojisSet);
 }
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -273,14 +273,6 @@ function shuffleArray<T>(array: T[]): T[] {
   }
   return array;
 }
-
-type GridItem = {
-  value: string;
-  foundBy?: string;
-  status: "hidden" | "revealed" | "matched";
-  row: number;
-  col: number;
-};
 
 export function generateEmojiArray(amount: number) {
   const emojis = getRandomUniqueEmojisFromAllCategories(amount);
