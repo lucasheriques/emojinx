@@ -9,7 +9,7 @@ import useStartGame from "./hooks/useStartGame";
 import { useAtomValue } from "jotai";
 import { gameIdAtom } from "@/atoms/gameId";
 import { useMutation } from "convex/react";
-import { useMakeFirstMove } from "./hooks/useMakeMove";
+import useMakeMove from "./hooks/useMakeMove";
 
 type MoveArgs = {
   row: number;
@@ -19,7 +19,7 @@ type MoveArgs = {
 export default function GameScreen() {
   const game = useGame();
   const startGame = useStartGame();
-  const makeFirstMove = useMakeFirstMove();
+  const { makeFirstMove, makeSecondMove } = useMakeMove();
   const gameId = useAtomValue(gameIdAtom);
 
   if (!game) {
@@ -37,10 +37,16 @@ export default function GameScreen() {
     row: number;
     col: number;
   }) => {
-    await makeFirstMove({ gameId, row, col });
+    await makeFirstMove({ row, col });
   };
 
-  const handleMove = async ({ row, col }: MoveArgs) => {};
+  const handleMove = async ({ row, col }: MoveArgs) => {
+    if (game.moves.at(-1)?.length === 0) {
+      return await handleFirstMove({ row, col });
+    }
+
+    return await makeSecondMove({ row, col });
+  };
 
   const canStartGame =
     game.players.length >= 1 && game.status === GameStatus.NotStarted;
