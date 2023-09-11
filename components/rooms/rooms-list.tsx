@@ -6,7 +6,7 @@ import { useQuery } from "convex/react";
 import Link from "next/link";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
-export default function GameRoomsList() {
+export default function RoomsList() {
   const games = useQuery(api.games.getGames);
   const [parent, enableAnimations] = useAutoAnimate();
 

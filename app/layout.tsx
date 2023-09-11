@@ -7,7 +7,7 @@ import Header from "@/components/header";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Emoji Match",
+  title: "emojinx",
   description: "A fun and interactive emoji matching game",
 };
 
@@ -24,7 +24,7 @@ export default function RootLayout({
             <Header />
             <main className="flex flex-1 p-8">{children}</main>
             <footer className="py-4 text-sm bg-slate-900 flex justify-center">
-              © 2023-present Emoji Match.
+              © 2023-present emojinx.
             </footer>
           </div>
         </Providers>

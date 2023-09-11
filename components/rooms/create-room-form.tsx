@@ -13,11 +13,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
-import { useMutation, useQuery } from "convex/react";
-import { useAtom, useSetAtom } from "jotai";
-import { playerIdAtom } from "@/atoms/playerId";
+import { useMutation } from "convex/react";
 
 const formSchema = z.object({
   roomName: z.string().min(2, {
