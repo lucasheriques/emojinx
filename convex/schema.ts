@@ -4,17 +4,8 @@ import { v } from "convex/values";
 export default defineSchema({
   games: defineTable({
     currentPlayerIndex: v.float64(),
-    grid: v.array(
-      v.array(
-        v.object({
-          col: v.float64(),
-          row: v.float64(),
-          status: v.string(),
-          value: v.string(),
-        })
-      )
-    ),
-    moves: v.array(v.array(v.any())),
+    emojiList: v.array(v.object({ status: v.string(), value: v.string() })),
+    moves: v.array(v.array(v.object({ index: v.float64() }))),
     players: v.array(
       v.object({
         id: v.string(),

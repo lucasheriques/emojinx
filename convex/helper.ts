@@ -252,7 +252,19 @@ function getRandomEmojisFromAllCategories(size: number) {
   return emojisToReturn;
 }
 
-function getRandomUniqueEmojisFromAllCategories(size: number) {}
+function getRandomUniqueEmojisFromAllCategories(amount: number) {
+  const emojisList = Object.values(emojis).flat();
+  const emojisLength = emojisList.length;
+  const emojisSet = new Set<string>();
+
+  while (emojisSet.size < amount) {
+    const randomIndex = Math.floor(Math.random() * emojisLength);
+    const emoji = emojisList[randomIndex];
+    emojisSet.add(emoji);
+  }
+
+  return [...emojisSet];
+}
 
 function shuffleArray<T>(array: T[]): T[] {
   for (let i = array.length - 1; i > 0; i--) {
@@ -270,23 +282,15 @@ type GridItem = {
   col: number;
 };
 
-export function generateGrid(size: number) {
-  const emojis = getRandomEmojisFromAllCategories((size * size) / 2);
+export function generateEmojiArray(amount: number) {
+  const emojis = getRandomUniqueEmojisFromAllCategories(amount);
 
   const duplicatedEmojis = shuffleArray([...emojis, ...emojis]);
-  const grid: Array<GridItem[]> = [];
 
-  for (let row = 0; row < size; row++) {
-    const line = duplicatedEmojis.splice(0, size).map((emoji, col) => {
-      return {
-        value: emoji,
-        status: "hidden" as const,
-        row,
-        col,
-      };
-    });
-    grid.push(line);
-  }
-
-  return grid;
+  return duplicatedEmojis.map((emoji) => {
+    return {
+      value: emoji,
+      status: "hidden" as const,
+    };
+  });
 }

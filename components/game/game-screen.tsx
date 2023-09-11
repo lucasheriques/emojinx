@@ -35,6 +35,10 @@ export default function GameScreen() {
   const canStartGame =
     game.players.length >= 1 && game.status === GameStatus.NotStarted;
 
+  const playerWithMostPoints = game.players.sort(
+    (a, b) => b.points - a.points
+  )[0];
+
   return (
     <div className="flex flex-1 flex-col items-center gap-8">
       <Link href="/">
@@ -43,7 +47,7 @@ export default function GameScreen() {
           Back to main page
         </Button>
       </Link>
-      {game.status !== GameStatus.InProgress && (
+      {game.status === GameStatus.NotStarted && (
         <>
           <JoinGameDialog />
           <div>
@@ -62,28 +66,33 @@ export default function GameScreen() {
           </Button>
         </>
       )}
-      {game?.grid.map((row, i) => (
-        <div className="flex gap-8" key={i}>
-          {row.map((cell, j) => {
-            const disabled =
-              game.status !== GameStatus.InProgress || cell.status !== "hidden";
-            return (
+
+      <div>
+        Status: {game.status}{" "}
+        {game.status === GameStatus.Finished &&
+          `Winner: ${playerWithMostPoints.name}`}
+      </div>
+
+      <ul className="grid grid-cols-4 gap-8 flex-wrap items-center justify-center">
+        {game?.emojiList?.map((emoji, index) => {
+          const disabled =
+            game.status !== GameStatus.InProgress || emoji.status !== "hidden";
+          return (
+            <li key={index}>
               <Button
                 variant="outline"
-                key={j}
-                size="lg"
-                className="text-4xl"
+                className="text-4xl py-12"
                 disabled={disabled}
                 onClick={() => {
-                  handleMove({ row: i, col: j });
+                  handleMove({ index });
                 }}
               >
-                {cell.status === "hidden" ? "❔" : cell.value}
+                {emoji.status === "hidden" ? "❔" : emoji.value}
               </Button>
-            );
-          })}
-        </div>
-      ))}
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }

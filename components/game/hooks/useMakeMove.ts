@@ -4,8 +4,7 @@ import { useMutation } from "convex/react";
 import { useAtomValue } from "jotai";
 
 export type MoveArgs = {
-  row: number;
-  col: number;
+  index: number;
 };
 
 export default function useMakeMove() {
@@ -14,20 +13,18 @@ export default function useMakeMove() {
   const makeSecondMove = useMutation(api.games.makeSecondMove);
   const validateMove = useMutation(api.games.validateCurrentMove);
 
-  const handleFirstMove = async (args: MoveArgs) => {
+  const handleFirstMove = async ({ index }: MoveArgs) => {
     await makeFirstMove({
       gameId,
-      row: args.row,
-      col: args.col,
+      index,
     });
     ``;
   };
 
-  const handleSecondMove = async (args: MoveArgs) => {
+  const handleSecondMove = async ({ index }: MoveArgs) => {
     await makeSecondMove({
       gameId,
-      row: args.row,
-      col: args.col,
+      index,
     });
 
     await validateMove({ gameId });

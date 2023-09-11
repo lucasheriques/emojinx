@@ -1,8 +1,8 @@
 import { internalQuery, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
-import { generateGrid } from "./helper";
 import { GameStatus } from "./types";
 import { createId } from "@paralleldrive/cuid2";
+import { generateEmojiArray } from "./helper";
 
 const getGameById = internalQuery({
   args: { gameId: v.string() },
@@ -31,7 +31,7 @@ export const createGame = mutation({
   handler: async (ctx, args) => {
     const game = await ctx.db.insert("games", {
       roomName: args.roomName,
-      grid: generateGrid(4),
+      emojiList: generateEmojiArray(8),
       status: GameStatus.NotStarted,
       players: [],
       currentPlayerIndex: 0,
@@ -103,17 +103,14 @@ export const startGame = mutation({
 export const makeFirstMove = mutation({
   args: {
     gameId: v.string(),
-    row: v.number(),
-    col: v.number(),
+    index: v.number(),
   },
   handler: async (ctx, args) => {
-    const game = await getGameById(ctx, { gameId: args.gameId });
+    const { _id, moves, emojiList } = await getGameById(ctx, {
+      gameId: args.gameId,
+    });
 
-    const grid = game.grid;
-
-    const moves = game.moves;
-
-    const position = grid[args.row][args.col];
+    const position = emojiList[args.index];
 
     if (position.status !== "hidden") {
       throw new Error("Invalid play");
@@ -121,27 +118,24 @@ export const makeFirstMove = mutation({
 
     position.status = "revealed";
 
-    grid[args.row][args.col] = position;
-    moves.at(-1)?.push({ row: args.row, col: args.col });
+    emojiList[args.index] = position;
+    moves.at(-1)?.push({ index: args.index });
 
-    await ctx.db.patch(game._id, { grid, moves });
-
-    return game;
+    return await ctx.db.patch(_id, { emojiList, moves });
   },
 });
 
 export const makeSecondMove = mutation({
   args: {
     gameId: v.string(),
-    row: v.number(),
-    col: v.number(),
+    index: v.number(),
   },
   handler: async (ctx, args) => {
-    const { _id, grid, moves } = await getGameById(ctx, {
+    const { _id, emojiList, moves } = await getGameById(ctx, {
       gameId: args.gameId,
     });
 
-    const position = grid[args.row][args.col];
+    const position = emojiList[args.index];
 
     if (position.status !== "hidden") {
       throw new Error("Invalid play");
@@ -149,11 +143,11 @@ export const makeSecondMove = mutation({
 
     position.status = "revealed";
 
-    grid[args.row][args.col] = position;
-    moves.at(-1)?.push({ row: args.row, col: args.col });
+    emojiList[args.index] = position;
+    moves.at(-1)?.push({ index: args.index });
     moves.push([]);
 
-    return await ctx.db.patch(_id, { grid, moves });
+    return await ctx.db.patch(_id, { emojiList, moves });
   },
 });
 
@@ -162,83 +156,49 @@ export const validateCurrentMove = mutation({
     gameId: v.string(),
   },
   handler: async (ctx, args) => {
-    const game = await getGameById(ctx, { gameId: args.gameId });
-    const grid = game.grid;
-
-    const positions = grid.flat();
-
-    const revealedPositions = positions.filter(
-      (position: any) => position.status === "revealed"
+    const { _id, emojiList, players, currentPlayerIndex } = await getGameById(
+      ctx,
+      { gameId: args.gameId }
     );
 
-    if (revealedPositions.length !== 2) {
+    const revealedEmojis = emojiList.filter(
+      (emoji) => emoji.status === "revealed"
+    );
+
+    if (revealedEmojis.length !== 2) {
       throw new Error("Invalid play");
     }
 
-    const firstPosition = revealedPositions[0];
-    const secondPosition = revealedPositions[1];
+    const firstEmoji = revealedEmojis[0];
+    const firstEmojiIndex = emojiList.indexOf(firstEmoji);
+    const secondEmoji = revealedEmojis[1];
+    const secondEmojiIndex = emojiList.indexOf(secondEmoji);
 
-    let newPlayers = game.players;
+    let nextPlayerIndex = currentPlayerIndex + 1;
 
-    let nextPlayerIndex = game.currentPlayerIndex + 1;
+    if (firstEmoji.value === secondEmoji.value) {
+      firstEmoji.status = "matched";
+      secondEmoji.status = "matched";
 
-    if (firstPosition.value === secondPosition.value) {
-      firstPosition.status = "matched";
-      secondPosition.status = "matched";
-
-      newPlayers[game.currentPlayerIndex].points += 1;
+      players[currentPlayerIndex].points += 1;
     } else {
-      firstPosition.status = "hidden";
-      secondPosition.status = "hidden";
+      firstEmoji.status = "hidden";
+      secondEmoji.status = "hidden";
     }
 
-    grid[firstPosition.row][firstPosition.col] = firstPosition;
-    grid[secondPosition.row][secondPosition.col] = secondPosition;
+    emojiList[firstEmojiIndex] = firstEmoji;
+    emojiList[secondEmojiIndex] = secondEmoji;
 
-    await ctx.db.patch(game._id, {
-      grid,
-      players: newPlayers,
+    const isGameFinished = emojiList.every(
+      (emoji) => emoji.status === "matched"
+    );
+
+    return await ctx.db.patch(_id, {
+      emojiList,
+      players,
       currentPlayerIndex:
-        nextPlayerIndex >= newPlayers.length ? 0 : nextPlayerIndex,
+        nextPlayerIndex >= players.length ? 0 : nextPlayerIndex,
+      status: isGameFinished ? GameStatus.Finished : GameStatus.InProgress,
     });
-
-    return game;
-  },
-});
-
-export const makeInitialPlay = mutation({
-  args: {
-    gameId: v.string(),
-    row: v.number(),
-    col: v.number(),
-  },
-  handler: async (ctx, args) => {
-    const gameId = ctx.db.normalizeId("games", args.gameId);
-
-    if (gameId === null) {
-      throw new Error("Game not found");
-    }
-
-    const game = await ctx.db.get(gameId);
-
-    if (game === null) {
-      throw new Error("Game not found");
-    }
-
-    const grid = game.grid;
-
-    const position = grid[args.row][args.col];
-
-    if (position.status !== "hidden") {
-      throw new Error("Invalid play");
-    }
-
-    position.status = "revealed";
-
-    grid[args.row][args.col] = position;
-
-    await ctx.db.patch(gameId, { grid });
-
-    return game;
   },
 });
