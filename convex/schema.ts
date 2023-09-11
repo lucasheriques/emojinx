@@ -3,8 +3,17 @@ import { v } from "convex/values";
 
 export default defineSchema({
   games: defineTable({
-    currentPlayerId: v.string(),
-    grid: v.array(v.array(v.object({ status: v.string(), value: v.string() }))),
+    currentPlayerIndex: v.float64(),
+    grid: v.array(
+      v.array(
+        v.object({
+          col: v.float64(),
+          row: v.float64(),
+          status: v.string(),
+          value: v.string(),
+        })
+      )
+    ),
     moves: v.array(v.array(v.any())),
     players: v.array(
       v.object({

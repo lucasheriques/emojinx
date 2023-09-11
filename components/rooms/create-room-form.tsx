@@ -24,7 +24,11 @@ const formSchema = z.object({
 
 type FormSchema = z.infer<typeof formSchema>;
 
-export default function CreateGameForm() {
+type CreateGameFormProps = {
+  onFinish?: () => void;
+};
+
+export default function CreateGameForm({ onFinish }: CreateGameFormProps) {
   const createGame = useMutation(api.games.createGame);
 
   const form = useForm<FormSchema>({
@@ -37,6 +41,7 @@ export default function CreateGameForm() {
   // 2. Define a submit handler.
   async function onSubmit({ roomName }: FormSchema) {
     await createGame({ roomName });
+    onFinish?.();
   }
 
   return (

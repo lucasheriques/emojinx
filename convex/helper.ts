@@ -265,7 +265,9 @@ function shuffleArray<T>(array: T[]): T[] {
 type GridItem = {
   value: string;
   foundBy?: string;
-  status: "hidden" | "revealed" | "found";
+  status: "hidden" | "revealed" | "matched";
+  row: number;
+  col: number;
 };
 
 export function generateGrid(size: number) {
@@ -274,11 +276,13 @@ export function generateGrid(size: number) {
   const duplicatedEmojis = shuffleArray([...emojis, ...emojis]);
   const grid: Array<GridItem[]> = [];
 
-  for (let i = 0; i < size; i++) {
-    const line = duplicatedEmojis.splice(0, size).map((emoji) => {
+  for (let row = 0; row < size; row++) {
+    const line = duplicatedEmojis.splice(0, size).map((emoji, col) => {
       return {
         value: emoji,
         status: "hidden" as const,
+        row,
+        col,
       };
     });
     grid.push(line);

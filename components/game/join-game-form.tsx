@@ -28,7 +28,11 @@ const formSchema = z.object({
 
 type FormSchema = z.infer<typeof formSchema>;
 
-export default function JoinGameForm() {
+type JoinGameFormProps = {
+  onFinish?: () => void;
+};
+
+export default function JoinGameForm({ onFinish }: JoinGameFormProps) {
   const joinGame = useMutation(api.games.joinGame);
   const gameId = useAtomValue(gameIdAtom);
   const setPlayerId = useSetAtom(playerIdAtom);
@@ -46,6 +50,7 @@ export default function JoinGameForm() {
     const player = await joinGame({ gameId, name });
     setPlayerId(player.id);
     setPlayerName(player.name);
+    onFinish?.();
   }
 
   return (

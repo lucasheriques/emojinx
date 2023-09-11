@@ -34,7 +34,7 @@ export const createGame = mutation({
       grid: generateGrid(4),
       status: GameStatus.NotStarted,
       players: [],
-      currentPlayerId: "",
+      currentPlayerIndex: 0,
       moves: [[]],
       winnerId: "",
     });
@@ -92,11 +92,8 @@ export const startGame = mutation({
       throw new Error("Not enough players");
     }
 
-    const currentPlayerId = players[0].id;
-
     await ctx.db.patch(game._id, {
       status: GameStatus.InProgress,
-      currentPlayerId,
     });
 
     return game;
@@ -114,6 +111,8 @@ export const makeFirstMove = mutation({
 
     const grid = game.grid;
 
+    const moves = game.moves;
+
     const position = grid[args.row][args.col];
 
     if (position.status !== "hidden") {
@@ -123,8 +122,85 @@ export const makeFirstMove = mutation({
     position.status = "revealed";
 
     grid[args.row][args.col] = position;
+    moves.at(-1)?.push({ row: args.row, col: args.col });
 
-    await ctx.db.patch(game._id, { grid });
+    await ctx.db.patch(game._id, { grid, moves });
+
+    return game;
+  },
+});
+
+export const makeSecondMove = mutation({
+  args: {
+    gameId: v.string(),
+    row: v.number(),
+    col: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const { _id, grid, moves } = await getGameById(ctx, {
+      gameId: args.gameId,
+    });
+
+    const position = grid[args.row][args.col];
+
+    if (position.status !== "hidden") {
+      throw new Error("Invalid play");
+    }
+
+    position.status = "revealed";
+
+    grid[args.row][args.col] = position;
+    moves.at(-1)?.push({ row: args.row, col: args.col });
+    moves.push([]);
+
+    return await ctx.db.patch(_id, { grid, moves });
+  },
+});
+
+export const validateCurrentMove = mutation({
+  args: {
+    gameId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const game = await getGameById(ctx, { gameId: args.gameId });
+    const grid = game.grid;
+
+    const positions = grid.flat();
+
+    const revealedPositions = positions.filter(
+      (position: any) => position.status === "revealed"
+    );
+
+    if (revealedPositions.length !== 2) {
+      throw new Error("Invalid play");
+    }
+
+    const firstPosition = revealedPositions[0];
+    const secondPosition = revealedPositions[1];
+
+    let newPlayers = game.players;
+
+    let nextPlayerIndex = game.currentPlayerIndex + 1;
+
+    if (firstPosition.value === secondPosition.value) {
+      firstPosition.status = "matched";
+      secondPosition.status = "matched";
+
+      newPlayers[game.currentPlayerIndex].points += 1;
+    } else {
+      firstPosition.status = "hidden";
+      secondPosition.status = "hidden";
+    }
+
+    grid[firstPosition.row][firstPosition.col] = firstPosition;
+    grid[secondPosition.row][secondPosition.col] = secondPosition;
+
+    await ctx.db.patch(game._id, {
+      grid,
+      players: newPlayers,
+      currentPlayerIndex:
+        nextPlayerIndex >= newPlayers.length ? 0 : nextPlayerIndex,
+    });
 
     return game;
   },

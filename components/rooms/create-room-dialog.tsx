@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,10 +10,13 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import CreateGameForm from "./create-room-form";
+import { useState } from "react";
 
 export default function CreateRoomDialog() {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size="lg">Create room</Button>
       </DialogTrigger>
@@ -19,7 +24,7 @@ export default function CreateRoomDialog() {
         <DialogHeader>
           <DialogTitle>Create game</DialogTitle>
         </DialogHeader>
-        <CreateGameForm />
+        <CreateGameForm onFinish={() => setOpen(false)} />
         <DialogFooter>
           <Button type="submit" form="createGameForm">
             Create room

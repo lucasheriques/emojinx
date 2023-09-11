@@ -8,13 +8,7 @@ import useGame from "./hooks/useGame";
 import useStartGame from "./hooks/useStartGame";
 import { useAtomValue } from "jotai";
 import { gameIdAtom } from "@/atoms/gameId";
-import { useMutation } from "convex/react";
-import useMakeMove from "./hooks/useMakeMove";
-
-type MoveArgs = {
-  row: number;
-  col: number;
-};
+import useMakeMove, { MoveArgs } from "./hooks/useMakeMove";
 
 export default function GameScreen() {
   const game = useGame();
@@ -30,22 +24,12 @@ export default function GameScreen() {
     await startGame({ gameId });
   };
 
-  const handleFirstMove = async ({
-    row,
-    col,
-  }: {
-    row: number;
-    col: number;
-  }) => {
-    await makeFirstMove({ row, col });
-  };
-
-  const handleMove = async ({ row, col }: MoveArgs) => {
+  const handleMove = async (args: MoveArgs) => {
     if (game.moves.at(-1)?.length === 0) {
-      return await handleFirstMove({ row, col });
+      return await makeFirstMove(args);
     }
 
-    return await makeSecondMove({ row, col });
+    return await makeSecondMove(args);
   };
 
   const canStartGame =
@@ -80,18 +64,24 @@ export default function GameScreen() {
       )}
       {game?.grid.map((row, i) => (
         <div className="flex gap-8" key={i}>
-          {row.map((cell, j) => (
-            <Button
-              variant="outline"
-              key={j}
-              size="lg"
-              className="py-4 px-1 lg:py-8 lg:px-4 lg:text-xl"
-              disabled={game.status !== GameStatus.InProgress}
-              onClick={() => {}}
-            >
-              {cell.status === "hidden" ? "❔" : cell.value}
-            </Button>
-          ))}
+          {row.map((cell, j) => {
+            const disabled =
+              game.status !== GameStatus.InProgress || cell.status !== "hidden";
+            return (
+              <Button
+                variant="outline"
+                key={j}
+                size="lg"
+                className="text-4xl"
+                disabled={disabled}
+                onClick={() => {
+                  handleMove({ row: i, col: j });
+                }}
+              >
+                {cell.status === "hidden" ? "❔" : cell.value}
+              </Button>
+            );
+          })}
         </div>
       ))}
     </div>

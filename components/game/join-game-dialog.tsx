@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,8 +11,9 @@ import {
 import JoinGameForm from "./join-game-form";
 
 export default function JoinGameDialog() {
+  const [open, setOpen] = React.useState(false);
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>Join game</Button>
       </DialogTrigger>
@@ -19,7 +21,7 @@ export default function JoinGameDialog() {
         <DialogHeader>
           <DialogTitle>Join game</DialogTitle>
         </DialogHeader>
-        <JoinGameForm />
+        <JoinGameForm onFinish={() => setOpen(false)} />
         <DialogFooter>
           <Button type="submit" form="joinGameForm">
             Join
