@@ -81,7 +81,7 @@ export default function RoomsList() {
   );
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 flex-1">
       <RenderList games={availableRooms} title="Available game rooms" />
       <div>
         <CreateRoomDialog />
