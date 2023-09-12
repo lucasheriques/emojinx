@@ -18,15 +18,8 @@ export default function GameNotStarted() {
   const canStartGame = game.players.length >= 1;
 
   return (
-    <>
+    <div className="flex gap-4">
       <JoinGameDialog />
-      <div>
-        Current players:{" "}
-        {game.players.length === 0
-          ? "none"
-          : game?.players.map((player) => player.name).join(", ")}
-      </div>
-
       <Button
         disabled={!canStartGame}
         onClick={handleStartGame}
@@ -34,6 +27,6 @@ export default function GameNotStarted() {
       >
         Start Game
       </Button>
-    </>
+    </div>
   );
 }

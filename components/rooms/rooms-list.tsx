@@ -16,7 +16,7 @@ type RenderListProps = {
 };
 
 function RenderList({ title, games }: RenderListProps) {
-  const [parent, enableAnimations] = useAutoAnimate();
+  const [parent] = useAutoAnimate();
 
   return (
     <div>

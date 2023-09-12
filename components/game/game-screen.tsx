@@ -6,6 +6,31 @@ import Link from "next/link";
 import useGame from "./hooks/useGame";
 import useMakeMove, { MoveArgs } from "./hooks/useMakeMove";
 import GameNotStarted from "@/components/game/game-not-started";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+
+type ScoreboardProps = {
+  players: {
+    id: string;
+    name: string;
+    points: number;
+  }[];
+};
+
+function Scoreboard({ players }: ScoreboardProps) {
+  const [parent] = useAutoAnimate();
+  return (
+    <div>
+      <h2>Scoreboard</h2>
+      <ul ref={parent}>
+        {players.map((player) => (
+          <li key={player.id}>
+            {player.name} - {player.points}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 export default function GameScreen() {
   const game = useGame();
@@ -33,13 +58,18 @@ export default function GameScreen() {
       </Link>
       {game.status === GameStatus.NotStarted && <GameNotStarted />}
 
-      <div>
-        Status: {game.status}{" "}
-        {game.status === GameStatus.Finished &&
-          `Winner: ${game.players?.[0].name}`}
-      </div>
+      {game.status === GameStatus.Finished && (
+        <div>Winner: {game.players?.[0].name}</div>
+      )}
 
-      <div>Current player: {game.players[game.currentPlayerIndex]?.name}</div>
+      <Scoreboard players={game.players} />
+
+      <div>
+        Current players:{" "}
+        {game.players.length === 0
+          ? "none"
+          : game?.players.map((player) => player.name).join(", ")}
+      </div>
 
       <ul className="grid grid-cols-4 gap-8 flex-wrap items-center justify-center">
         {game?.emojiList?.map((emoji, index) => {
@@ -49,7 +79,7 @@ export default function GameScreen() {
             <li key={index}>
               <Button
                 variant="outline"
-                className="text-4xl py-12"
+                className="text-4xl py-12 disabled:opacity-100"
                 disabled={disabled}
                 onClick={() => {
                   handleMove({ index });
