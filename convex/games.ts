@@ -75,7 +75,12 @@ export const joinGame = mutation({
 export const getGame = query({
   args: { gameId: v.string() },
   handler: async (ctx, args) => {
-    return await getGameById(ctx, { gameId: args.gameId });
+    const game = await getGameById(ctx, { gameId: args.gameId });
+
+    return {
+      ...game,
+      players: game.players.sort((a, b) => b.points - a.points),
+    };
   },
 });
 

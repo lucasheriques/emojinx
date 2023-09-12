@@ -3,26 +3,17 @@ import { Button } from "@/components/ui/button";
 import { GameStatus } from "@/types";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
-import JoinGameDialog from "./join-game-dialog";
 import useGame from "./hooks/useGame";
-import useStartGame from "./hooks/useStartGame";
-import { useAtomValue } from "jotai";
-import { gameIdAtom } from "@/atoms/gameId";
 import useMakeMove, { MoveArgs } from "./hooks/useMakeMove";
+import GameNotStarted from "@/components/game/game-not-started";
 
 export default function GameScreen() {
   const game = useGame();
-  const startGame = useStartGame();
   const { makeFirstMove, makeSecondMove } = useMakeMove();
-  const gameId = useAtomValue(gameIdAtom);
 
   if (!game) {
     return null;
   }
-
-  const handleStartGame = async () => {
-    await startGame({ gameId });
-  };
 
   const handleMove = async (args: MoveArgs) => {
     if (game.moves.at(-1)?.length === 0) {
@@ -32,13 +23,6 @@ export default function GameScreen() {
     return await makeSecondMove(args);
   };
 
-  const canStartGame =
-    game.players.length >= 1 && game.status === GameStatus.NotStarted;
-
-  const playerWithMostPoints = game.players.sort(
-    (a, b) => b.points - a.points
-  )[0];
-
   return (
     <div className="flex flex-1 flex-col items-center gap-8">
       <Link href="/">
@@ -47,31 +31,15 @@ export default function GameScreen() {
           Back to main page
         </Button>
       </Link>
-      {game.status === GameStatus.NotStarted && (
-        <>
-          <JoinGameDialog />
-          <div>
-            Current players:{" "}
-            {game.players.length === 0
-              ? "none"
-              : game?.players.map((player) => player.name).join(", ")}
-          </div>
-
-          <Button
-            disabled={!canStartGame}
-            onClick={handleStartGame}
-            variant="destructive"
-          >
-            Start Game
-          </Button>
-        </>
-      )}
+      {game.status === GameStatus.NotStarted && <GameNotStarted />}
 
       <div>
         Status: {game.status}{" "}
         {game.status === GameStatus.Finished &&
-          `Winner: ${playerWithMostPoints.name}`}
+          `Winner: ${game.players?.[0].name}`}
       </div>
+
+      <div>Current player: {game.players[game.currentPlayerIndex]?.name}</div>
 
       <ul className="grid grid-cols-4 gap-8 flex-wrap items-center justify-center">
         {game?.emojiList?.map((emoji, index) => {
