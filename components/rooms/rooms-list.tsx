@@ -47,7 +47,6 @@ function RenderList({ title, games }: RenderListProps) {
         {title}
       </h2>
 
-      {games.length === 0 && "None"}
       <ul
         className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full"
         ref={parent}
@@ -103,8 +102,12 @@ export default function RoomsList() {
   return (
     <div className="flex flex-col gap-8 flex-1">
       <RenderList games={availableRooms} title="Available game rooms" />
-      <RenderList games={inProgressRooms} title="In progress game rooms" />
-      <RenderList games={finishedRooms} title="Finished game rooms" />
+      {inProgressRooms.length > 0 && (
+        <RenderList games={inProgressRooms} title="In progress game rooms" />
+      )}
+      {finishedRooms.length > 0 && (
+        <RenderList games={finishedRooms} title="Finished game rooms" />
+      )}
     </div>
   );
 }
