@@ -27,11 +27,12 @@ const getGameById = internalQuery({
 export const createGame = mutation({
   args: {
     roomName: v.string(),
+    emojisAmount: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const game = await ctx.db.insert("games", {
       roomName: args.roomName,
-      emojiList: generateEmojiArray(8),
+      emojiList: generateEmojiArray(args.emojisAmount ?? 8),
       status: GameStatus.NotStarted,
       players: [],
       currentPlayerIndex: 0,

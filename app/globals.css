@@ -88,4 +88,9 @@
   .is-flipped {
     transform: translateX(-100%) rotateY(-180deg);
   }
+
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+  }
 }

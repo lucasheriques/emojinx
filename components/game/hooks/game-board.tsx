@@ -6,8 +6,15 @@ import useMakeMove, { MoveArgs } from "@/components/game/hooks/use-make-move";
 import { Button } from "@/components/ui/button";
 import { GameStatus } from "@/types";
 import { useAtomValue } from "jotai";
-import { useEffect, useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+
+const gridSizes: {
+  [key: number]: string;
+} = {
+  16: "grid-cols-4",
+  36: "grid-cols-4 sm:grid-cols-6",
+  64: "grid-cols-4 sm:grid-cols-8",
+  100: "grid-cols-5 sm:grid-cols-10",
+};
 
 export default function GameBoard() {
   const game = useGame();
@@ -36,8 +43,12 @@ export default function GameBoard() {
     game.emojiList.filter((emoji) => emoji.status === "revealed").length < 2;
 
   return (
-    <div>
-      <ul className="grid grid-cols-4 gap-8 pb-8">
+    <div className="">
+      <ul
+        className={`grid ${
+          gridSizes[game.emojiList.length]
+        } gap-x-2 sm:gap-x-4 gap-y-4 pb-8`}
+      >
         {game?.emojiList?.map((emoji, index) => {
           const disabled =
             game.status !== GameStatus.InProgress ||
@@ -46,13 +57,13 @@ export default function GameBoard() {
           return (
             <li
               key={index}
-              className={`card ${
+              className={`flex justify-center card ${
                 flippedStatus.includes(emoji.status) ? "is-flipped" : "is-down"
               }`}
             >
               <Button
                 variant="outline"
-                className="md:text-4xl text-3xl py-12 px-3 md:px-4 disabled:opacity-100"
+                className="md:text-4xl text-3xl py-6 px-3 md:px-4 disabled:opacity-100"
                 disabled={disabled}
                 onClick={() => {
                   handleMove({ index });
