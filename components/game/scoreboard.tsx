@@ -1,7 +1,9 @@
 import { playerIdAtom } from "@/atoms/player/playerId";
 import useGame from "@/components/game/hooks/useGame";
+import { Badge } from "@/components/ui/badge";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useAtomValue } from "jotai";
+import { ReactNode } from "react";
 
 type ScoreboardProps = {
   players: {
@@ -12,10 +14,24 @@ type ScoreboardProps = {
   }[];
 };
 
+type ScoreboardItemProps = {
+  playerName: ReactNode;
+  score: ReactNode;
+};
+
+function ScoreboardItem({ playerName, score }: ScoreboardItemProps) {
+  return (
+    <li className="grid grid-cols-5 md:grid-cols-6 p-2 md:p-3 even:bg-emerald-200 first:rounded-t-lg last:rounded-b-lg bg-rose-200 dark:even:bg-emerald-600/20 dark:odd:bg-rose-600/20">
+      <div className="md:col-span-5 col-span-4 flex gap-2">{playerName}</div>
+      <div className="text-right">{score}</div>
+    </li>
+  );
+}
+
 export default function Scoreboard() {
   const game = useGame();
   const [parent] = useAutoAnimate();
-  const playerId = useAtomValue(playerIdAtom);
+  const storagePlayerId = useAtomValue(playerIdAtom);
 
   if (!game) {
     return null;
@@ -27,26 +43,22 @@ export default function Scoreboard() {
   return (
     <div className="w-full">
       <h2 className="font-mono text-4xl pb-4 text-center">Scoreboard</h2>
-      <ul
-        ref={parent}
-        className="divide-y divide-dashed divide-gray-200 max-w-lg mx-auto"
-      >
-        <li className="grid grid-cols-5 md:grid-cols-6 p-2 md:p-4">
-          <div className="md:col-span-4 col-span-3">player</div>
-          <div>errors</div>
-          <div>points</div>
-        </li>
+      <ul ref={parent} className="max-w-lg mx-auto">
+        <ScoreboardItem playerName="player" score="score" />
         {sortedPlayers.map((player) => (
-          <li
+          <ScoreboardItem
             key={player.id}
-            className="grid md:grid-cols-6 grid-cols-5 p-2 md:p-4"
-          >
-            <div className="col-span-3 md:col-span-4">
-              {player.name} {player.id === currentPlayer.id && "current turn"}
-            </div>
-            <div>{player.errors}</div>
-            <div>{player.points}</div>
-          </li>
+            score={player.points}
+            playerName={
+              <>
+                {player.name}{" "}
+                {player.id === currentPlayer.id && (
+                  <Badge variant="destructive">turn</Badge>
+                )}
+                {player.id === storagePlayerId && <Badge>you</Badge>}
+              </>
+            }
+          />
         ))}
       </ul>
     </div>

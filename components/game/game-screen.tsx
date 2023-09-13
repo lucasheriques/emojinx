@@ -14,11 +14,8 @@ export default function GameScreen() {
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-8">
-      <Scoreboard
-        players={[...game.players].sort((a, b) => b.points - a.points)}
-      />
+      <Scoreboard />
       {game.status === GameStatus.NotStarted && <GameNotStarted />}
-      {game.status}
       <GameBoard />
     </div>
   );
