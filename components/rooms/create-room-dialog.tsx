@@ -20,7 +20,7 @@ export default function CreateRoomDialog() {
       <DialogTrigger asChild>
         <Button size="lg">Create room</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-sm">
         <DialogHeader>
           <DialogTitle>Create game</DialogTitle>
         </DialogHeader>

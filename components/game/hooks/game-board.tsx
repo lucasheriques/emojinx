@@ -11,8 +11,6 @@ import { useToast } from "@/components/ui/use-toast";
 
 export default function GameBoard() {
   const game = useGame();
-  const { toast } = useToast();
-  const [sentToast, setSentToast] = useState(false);
 
   const { makeFirstMove, makeSecondMove } = useMakeMove();
   const storagePlayerId = useAtomValue(playerIdAtom);
@@ -26,7 +24,6 @@ export default function GameBoard() {
       return await makeFirstMove(args);
     }
 
-    setSentToast(false);
     return await makeSecondMove(args);
   };
 
@@ -67,11 +64,13 @@ export default function GameBoard() {
           );
         })}
       </ul>
-      {isCurrentPlayer && game.status !== GameStatus.Finished && (
-        <div className="bg-pink-700 py-2 px-4 text-sm font-mono tracking-wider animate-pulse duration-1000 repeat-1">
-          Make your move!
-        </div>
-      )}
+      {isCurrentPlayer &&
+        game.status !== GameStatus.Finished &&
+        game.players.length > 1 && (
+          <div className="bg-pink-700 py-2 px-4 text-sm font-mono tracking-wider animate-pulse duration-1000 repeat-1">
+            Make your move!
+          </div>
+        )}
     </div>
   );
 }

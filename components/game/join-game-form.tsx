@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,6 +18,8 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { gameIdAtom } from "@/atoms/gameId";
 import { playerIdAtom } from "@/atoms/player/playerId";
 import { playerNameAtom } from "@/atoms/player/playerName";
+import { getRandomItemFromArray } from "@/lib/utils";
+import { randomUserNames } from "@/lib/constants";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -41,11 +42,13 @@ export default function JoinGameForm({ onFinish }: JoinGameFormProps) {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: playerName,
+      name:
+        playerName === ""
+          ? getRandomItemFromArray(randomUserNames)
+          : playerName,
     },
   });
 
-  // 2. Define a submit handler.
   async function onSubmit({ name }: FormSchema) {
     const player = await joinGame({ gameId, name });
     setPlayerId(player.id);
@@ -67,7 +70,10 @@ export default function JoinGameForm({ onFinish }: JoinGameFormProps) {
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="fun" {...field} />
+                <Input
+                  placeholder={getRandomItemFromArray(randomUserNames)}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

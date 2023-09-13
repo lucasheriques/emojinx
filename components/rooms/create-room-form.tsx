@@ -15,6 +15,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
+import { getRandomItemFromArray } from "@/lib/utils";
+import { randomRoomNames } from "@/lib/constants";
 
 const formSchema = z.object({
   roomName: z.string().min(2, {
@@ -34,7 +36,7 @@ export default function CreateGameForm({ onFinish }: CreateGameFormProps) {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      roomName: "",
+      roomName: getRandomItemFromArray(randomRoomNames),
     },
   });
 
@@ -58,7 +60,10 @@ export default function CreateGameForm({ onFinish }: CreateGameFormProps) {
             <FormItem>
               <FormLabel>Room Name</FormLabel>
               <FormControl>
-                <Input placeholder="fun" {...field} />
+                <Input
+                  placeholder={getRandomItemFromArray(randomRoomNames)}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -13,8 +13,8 @@ export default function useMakeMove() {
   const makeSecondMove = useMutation(api.games.makeSecondMove);
   const validateMove = useMutation(api.games.validateCurrentMove);
 
-  const handleFirstMove = ({ index }: MoveArgs) => {
-    makeFirstMove({
+  const handleFirstMove = async ({ index }: MoveArgs) => {
+    await makeFirstMove({
       gameId,
       index,
     });
