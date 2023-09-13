@@ -44,7 +44,6 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@swc-jotai/react-refresh": "^0.1.0",
-    "tailwindcss-debug-screens": "^2.2.1"
+    "@swc-jotai/react-refresh": "^0.1.0"
   }
 }
