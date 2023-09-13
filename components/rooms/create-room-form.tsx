@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -14,28 +15,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
-import { cn, getRandomItemFromArray } from "@/lib/utils";
+import { getRandomItemFromArray } from "@/lib/utils";
 import { randomRoomNames } from "@/lib/constants";
-import { Button } from "@/components/ui/button";
 import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandInput,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-} from "@/components/ui/command";
-import { CheckIcon } from "@radix-ui/react-icons";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Link from "next/link";
 
 const formSchema = z.object({
   roomName: z.string().min(2, {
     message: "Room name must be at least 2 characters.",
   }),
-  emojisAmount: z.number().min(8),
+  emojisAmount: z.string(),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -46,20 +41,20 @@ type CreateGameFormProps = {
 
 const emojisAmountOptions = [
   {
-    value: 8,
-    label: "4x4 (8 unique emojis)",
+    value: "8",
+    label: "Quick",
   },
   {
-    value: 18,
-    label: "6x6 (18 unique emojis)",
+    value: "18",
+    label: "Standard",
   },
   {
-    value: 32,
-    label: "8x8 (32 unique emojis)",
+    value: "32",
+    label: "Epic",
   },
   {
-    value: 50,
-    label: "10x10 (50 unique emojis)",
+    value: "50",
+    label: "Marathon",
   },
 ];
 
@@ -70,13 +65,12 @@ export default function CreateGameForm({ onFinish }: CreateGameFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       roomName: getRandomItemFromArray(randomRoomNames),
-      emojisAmount: 8,
+      emojisAmount: emojisAmountOptions[0].value,
     },
   });
 
-  // 2. Define a submit handler.
   async function onSubmit({ roomName, emojisAmount }: FormSchema) {
-    await createGame({ roomName, emojisAmount });
+    await createGame({ roomName, emojisAmount: parseInt(emojisAmount) });
     onFinish?.();
   }
 
@@ -107,55 +101,26 @@ export default function CreateGameForm({ onFinish }: CreateGameFormProps) {
           control={form.control}
           name="emojisAmount"
           render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Grid size</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild className="w-full">
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "justify-between",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? emojisAmountOptions.find(
-                            (option) => option.value === field.value
-                          )?.label
-                        : "Select grid size"}
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
-                  <Command>
-                    <CommandInput />
-                    <CommandEmpty>No framework found.</CommandEmpty>
-                    <CommandGroup>
-                      {emojisAmountOptions.map((option) => (
-                        <CommandItem
-                          value={option.label}
-                          key={option.value}
-                          onSelect={() => {
-                            form.setValue("emojisAmount", option.value);
-                          }}
-                        >
-                          <CheckIcon
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              option.value === field.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          {option.label}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
+            <FormItem>
+              <FormLabel>Game Length</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a verified email to display" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {emojisAmountOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                Determines the number of emojis in the game. The more emojis,
+                the longer the game.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
