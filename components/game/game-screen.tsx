@@ -1,6 +1,6 @@
 "use client";
 import { GameStatus } from "@/types";
-import useGame from "./hooks/useGame";
+import useGame from "./hooks/use-game";
 import GameNotStarted from "@/components/game/game-not-started";
 import GameBoard from "@/components/game/hooks/game-board";
 import Scoreboard from "@/components/game/scoreboard";

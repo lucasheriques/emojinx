@@ -13,8 +13,8 @@ export default function useMakeMove() {
   const makeSecondMove = useMutation(api.games.makeSecondMove);
   const validateMove = useMutation(api.games.validateCurrentMove);
 
-  const handleFirstMove = async ({ index }: MoveArgs) => {
-    await makeFirstMove({
+  const handleFirstMove = ({ index }: MoveArgs) => {
+    makeFirstMove({
       gameId,
       index,
     });
@@ -25,9 +25,11 @@ export default function useMakeMove() {
     await makeSecondMove({
       gameId,
       index,
-    });
+    }).then(() => {});
 
-    await validateMove({ gameId });
+    setTimeout(async () => {
+      await validateMove({ gameId });
+    }, 1000);
   };
 
   return {

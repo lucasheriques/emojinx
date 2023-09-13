@@ -1,5 +1,5 @@
 import { playerIdAtom } from "@/atoms/player/playerId";
-import useGame from "@/components/game/hooks/useGame";
+import useGame from "@/components/game/hooks/use-game";
 import { Badge } from "@/components/ui/badge";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useAtomValue } from "jotai";
@@ -52,9 +52,6 @@ export default function Scoreboard() {
             playerName={
               <>
                 {player.name}{" "}
-                {player.id === currentPlayer.id && (
-                  <Badge variant="destructive">turn</Badge>
-                )}
                 {player.id === storagePlayerId && <Badge>you</Badge>}
               </>
             }

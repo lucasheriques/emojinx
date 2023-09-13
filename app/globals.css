@@ -78,4 +78,14 @@
   body {
     height: 100%;
   }
+
+  .card {
+    transform-style: preserve-3d;
+    transform-origin: center right;
+    transition: transform 1s;
+  }
+
+  .is-flipped {
+    transform: translateX(-100%) rotateY(-180deg);
+  }
 }

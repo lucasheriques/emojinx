@@ -1,5 +1,5 @@
-import useGame from "@/components/game/hooks/useGame";
-import useStartGame from "@/components/game/hooks/useStartGame";
+import useGame from "@/components/game/hooks/use-game";
+import useStartGame from "@/components/game/hooks/use-start-game";
 import JoinGameDialog from "@/components/game/join-game-dialog";
 import { Button } from "@/components/ui/button";
 
