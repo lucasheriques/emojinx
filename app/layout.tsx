@@ -4,6 +4,7 @@ import { Inter, Chewy } from "next/font/google";
 import Providers from "./providers";
 import NextTopLoader from "nextjs-toploader";
 import Header from "@/components/header";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const chewy = Chewy({
@@ -39,6 +40,7 @@ export default function RootLayout({
               © 2023-present emojinx.
             </footer>
           </div>
+          <Toaster />
         </Providers>
       </body>
     </html>
