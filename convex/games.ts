@@ -2,7 +2,7 @@ import { internalQuery, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { GameStatus } from "./types";
 import { createId } from "@paralleldrive/cuid2";
-import { generateEmojiArray } from "./helper";
+import { generateEmojiArray, shuffleArray } from "./helper";
 
 const getGameById = internalQuery({
   args: { gameId: v.string() },
@@ -62,6 +62,7 @@ export const joinGame = mutation({
       id: createId(),
       name: args.name,
       points: 0,
+      errors: 0,
     };
 
     players.push(newPlayer);
@@ -86,7 +87,7 @@ export const startGame = mutation({
   handler: async (ctx, args) => {
     const game = await getGameById(ctx, { gameId: args.gameId });
 
-    const players = game.players;
+    const players = shuffleArray(game.players);
 
     if (players.length < 1) {
       throw new Error("Not enough players");
@@ -94,6 +95,7 @@ export const startGame = mutation({
 
     await ctx.db.patch(game._id, {
       status: GameStatus.InProgress,
+      players,
     });
 
     return game;
@@ -162,7 +164,7 @@ export const validateCurrentMove = mutation({
     );
 
     const revealedEmojis = emojiList.filter(
-      (emoji) => emoji.status === "revealed"
+      (emoji: any) => emoji.status === "revealed"
     );
 
     if (revealedEmojis.length !== 2) {
@@ -179,18 +181,18 @@ export const validateCurrentMove = mutation({
     if (firstEmoji.value === secondEmoji.value) {
       firstEmoji.status = "matched";
       secondEmoji.status = "matched";
-
       players[currentPlayerIndex].points += 1;
     } else {
       firstEmoji.status = "hidden";
       secondEmoji.status = "hidden";
+      players[currentPlayerIndex].errors += 1;
     }
 
     emojiList[firstEmojiIndex] = firstEmoji;
     emojiList[secondEmojiIndex] = secondEmoji;
 
     const isGameFinished = emojiList.every(
-      (emoji) => emoji.status === "matched"
+      (emoji: any) => emoji.status === "matched"
     );
 
     return await ctx.db.patch(_id, {

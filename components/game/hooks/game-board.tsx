@@ -23,25 +23,27 @@ export default function GameBoard() {
   };
 
   return (
-    <ul className="grid grid-cols-4 gap-8 flex-wrap items-center justify-center">
-      {game?.emojiList?.map((emoji, index) => {
-        const disabled =
-          game.status !== GameStatus.InProgress || emoji.status !== "hidden";
-        return (
-          <li key={index}>
-            <Button
-              variant="outline"
-              className="md:text-4xl text-3xl py-12 px-3 md:px-4 disabled:opacity-100"
-              disabled={disabled}
-              onClick={() => {
-                handleMove({ index });
-              }}
-            >
-              {emoji.status === "hidden" ? "❔" : emoji.value}
-            </Button>
-          </li>
-        );
-      })}
-    </ul>
+    <div>
+      <ul className="grid grid-cols-4 gap-8">
+        {game?.emojiList?.map((emoji, index) => {
+          const disabled =
+            game.status !== GameStatus.InProgress || emoji.status !== "hidden";
+          return (
+            <li key={index}>
+              <Button
+                variant="outline"
+                className="md:text-4xl text-3xl py-12 px-3 md:px-4 disabled:opacity-100"
+                disabled={disabled}
+                onClick={() => {
+                  handleMove({ index });
+                }}
+              >
+                {emoji.status === "hidden" ? "❔" : emoji.value}
+              </Button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }

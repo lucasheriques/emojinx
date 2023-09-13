@@ -8,6 +8,7 @@ export default defineSchema({
     moves: v.array(v.array(v.object({ index: v.float64() }))),
     players: v.array(
       v.object({
+        errors: v.float64(),
         id: v.string(),
         name: v.string(),
         points: v.float64(),
