@@ -5,6 +5,7 @@ import Providers from "./providers";
 import NextTopLoader from "nextjs-toploader";
 import Header from "@/components/header";
 import { Toaster } from "@/components/ui/toaster";
+import TailwindIndicator from "@/components/tailwind-indicator";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const chewy = Chewy({
@@ -25,9 +26,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} ${chewy.variable} debug-screens font-sans`}
-      >
+      <body className={`${inter.variable} ${chewy.variable} font-sans`}>
         <NextTopLoader color="#c026d3" showSpinner={false} />
         <Providers>
           <div className="min-h-full flex flex-col">
@@ -41,6 +40,7 @@ export default function RootLayout({
             </footer>
           </div>
           <Toaster />
+          <TailwindIndicator />
         </Providers>
       </body>
     </html>
