@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Game, GameStatus } from "@/types";
 import CreateRoomDialog from "@/components/rooms/create-room-dialog";
+import { TypographySmall } from "@/components/ui/typography";
 
 type RenderListProps = {
   title:
@@ -20,6 +21,15 @@ type RenderListProps = {
     | "In progress game rooms"
     | "Finished game rooms";
   games: Game[];
+};
+
+const gameLength: {
+  [key: number]: string;
+} = {
+  16: "Quick",
+  36: "Standard",
+  64: "Epic",
+  100: "Marathon",
 };
 
 function RenderList({ title, games }: RenderListProps) {
@@ -46,18 +56,28 @@ function RenderList({ title, games }: RenderListProps) {
           <li key={game._id} className="">
             <Link href={`/games/${game._id}`} key={game._id}>
               <Card className="bg-primary-foreground">
-                <CardHeader>
-                  <CardTitle className="font-mono tracking-wider text-lg text-indigo-500">
+                <CardHeader className="p-4">
+                  <CardTitle className="font-mono tracking-wider text-lg text-indigo-500 truncate">
                     {game.roomName}
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div>Players: {game.players?.length}</div>
+                <CardContent className="flex flex-col p-4 pt-0">
+                  <span className="text-sm text-muted-foreground">
+                    Players: {game.players.length}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    Length: {gameLength[game.emojiList.length]}
+                  </span>
                 </CardContent>
               </Card>
             </Link>
           </li>
         ))}
+        {title === "Available game rooms" && (
+          <li className="flex min-h-[114px]">
+            <CreateRoomDialog />
+          </li>
+        )}
       </ul>
     </div>
   );
@@ -83,9 +103,6 @@ export default function RoomsList() {
   return (
     <div className="flex flex-col gap-8 flex-1">
       <RenderList games={availableRooms} title="Available game rooms" />
-      <div>
-        <CreateRoomDialog />
-      </div>
       <RenderList games={inProgressRooms} title="In progress game rooms" />
       <RenderList games={finishedRooms} title="Finished game rooms" />
     </div>
