@@ -21,7 +21,7 @@ const gridSizes: {
 export default function GameBoard() {
   const game = useGame();
   const convex = useConvex();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
 
   const { makeFirstMove, makeSecondMove } = useMakeMove();
   const storagePlayerId = usePlayerId();
@@ -82,7 +82,8 @@ export default function GameBoard() {
                   handleMove({ index });
                 }}
               >
-                {emoji.status === "hidden" && (theme === "dark" ? "❔" : "❓")}
+                {emoji.status === "hidden" &&
+                  (resolvedTheme === "dark" ? "❔" : "❓")}
                 {emoji.status !== "hidden" && emoji.value}
               </Button>
             </li>
