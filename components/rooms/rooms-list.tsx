@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Game, GameStatus } from "@/types";
 import CreateRoomDialog from "@/components/rooms/create-room-dialog";
-import { TypographySmall } from "@/components/ui/typography";
 
 type RenderListProps = {
   title:
@@ -47,7 +46,11 @@ function RenderList({ title, games }: RenderListProps) {
       >
         {games.map((game) => (
           <li key={game._id} className="">
-            <Link href={`/games/${game._id}`} key={game._id}>
+            <Link
+              href={`/games/${game._id}`}
+              key={game._id}
+              className="flex-1 min-h-[114px]"
+            >
               <Card className="bg-primary-foreground">
                 <CardHeader className="p-4">
                   <CardTitle className="font-mono tracking-wider text-lg text-indigo-500 truncate">
@@ -67,7 +70,7 @@ function RenderList({ title, games }: RenderListProps) {
           </li>
         ))}
         {title === "Available game rooms" && (
-          <li className="flex min-h-[114px]">
+          <li className="flex min-h-[118px]">
             <CreateRoomDialog />
           </li>
         )}

@@ -6,7 +6,7 @@ export default function Header() {
     <header className="py-2 px-4 text-sm dark:bg-slate-900 bg-emerald-400 shadow">
       <div className="max-w-7xl m-auto w-full flex justify-between items-center">
         <h1 className="text-xl dark:text-fuchsia-400 font-mono">
-          <Link href="/">emojinx</Link>
+          <Link href="/">👾 emojinx</Link>
         </h1>
         <div className="flex items-center gap-2">
           <ThemeToggle />

@@ -14,11 +14,10 @@ export default function useDeleteGame() {
 
   return async function deleteGame() {
     router.replace("/");
+    await deleteMutation({ gameId });
     toast({
       title: "Game deleted",
       variant: "destructive",
     });
-
-    return await deleteMutation({ gameId });
   };
 }

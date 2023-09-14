@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 
 const formSchema = z.object({
-  roomName: z.string().min(2, {
+  roomName: z.string().trim().min(2, {
     message: "Room name must be at least 2 characters.",
   }),
   emojisAmount: z.string(),
