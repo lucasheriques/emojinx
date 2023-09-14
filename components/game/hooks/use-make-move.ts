@@ -15,9 +15,9 @@ export default function useMakeMove() {
   const makeSecondMove = useMutation(api.games.makeSecondMove);
   const validateMove = useMutation(api.games.validateCurrentMove);
 
-  const [playMatched] = useSound("/sounds/matched.wav", { volume: 0.25 });
-  const [playFailed] = useSound("/sounds/failed.wav", { volume: 0.25 });
-  const [playVictory] = useSound("/sounds/victory.wav", { volume: 0.25 });
+  const [playMatched] = useSound("/sounds/matched.mp3", { volume: 0.5 });
+  const [playFailed] = useSound("/sounds/failed.mp3", { volume: 0.5 });
+  const [playVictory] = useSound("/sounds/victory.mp3", { volume: 0.5 });
 
   const handleFirstMove = async ({ index }: MoveArgs) => {
     await makeFirstMove({
