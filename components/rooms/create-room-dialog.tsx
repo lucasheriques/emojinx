@@ -19,7 +19,7 @@ export default function CreateRoomDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Card className="bg- flex-1 border-dashed flex items-center justify-center cursor-pointer">
+        <Card className="flex-1 border-dashed flex items-center justify-center cursor-pointer bg-lime-50 dark:bg-card">
           <CardTitle className="font-mono tracking-wider text-lg text-emerald-500">
             Create Room
           </CardTitle>

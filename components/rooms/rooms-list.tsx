@@ -29,14 +29,14 @@ function RenderList({ title, games }: RenderListProps) {
   const [parent] = useAutoAnimate();
 
   const titleColor = {
-    "Available game rooms": "dark:text-emerald-500",
+    "Available game rooms": "text-emerald-500",
     "In progress game rooms": "text-amber-500",
     "Finished game rooms": "text-rose-500",
   };
 
   return (
     <div>
-      <h2 className={`pb-4 text-xl font-semibold ${titleColor[title]} text-`}>
+      <h2 className={`pb-4 text-xl font-semibold ${titleColor[title]}`}>
         {title}
       </h2>
 

@@ -61,6 +61,8 @@ export default function useMakeMove() {
         toast({ title: "You lost! 🥺🥺🥺" });
       }
     }
+
+    return status;
   };
 
   return {

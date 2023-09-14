@@ -7,6 +7,7 @@ import usePlayerId from "@/components/game/hooks/use-player-id";
 import { Button } from "@/components/ui/button";
 import { GameStatus } from "@/types";
 import { useConvex } from "convex/react";
+import { useTheme } from "next-themes";
 
 const gridSizes: {
   [key: number]: string;
@@ -20,6 +21,7 @@ const gridSizes: {
 export default function GameBoard() {
   const game = useGame();
   const convex = useConvex();
+  const { theme } = useTheme();
 
   const { makeFirstMove, makeSecondMove } = useMakeMove();
   const storagePlayerId = usePlayerId();
@@ -50,7 +52,7 @@ export default function GameBoard() {
   return (
     <div className="flex flex-col items-center gap-8">
       {!hasInternetConnection && (
-        <div className="bg-pink-700 py-2 px-4 text-sm font-mono tracking-wider animate-pulse duration-1000 repeat-1 my-4">
+        <div className="bg-pink-700 text-white py-2 px-4 text-sm font-mono tracking-wider animate-pulse duration-1000 repeat-1 my-4">
           Please check your internet connection.
         </div>
       )}
@@ -74,23 +76,24 @@ export default function GameBoard() {
             >
               <Button
                 variant="outline"
-                className="md:text-4xl text-3xl py-6 px-3 md:px-4 disabled:opacity-100 disabled:cursor-not-allowed disabled:pointer-events-auto"
+                className="md:text-4xl text-red text-3xl py-6 px-3 md:px-4 disabled:opacity-100 disabled:cursor-not-allowed disabled:pointer-events-auto"
                 disabled={disabled}
                 onClick={() => {
                   handleMove({ index });
                 }}
               >
-                {emoji.status === "hidden" ? "❔" : emoji.value}
+                {emoji.status === "hidden" && (theme === "dark" ? "❔" : "❓")}
+                {emoji.status !== "hidden" && emoji.value}
               </Button>
             </li>
           );
         })}
       </ul>
       {isCurrentPlayer &&
-        game.status !== GameStatus.Finished &&
+        game.status === GameStatus.InProgress &&
         hasInternetConnection &&
         game.players.length > 1 && (
-          <div className="bg-pink-700 py-2 px-4 text-sm font-mono tracking-wider animate-pulse duration-1000 repeat-1">
+          <div className="bg-pink-700 text-white py-2 px-4 text-sm font-mono tracking-wider animate-pulse duration-1000 repeat-1">
             Make your move!
           </div>
         )}
