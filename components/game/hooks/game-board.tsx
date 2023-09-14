@@ -33,7 +33,9 @@ export default function GameBoard() {
       return await makeFirstMove(args);
     }
 
-    return await makeSecondMove(args);
+    const result = await makeSecondMove(args);
+
+    console.log({ result });
   };
 
   const isCurrentPlayer =
@@ -46,9 +48,6 @@ export default function GameBoard() {
   const isBoardInteractive =
     game.emojiList.filter((emoji) => emoji.status === "revealed").length < 2 &&
     hasInternetConnection;
-
-  console.log(convex);
-  console.log(convex.connectionState());
 
   return (
     <div>

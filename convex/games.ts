@@ -165,7 +165,7 @@ export const validateCurrentMove = mutation({
     );
 
     const revealedEmojis = emojiList.filter(
-      (emoji: any) => emoji.status === "revealed"
+      (emoji) => emoji.status === "revealed"
     );
 
     if (revealedEmojis.length !== 2) {
@@ -193,15 +193,17 @@ export const validateCurrentMove = mutation({
     emojiList[secondEmojiIndex] = secondEmoji;
 
     const isGameFinished = emojiList.every(
-      (emoji: any) => emoji.status === "matched"
+      (emoji) => emoji.status === "matched"
     );
 
-    return await ctx.db.patch(_id, {
+    await ctx.db.patch(_id, {
       emojiList,
       players,
       currentPlayerIndex:
         nextPlayerIndex >= players.length ? 0 : nextPlayerIndex,
       status: isGameFinished ? GameStatus.Finished : GameStatus.InProgress,
     });
+
+    return firstEmoji.status === "matched";
   },
 });

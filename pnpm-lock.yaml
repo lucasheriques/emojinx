@@ -110,6 +110,9 @@ dependencies:
   typescript:
     specifier: 5.2.2
     version: 5.2.2
+  use-sound:
+    specifier: ^4.0.1
+    version: 4.0.1(react@18.2.0)
   zod:
     specifier: ^3.21.4
     version: 3.21.4
@@ -2701,6 +2704,10 @@ packages:
       function-bind: 1.1.1
     dev: false
 
+  /howler@2.2.3:
+    resolution: {integrity: sha512-QM0FFkw0LRX1PR8pNzJVAY25JhIWvbKMBFM4gqk+QdV+kPXOhleWGCB6AiAF/goGjIHK2e/nIElplvjQwhr0jg==}
+    dev: false
+
   /ignore@5.2.4:
     resolution: {integrity: sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==}
     engines: {node: '>= 4'}
@@ -4023,6 +4030,15 @@ packages:
       detect-node-es: 1.1.0
       react: 18.2.0
       tslib: 2.6.2
+    dev: false
+
+  /use-sound@4.0.1(react@18.2.0):
+    resolution: {integrity: sha512-hykJ86kNcu6y/FzlSHcQxhjSGMslZx2WlfLpZNoPbvueakv4OF3xPxEtGV2YmculrIaH0tPp9LtG4jgy17xMWg==}
+    peerDependencies:
+      react: '>=16.8'
+    dependencies:
+      howler: 2.2.3
+      react: 18.2.0
     dev: false
 
   /util-deprecate@1.0.2:
