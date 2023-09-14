@@ -1,8 +1,7 @@
-import { playerIdAtom } from "@/atoms/player/playerId";
 import useGame from "@/components/game/hooks/use-game";
+import usePlayerId from "@/components/game/hooks/use-player-id";
 import { Badge } from "@/components/ui/badge";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { useAtomValue } from "jotai";
 import { ReactNode } from "react";
 
 type ScoreboardItemProps = {
@@ -22,14 +21,13 @@ function ScoreboardItem({ playerName, score }: ScoreboardItemProps) {
 export default function Scoreboard() {
   const game = useGame();
   const [parent] = useAutoAnimate();
-  const storagePlayerId = useAtomValue(playerIdAtom);
+  const storagePlayerId = usePlayerId();
 
   if (!game) {
     return null;
   }
 
   const sortedPlayers = [...game.players].sort((a, b) => b.points - a.points);
-  const currentPlayer = game.players[game.currentPlayerIndex];
 
   return (
     <div className="w-full">

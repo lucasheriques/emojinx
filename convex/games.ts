@@ -74,10 +74,39 @@ export const joinGame = mutation({
   },
 });
 
+export const leaveGame = mutation({
+  args: {
+    gameId: v.string(),
+    playerId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const game = await getGameById(ctx, { gameId: args.gameId });
+
+    const players = game.players.filter(
+      (player) => player.id !== args.playerId
+    );
+
+    await ctx.db.patch(game._id, { players });
+
+    return players;
+  },
+});
+
 export const getGame = query({
   args: { gameId: v.string() },
   handler: async (ctx, args) => {
     return await getGameById(ctx, { gameId: args.gameId });
+  },
+});
+
+export const deleteGame = mutation({
+  args: { gameId: v.string() },
+  handler: async (ctx, args) => {
+    const game = await getGameById(ctx, { gameId: args.gameId });
+
+    await ctx.db.delete(game._id);
+
+    return game;
   },
 });
 

@@ -1,12 +1,12 @@
 "use client";
 
-import { playerIdAtom } from "@/atoms/player/playerId";
+import DeleteGameButton from "@/components/delete-game-button";
 import useGame from "@/components/game/hooks/use-game";
 import useMakeMove, { MoveArgs } from "@/components/game/hooks/use-make-move";
+import usePlayerId from "@/components/game/hooks/use-player-id";
 import { Button } from "@/components/ui/button";
 import { GameStatus } from "@/types";
 import { useConvex } from "convex/react";
-import { useAtomValue } from "jotai";
 
 const gridSizes: {
   [key: number]: string;
@@ -22,7 +22,7 @@ export default function GameBoard() {
   const convex = useConvex();
 
   const { makeFirstMove, makeSecondMove } = useMakeMove();
-  const storagePlayerId = useAtomValue(playerIdAtom);
+  const storagePlayerId = usePlayerId();
 
   if (!game) {
     return null;
@@ -49,8 +49,10 @@ export default function GameBoard() {
     game.emojiList.filter((emoji) => emoji.status === "revealed").length < 2 &&
     hasInternetConnection;
 
+  console.log({ isCurrentPlayer });
+
   return (
-    <div>
+    <div className="flex flex-col items-center gap-8">
       {!hasInternetConnection && (
         <div className="bg-pink-700 py-2 px-4 text-sm font-mono tracking-wider animate-pulse duration-1000 repeat-1 my-4">
           Please check your internet connection.
@@ -59,13 +61,14 @@ export default function GameBoard() {
       <ul
         className={`grid ${
           gridSizes[game.emojiList.length]
-        } gap-x-2 sm:gap-x-4 gap-y-4 pb-8`}
+        } gap-x-2 sm:gap-x-4 gap-y-4`}
       >
         {game?.emojiList?.map((emoji, index) => {
           const disabled =
             game.status !== GameStatus.InProgress ||
             emoji.status !== "hidden" ||
-            !isBoardInteractive;
+            !isBoardInteractive ||
+            !isCurrentPlayer;
           return (
             <li
               key={index}
@@ -75,7 +78,7 @@ export default function GameBoard() {
             >
               <Button
                 variant="outline"
-                className="md:text-4xl text-3xl py-6 px-3 md:px-4 disabled:opacity-100"
+                className="md:text-4xl text-3xl py-6 px-3 md:px-4 disabled:opacity-100 disabled:cursor-not-allowed disabled:pointer-events-auto"
                 disabled={disabled}
                 onClick={() => {
                   handleMove({ index });
@@ -95,6 +98,8 @@ export default function GameBoard() {
             Make your move!
           </div>
         )}
+
+      <DeleteGameButton />
     </div>
   );
 }

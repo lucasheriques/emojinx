@@ -12,14 +12,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { api } from "@/convex/_generated/api";
-import { useMutation } from "convex/react";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { gameIdAtom } from "@/atoms/gameId";
-import { playerIdAtom } from "@/atoms/player/playerId";
+import { useAtomValue } from "jotai";
 import { playerNameAtom } from "@/atoms/player/playerName";
 import { getRandomItemFromArray } from "@/lib/utils";
 import { randomUserNames } from "@/lib/constants";
+import useJoinGame from "@/components/game/hooks/use-join-game";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -34,10 +31,8 @@ type JoinGameFormProps = {
 };
 
 export default function JoinGameForm({ onFinish }: JoinGameFormProps) {
-  const joinGame = useMutation(api.games.joinGame);
-  const gameId = useAtomValue(gameIdAtom);
-  const setPlayerId = useSetAtom(playerIdAtom);
-  const [playerName, setPlayerName] = useAtom(playerNameAtom);
+  const playerName = useAtomValue(playerNameAtom);
+  const joinGame = useJoinGame({ onFinish });
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -49,11 +44,8 @@ export default function JoinGameForm({ onFinish }: JoinGameFormProps) {
     },
   });
 
-  async function onSubmit({ name }: FormSchema) {
-    const player = await joinGame({ gameId, name });
-    setPlayerId(player.id);
-    setPlayerName(player.name);
-    onFinish?.();
+  async function onSubmit(values: FormSchema) {
+    await joinGame(values);
   }
 
   return (
