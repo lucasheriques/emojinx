@@ -196,6 +196,8 @@ export const validateCurrentMove = mutation({
       (emoji) => emoji.status === "matched"
     );
 
+    const winnerId = players[currentPlayerIndex].id;
+
     await ctx.db.patch(_id, {
       emojiList,
       players,
@@ -204,6 +206,10 @@ export const validateCurrentMove = mutation({
       status: isGameFinished ? GameStatus.Finished : GameStatus.InProgress,
     });
 
-    return firstEmoji.status === "matched";
+    return {
+      isGameFinished,
+      winnerId,
+      matched: firstEmoji.status === "matched",
+    };
   },
 });

@@ -1,4 +1,6 @@
 import { gameIdAtom } from "@/atoms/gameId";
+import { playerIdAtom } from "@/atoms/player/playerId";
+import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
 import { useAtomValue } from "jotai";
@@ -14,6 +16,8 @@ export default function useMakeMove() {
   const makeFirstMove = useMutation(api.games.makeFirstMove);
   const makeSecondMove = useMutation(api.games.makeSecondMove);
   const validateMove = useMutation(api.games.validateCurrentMove);
+  const playId = useAtomValue(playerIdAtom);
+  const { toast } = useToast();
 
   const [playMatched] = useSound("/sounds/matched.mp3", { volume: 0.5 });
   const [playFailed] = useSound("/sounds/failed.mp3", { volume: 0.5 });
@@ -32,10 +36,31 @@ export default function useMakeMove() {
       index,
     });
 
-    setTimeout(async () => {
-      const success = await validateMove({ gameId });
-      success ? playMatched() : playFailed();
-    }, 1000);
+    const status = await new Promise<{
+      isGameFinished: boolean;
+      matched: boolean;
+      winnerId: string;
+    }>((resolve) =>
+      setTimeout(async () => {
+        const status = await validateMove({ gameId });
+        if (status.matched) {
+          playMatched();
+        } else {
+          playFailed();
+        }
+
+        resolve(status);
+      }, 1000)
+    );
+
+    if (status.isGameFinished) {
+      if (status.winnerId === playId) {
+        playVictory();
+        toast({ title: "🎉 You won!" });
+      } else {
+        toast({ title: "😢 You lost!" });
+      }
+    }
   };
 
   return {

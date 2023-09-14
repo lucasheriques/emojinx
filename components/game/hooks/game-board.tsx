@@ -33,9 +33,9 @@ export default function GameBoard() {
       return await makeFirstMove(args);
     }
 
-    const result = await makeSecondMove(args);
+    const status = await makeSecondMove(args);
 
-    console.log({ result });
+    console.log({ status });
   };
 
   const isCurrentPlayer =
