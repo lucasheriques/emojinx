@@ -33,9 +33,7 @@ export default function GameBoard() {
       return await makeFirstMove(args);
     }
 
-    const status = await makeSecondMove(args);
-
-    console.log({ status });
+    await makeSecondMove(args);
   };
 
   const isCurrentPlayer =
@@ -48,8 +46,6 @@ export default function GameBoard() {
   const isBoardInteractive =
     game.emojiList.filter((emoji) => emoji.status === "revealed").length < 2 &&
     hasInternetConnection;
-
-  console.log({ isCurrentPlayer });
 
   return (
     <div className="flex flex-col items-center gap-8">

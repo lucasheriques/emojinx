@@ -2,7 +2,7 @@
 import { GameStatus } from "@/types";
 import useGame from "./hooks/use-game";
 import GameNotStarted from "@/components/game/game-not-started";
-import GameBoard from "@/components/game/hooks/game-board";
+import GameBoard from "@/components/game/game-board";
 import Scoreboard from "@/components/game/scoreboard";
 
 export default function GameScreen() {
