@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import CreateGameForm from "./create-room-form";
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardTitle } from "@/components/ui/card";
 
 export default function CreateRoomDialog() {
   const [open, setOpen] = useState(false);

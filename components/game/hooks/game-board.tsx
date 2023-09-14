@@ -5,6 +5,7 @@ import useGame from "@/components/game/hooks/use-game";
 import useMakeMove, { MoveArgs } from "@/components/game/hooks/use-make-move";
 import { Button } from "@/components/ui/button";
 import { GameStatus } from "@/types";
+import { useConvex } from "convex/react";
 import { useAtomValue } from "jotai";
 
 const gridSizes: {
@@ -18,6 +19,7 @@ const gridSizes: {
 
 export default function GameBoard() {
   const game = useGame();
+  const convex = useConvex();
 
   const { makeFirstMove, makeSecondMove } = useMakeMove();
   const storagePlayerId = useAtomValue(playerIdAtom);
@@ -39,11 +41,22 @@ export default function GameBoard() {
 
   const flippedStatus = ["revealed", "matched"];
 
+  const hasInternetConnection = convex.connectionState().isWebSocketConnected;
+
   const isBoardInteractive =
-    game.emojiList.filter((emoji) => emoji.status === "revealed").length < 2;
+    game.emojiList.filter((emoji) => emoji.status === "revealed").length < 2 &&
+    hasInternetConnection;
+
+  console.log(convex);
+  console.log(convex.connectionState());
 
   return (
-    <div className="">
+    <div>
+      {!hasInternetConnection && (
+        <div className="bg-pink-700 py-2 px-4 text-sm font-mono tracking-wider animate-pulse duration-1000 repeat-1 my-4">
+          Please check your internet connection.
+        </div>
+      )}
       <ul
         className={`grid ${
           gridSizes[game.emojiList.length]
@@ -77,6 +90,7 @@ export default function GameBoard() {
       </ul>
       {isCurrentPlayer &&
         game.status !== GameStatus.Finished &&
+        hasInternetConnection &&
         game.players.length > 1 && (
           <div className="bg-pink-700 py-2 px-4 text-sm font-mono tracking-wider animate-pulse duration-1000 repeat-1">
             Make your move!
