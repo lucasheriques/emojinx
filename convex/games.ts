@@ -19,7 +19,10 @@ const getGameById = internalQuery({
       throw new Error("Game not found");
     }
 
-    return game;
+    return {
+      ...game,
+      currentPlayer: game.players[game.currentPlayerIndex],
+    };
   },
 });
 
@@ -37,6 +40,8 @@ export const createGame = mutation({
       players: [],
       currentPlayerIndex: 0,
       moves: [[]],
+      currentMultiplayerTimer: 15,
+      multiplayerTimer: 15,
       winnerId: "",
     });
     return game;
@@ -183,15 +188,65 @@ export const makeSecondMove = mutation({
   },
 });
 
+export const countDown = mutation({
+  args: {
+    gameId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const {
+      _id,
+      multiplayerTimer,
+      currentMultiplayerTimer,
+      currentPlayerIndex,
+      players,
+    } = await getGameById(ctx, {
+      gameId: args.gameId,
+    });
+
+    if (!multiplayerTimer) {
+      return;
+    }
+
+    const nextTimer = currentMultiplayerTimer - 1;
+
+    if (nextTimer === 0) {
+      const nextPlayerIndex = currentPlayerIndex + 1;
+      return await ctx.db.patch(_id, {
+        currentPlayerIndex:
+          nextPlayerIndex >= players.length ? 0 : nextPlayerIndex,
+        currentMultiplayerTimer: multiplayerTimer,
+      });
+    }
+
+    await ctx.db.patch(_id, { currentMultiplayerTimer: nextTimer });
+  },
+});
+
+export const forceNextTurn = mutation({
+  args: {
+    gameId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { _id, players, currentPlayerIndex } = await getGameById(ctx, {
+      gameId: args.gameId,
+    });
+
+    const nextPlayerIndex = currentPlayerIndex + 1;
+
+    await ctx.db.patch(_id, {
+      currentPlayerIndex:
+        nextPlayerIndex >= players.length ? 0 : nextPlayerIndex,
+    });
+  },
+});
+
 export const validateCurrentMove = mutation({
   args: {
     gameId: v.string(),
   },
   handler: async (ctx, args) => {
-    const { _id, emojiList, players, currentPlayerIndex } = await getGameById(
-      ctx,
-      { gameId: args.gameId }
-    );
+    const { _id, emojiList, players, currentPlayerIndex, multiplayerTimer } =
+      await getGameById(ctx, { gameId: args.gameId });
 
     const revealedEmojis = emojiList.filter(
       (emoji) => emoji.status === "revealed"
@@ -233,6 +288,7 @@ export const validateCurrentMove = mutation({
       currentPlayerIndex:
         nextPlayerIndex >= players.length ? 0 : nextPlayerIndex,
       status: isGameFinished ? GameStatus.Finished : GameStatus.InProgress,
+      currentMultiplayerTimer: multiplayerTimer + 1,
     });
 
     return {

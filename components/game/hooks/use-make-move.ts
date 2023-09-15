@@ -16,6 +16,8 @@ export default function useMakeMove() {
   const makeFirstMove = useMutation(api.games.makeFirstMove);
   const makeSecondMove = useMutation(api.games.makeSecondMove);
   const validateMove = useMutation(api.games.validateCurrentMove);
+  const forceNextTurn = useMutation(api.games.forceNextTurn);
+  const countDown = useMutation(api.games.countDown);
   const playerId = usePlayerId();
   const { toast } = useToast();
 
@@ -65,8 +67,18 @@ export default function useMakeMove() {
     return status;
   };
 
+  const handleForceNextTurn = async () => {
+    await forceNextTurn({ gameId });
+  };
+
+  const handleCountDown = async () => {
+    await countDown({ gameId });
+  };
+
   return {
     makeFirstMove: handleFirstMove,
     makeSecondMove: handleSecondMove,
+    handleForceNextTurn,
+    handleCountDown,
   };
 }
