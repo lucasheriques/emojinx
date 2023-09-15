@@ -19,7 +19,10 @@ const getGameById = internalQuery({
       throw new Error("Game not found");
     }
 
-    const currentPlayer = game.players.length > 0 ? game.players[0] : null;
+    const currentPlayer =
+      game.players.length > 1
+        ? game.players[game.currentPlayerIndex]
+        : game.players[0];
 
     return {
       ...game,

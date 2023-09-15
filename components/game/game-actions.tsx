@@ -36,9 +36,9 @@ export default function GameActions() {
 
       {game.status === GameStatus.Finished && (
         <>
-          <Button>Play again</Button>
+          {/* <Button>Play again</Button> */}
           <Link href="/">
-            <Button variant="outline">Leave game</Button>
+            <Button variant="secondary">Leave game</Button>
           </Link>
         </>
       )}
