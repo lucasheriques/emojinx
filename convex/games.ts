@@ -19,9 +19,11 @@ const getGameById = internalQuery({
       throw new Error("Game not found");
     }
 
+    const currentPlayer = game.players.length > 0 ? game.players[0] : null;
+
     return {
       ...game,
-      currentPlayer: game.players[game.currentPlayerIndex],
+      currentPlayer,
     };
   },
 });

@@ -56,7 +56,7 @@ export default function GameBoard() {
 
     if (
       game.status === GameStatus.InProgress &&
-      game.currentPlayer.id === playerId &&
+      game.currentPlayer?.id === playerId &&
       game.players.length > 1
     ) {
       startCountDown();
@@ -81,7 +81,7 @@ export default function GameBoard() {
     await makeSecondMove(args);
   };
 
-  const isCurrentPlayer = game.currentPlayer.id === storagePlayerId;
+  const isCurrentPlayer = game.currentPlayer?.id === storagePlayerId;
 
   const hasInternetConnection = convex.connectionState().isWebSocketConnected;
 
@@ -112,7 +112,7 @@ export default function GameBoard() {
       <div className="flex gap-8 items-center">
         {showMultiplayerTimer && <Timer timer={game.currentMultiplayerTimer} />}
         {showMakeYourMoveBanner && (
-          <MakeYourMoveBanner currentPlayerId={game.currentPlayer.id} />
+          <MakeYourMoveBanner currentPlayerId={game.currentPlayer?.id ?? ""} />
         )}
       </div>
       <Grid emojiList={emojiListWithDisabledStatus} />
