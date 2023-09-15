@@ -2,6 +2,7 @@ import { gameIdAtom } from "@/atoms/gameId";
 import usePlayerId from "@/components/game/hooks/use-player-id";
 import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/convex/_generated/api";
+import usePlaySound from "@/hooks/use-play-sound";
 import { useMutation } from "convex/react";
 import { useAtomValue } from "jotai";
 // @ts-ignore
@@ -18,12 +19,9 @@ export default function useMakeMove() {
   const validateMove = useMutation(api.games.validateCurrentMove);
   const forceNextTurn = useMutation(api.games.forceNextTurn);
   const countDown = useMutation(api.games.countDown);
+  const playSound = usePlaySound();
   const playerId = usePlayerId();
   const { toast } = useToast();
-
-  const [playMatched] = useSound("/sounds/matched.mp3", { volume: 0.5 });
-  const [playFailed] = useSound("/sounds/failed.mp3", { volume: 0.5 });
-  const [playVictory] = useSound("/sounds/victory.mp3", { volume: 0.5 });
 
   const handleFirstMove = async ({ index }: MoveArgs) => {
     await makeFirstMove({
@@ -46,9 +44,9 @@ export default function useMakeMove() {
       setTimeout(async () => {
         const status = await validateMove({ gameId });
         if (status.matched) {
-          playMatched();
+          playSound("matched");
         } else {
-          playFailed();
+          playSound("failed");
         }
 
         resolve(status);
@@ -57,7 +55,7 @@ export default function useMakeMove() {
 
     if (status.isGameFinished) {
       if (status.winnerId === playerId) {
-        playVictory();
+        playSound("victory");
         toast({ title: "You won! 🎉🎉🎉" });
       } else {
         toast({ title: "You lost! 🥺🥺🥺" });

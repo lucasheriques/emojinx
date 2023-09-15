@@ -1,7 +1,6 @@
 "use client";
-import { GameStatus } from "@/types";
 import useGame from "./hooks/use-game";
-import GameNotStarted from "@/components/game/game-not-started";
+import GameActions from "@/components/game/game-actions";
 import GameBoard from "@/components/game/game-board";
 import Scoreboard from "@/components/game/scoreboard";
 
@@ -15,7 +14,7 @@ export default function GameScreen() {
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-8">
       <Scoreboard />
-      {game.status === GameStatus.NotStarted && <GameNotStarted />}
+      <GameActions />
       <GameBoard />
     </div>
   );

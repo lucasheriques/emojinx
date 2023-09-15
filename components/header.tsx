@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ThemeToggle } from "./theme-toggle";
+import SoundToggle from "@/components/sound-toggle";
 
 export default function Header() {
   return (
@@ -9,6 +10,7 @@ export default function Header() {
           <Link href="/">👾 emojinx</Link>
         </h1>
         <div className="flex items-center gap-2">
+          <SoundToggle />
           <ThemeToggle />
         </div>
       </div>

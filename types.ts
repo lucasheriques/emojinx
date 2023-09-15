@@ -1,9 +1,3 @@
-export enum GameStatus {
-  NotStarted = "notStarted",
-  InProgress = "inProgress",
-  Finished = "finished",
-}
-
 export type Game = {
   _id: string;
   _creationTime: number;

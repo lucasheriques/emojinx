@@ -5,8 +5,9 @@ import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import Link from "next/link";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { Game, GameStatus } from "@/types";
+import { Game } from "@/types";
 import CreateRoomDialog from "@/components/rooms/create-room-dialog";
+import { GameStatus } from "@/convex/types";
 
 type RenderListProps = {
   title:

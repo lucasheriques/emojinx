@@ -1,5 +1,6 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { GameStatus } from "./types";
 
 export default defineSchema({
   games: defineTable({
@@ -17,7 +18,11 @@ export default defineSchema({
       })
     ),
     roomName: v.string(),
-    status: v.string(),
+    status: v.union(
+      v.literal(GameStatus.NotStarted),
+      v.literal(GameStatus.InProgress),
+      v.literal(GameStatus.Finished)
+    ),
     winnerId: v.string(),
   }),
 });

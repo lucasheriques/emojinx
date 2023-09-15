@@ -8,7 +8,7 @@ import MakeYourMoveBanner from "@/components/game/make-your-move-banner";
 import NoInternetBanner from "@/components/game/no-internet-banner";
 import Timer from "@/components/game/timer";
 import { Button } from "@/components/ui/button";
-import { GameStatus } from "@/types";
+import { GameStatus } from "@/convex/types";
 import { useConvex } from "convex/react";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
