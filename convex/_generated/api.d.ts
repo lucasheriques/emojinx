@@ -15,7 +15,8 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as games from "../games";
-import type * as helper from "../helper";
+import type * as helpers_emojis from "../helpers/emojis";
+import type * as helpers_players from "../helpers/players";
 import type * as types from "../types";
 
 /**
@@ -28,7 +29,8 @@ import type * as types from "../types";
  */
 declare const fullApi: ApiFromModules<{
   games: typeof games;
-  helper: typeof helper;
+  "helpers/emojis": typeof helpers_emojis;
+  "helpers/players": typeof helpers_players;
   types: typeof types;
 }>;
 export declare const api: FilterApi<

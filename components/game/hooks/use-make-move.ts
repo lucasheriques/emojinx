@@ -30,10 +30,16 @@ export default function useMakeMove() {
     }
 
     if (status.isGameFinished) {
-      if (status.winnerId === playerId) {
-        playSound("victory");
-        toast({ title: "You won! 🎉🎉🎉" });
+      if (status.winnerIds.includes(playerId)) {
+        if (status.winnerIds.length > 1) {
+          playSound("lost");
+          toast({ title: "It's a draw! 🤝🤝🤝" });
+        } else {
+          playSound("victory");
+          toast({ title: "You won! 🎉🎉🎉" });
+        }
       } else {
+        playSound("lost");
         toast({ title: "You lost! 🥺🥺🥺" });
       }
     }

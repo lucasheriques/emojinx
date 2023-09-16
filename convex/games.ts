@@ -2,7 +2,8 @@ import { internalQuery, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { GameStatus } from "./types";
 import { createId } from "@paralleldrive/cuid2";
-import { generateEmojiArray, shuffleArray } from "./helper";
+import { generateEmojiArray, shuffleArray } from "./helpers/emojis";
+import { getPlayersWithMostPoints } from "./helpers/players";
 
 const getGameById = internalQuery({
   args: { gameId: v.string() },
@@ -48,6 +49,7 @@ export const createGame = mutation({
       currentMultiplayerTimer: 15,
       multiplayerTimer: 15,
       winnerId: "",
+      winnerIds: [],
     });
     return game;
   },
@@ -285,20 +287,31 @@ export const validateCurrentMove = mutation({
       (emoji) => emoji.status === "matched"
     );
 
-    const winnerId = players[currentPlayerIndex].id;
+    const winnerIds = getPlayersWithMostPoints(players).map(
+      (player) => player.id
+    );
 
-    await ctx.db.patch(_id, {
-      emojiList,
-      players,
-      currentPlayerIndex:
-        nextPlayerIndex >= players.length ? 0 : nextPlayerIndex,
-      status: isGameFinished ? GameStatus.Finished : GameStatus.InProgress,
-      currentMultiplayerTimer: multiplayerTimer + 1,
-    });
+    if (isGameFinished) {
+      await ctx.db.patch(_id, {
+        emojiList,
+        players,
+        status: GameStatus.Finished,
+        winnerIds,
+        currentMultiplayerTimer: 0,
+      });
+    } else {
+      await ctx.db.patch(_id, {
+        emojiList,
+        players,
+        currentPlayerIndex:
+          nextPlayerIndex >= players.length ? 0 : nextPlayerIndex,
+        currentMultiplayerTimer: multiplayerTimer + 1,
+      });
+    }
 
     return {
       isGameFinished,
-      winnerId,
+      winnerIds,
       matched: firstEmoji.status === "matched",
     };
   },

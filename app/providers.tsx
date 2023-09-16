@@ -11,7 +11,9 @@ const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 export default function Providers({ children }: { children: ReactNode }) {
   return (
     <ErrorBoundary
-      fallback={<>Sorry, an error happened. Please refresh the page.</>}
+      fallback={
+        <div className="min-h-full flex items-center justify-center">hello</div>
+      }
     >
       <ConvexProvider client={convex}>
         <JotaiProvider>

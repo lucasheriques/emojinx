@@ -108,11 +108,15 @@ export default function GameBoard() {
 
   return (
     <div className="flex flex-col items-center gap-8">
+      {game.winnerId}
+      {playerId}
       <NoInternetBanner hasInternetConnection={hasInternetConnection} />
       <div className="flex gap-8 items-center">
-        {showMultiplayerTimer && <Timer timer={game.currentMultiplayerTimer} />}
+        {showMultiplayerTimer && game.status === GameStatus.InProgress && (
+          <Timer timer={game.currentMultiplayerTimer} />
+        )}
         {showMakeYourMoveBanner && (
-          <MakeYourMoveBanner currentPlayerId={game.currentPlayer?.id ?? ""} />
+          <MakeYourMoveBanner currentPlayer={game.currentPlayer} />
         )}
       </div>
       <Grid emojiList={emojiListWithDisabledStatus} />

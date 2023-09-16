@@ -5,11 +5,12 @@ import useSound from "use-sound";
 
 export default function usePlaySound() {
   const enableSound = useAtomValue(enableSoundAtom);
-  const [playMatched] = useSound("/sounds/matched.mp3", { volume: 0.5 });
-  const [playFailed] = useSound("/sounds/failed.mp3", { volume: 0.5 });
-  const [playVictory] = useSound("/sounds/victory.mp3", { volume: 0.5 });
+  const [playMatched] = useSound("/sounds/matched.mp3", { volume: 0.3 });
+  const [playFailed] = useSound("/sounds/failed.mp3", { volume: 0.3 });
+  const [playVictory] = useSound("/sounds/victory.mp3", { volume: 0.3 });
+  const [playLost] = useSound("/sounds/lost.mp3", { volume: 0.3 });
 
-  function playSound(sound: "matched" | "failed" | "victory") {
+  function playSound(sound: "matched" | "failed" | "victory" | "lost") {
     if (!enableSound) {
       return;
     }
@@ -20,6 +21,10 @@ export default function usePlaySound() {
 
     if (sound === "failed") {
       return playFailed();
+    }
+
+    if (sound === "lost") {
+      return playLost();
     }
 
     return playVictory();

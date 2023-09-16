@@ -38,8 +38,7 @@ export default function GameActions() {
 
       {game.status === GameStatus.InProgress &&
         game.emojiList.filter((emoji) => emoji.status === "revealed").length >=
-          2 &&
-        false && (
+          2 && (
           <Button onClick={forceValidateMove} variant="secondary">
             Force validate move
           </Button>
