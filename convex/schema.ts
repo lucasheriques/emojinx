@@ -21,6 +21,7 @@ export default defineSchema({
     status: v.union(
       v.literal(GameStatus.NotStarted),
       v.literal(GameStatus.InProgress),
+      v.literal(GameStatus.Finishing),
       v.literal(GameStatus.Finished)
     ),
     winnerId: v.string(),

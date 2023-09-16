@@ -11,7 +11,9 @@ import { Button } from "@/components/ui/button";
 import { GameStatus } from "@/convex/types";
 import { useConvex } from "convex/react";
 import { useTheme } from "next-themes";
-import { useEffect } from "react";
+import useCountdownEffect from "./hooks/use-countdown-effect";
+import useGameCheckEffect from "./hooks/use-game-check-effect";
+import { api } from "@/convex/_generated/api";
 
 const gridSizes: {
   [key: number]: string;
@@ -26,48 +28,12 @@ const flippedStatus = ["revealed", "matched"];
 
 export default function GameBoard() {
   const game = useGame();
-  const playerId = usePlayerId();
   const convex = useConvex();
+  useCountdownEffect();
+  useGameCheckEffect();
 
-  const {
-    makeFirstMove,
-    makeSecondMove,
-    handleForceNextTurn,
-    handleCountDown,
-  } = useMakeMove();
-  const storagePlayerId = usePlayerId();
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-
-    if (!game) {
-      return;
-    }
-
-    const startCountDown = () => {
-      interval = setInterval(() => {
-        handleCountDown();
-      }, 1000);
-    };
-
-    const forceNextTurn = async () => {
-      await handleForceNextTurn();
-    };
-
-    if (
-      game.status === GameStatus.InProgress &&
-      game.currentPlayer?.id === playerId &&
-      game.players.length > 1
-    ) {
-      startCountDown();
-    }
-
-    if (game.currentMultiplayerTimer === 0) {
-      forceNextTurn();
-    }
-
-    return () => clearInterval(interval);
-  }, [game, game?.status, handleCountDown, handleForceNextTurn, playerId]);
+  const { makeFirstMove, makeSecondMove } = useMakeMove();
+  const playerId = usePlayerId();
 
   if (!game) {
     return null;
@@ -81,7 +47,7 @@ export default function GameBoard() {
     await makeSecondMove(args);
   };
 
-  const isCurrentPlayer = game.currentPlayer?.id === storagePlayerId;
+  const isCurrentPlayer = game.currentPlayer?.id === playerId;
 
   const hasInternetConnection = convex.connectionState().isWebSocketConnected;
 
@@ -109,7 +75,6 @@ export default function GameBoard() {
   return (
     <div className="flex flex-col items-center gap-8">
       {game.winnerId}
-      {playerId}
       <NoInternetBanner hasInternetConnection={hasInternetConnection} />
       <div className="flex gap-8 items-center">
         {showMultiplayerTimer && game.status === GameStatus.InProgress && (
@@ -161,6 +126,7 @@ function Grid({
             >
               {status === "hidden" && (resolvedTheme === "dark" ? "❔" : "❓")}
               {status !== "hidden" && value}
+              {value}
             </Button>
           </li>
         );

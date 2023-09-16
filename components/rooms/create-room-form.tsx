@@ -40,7 +40,7 @@ type CreateGameFormProps = {
 
 const emojisAmountOptions = [
   {
-    value: "8",
+    value: "1",
     label: "Quick",
   },
   {

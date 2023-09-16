@@ -1,6 +1,7 @@
 export enum GameStatus {
   NotStarted = "notStarted",
   InProgress = "inProgress",
+  Finishing = "finishing",
   Finished = "finished",
 }
 

@@ -28,23 +28,6 @@ export default function useMakeMove() {
     } else {
       playSound("failed");
     }
-
-    if (status.isGameFinished) {
-      if (status.winnerIds.includes(playerId)) {
-        if (status.winnerIds.length > 1) {
-          playSound("lost");
-          toast({ title: "It's a draw! 🤝🤝🤝" });
-        } else {
-          playSound("victory");
-          toast({ title: "You won! 🎉🎉🎉" });
-        }
-      } else {
-        playSound("lost");
-        toast({ title: "You lost! 🥺🥺🥺" });
-      }
-    }
-
-    return status;
   };
 
   const handleFirstMove = async ({ index }: MoveArgs) => {
@@ -60,19 +43,9 @@ export default function useMakeMove() {
       index,
     });
 
-    const status = await new Promise<{
-      isGameFinished: boolean;
-      matched: boolean;
-      winnerIds: string[];
-    }>((resolve) =>
-      setTimeout(async () => {
-        const status = await handleValidateMove();
-
-        resolve(status);
-      }, 1000)
-    );
-
-    return status;
+    setTimeout(() => {
+      handleValidateMove();
+    }, 1000);
   };
 
   const handleForceNextTurn = async () => {

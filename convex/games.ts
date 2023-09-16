@@ -247,6 +247,23 @@ export const forceNextTurn = mutation({
   },
 });
 
+export const finishGame = mutation({
+  args: {
+    gameId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const gameId = ctx.db.normalizeId("games", args.gameId);
+
+    if (gameId === null) {
+      throw new Error("Game not found");
+    }
+
+    return await ctx.db.patch(gameId, {
+      status: GameStatus.Finished,
+    });
+  },
+});
+
 export const validateCurrentMove = mutation({
   args: {
     gameId: v.string(),
@@ -295,7 +312,7 @@ export const validateCurrentMove = mutation({
       await ctx.db.patch(_id, {
         emojiList,
         players,
-        status: GameStatus.Finished,
+        status: GameStatus.Finishing,
         winnerIds,
         currentMultiplayerTimer: 0,
       });
