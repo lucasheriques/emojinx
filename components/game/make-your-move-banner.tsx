@@ -20,8 +20,8 @@ export default function MakeYourMoveBanner({
       key={isCurrentPlayer ? 1 : 0}
     >
       {isCurrentPlayer
-        ? `It's your turn, ${currentPlayer.name}!`
-        : `Waiting ${currentPlayer.name} to make a move...`}
+        ? `${currentPlayer.name}, it's your turn!`
+        : `Waiting ${currentPlayer.name}...`}
     </SmallBanner>
   );
 }

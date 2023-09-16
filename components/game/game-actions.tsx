@@ -5,11 +5,12 @@ import JoinGameDialog from "@/components/game/join-game-dialog";
 import { Button } from "@/components/ui/button";
 import { GameStatus } from "@/convex/types";
 import Link from "next/link";
+import Timer from "./timer";
+import MakeYourMoveBanner from "./make-your-move-banner";
 
 export default function GameActions() {
   const game = useGame();
   const startGame = useStartGame();
-  const { forceValidateMove } = useMakeMove();
 
   if (!game) {
     return null;
@@ -20,6 +21,8 @@ export default function GameActions() {
   };
 
   const canStartGame = game.players.length >= 1;
+
+  const isMultiplayer = game.players.length > 1;
 
   return (
     <div className="flex gap-4">
@@ -36,13 +39,12 @@ export default function GameActions() {
         </>
       )}
 
-      {game.status === GameStatus.InProgress &&
-        game.emojiList.filter((emoji) => emoji.status === "revealed").length >=
-          2 && (
-          <Button onClick={forceValidateMove} variant="secondary">
-            Force validate move
-          </Button>
-        )}
+      {game.status === GameStatus.InProgress && isMultiplayer && (
+        <div className="flex items-center">
+          <Timer timer={game.currentMultiplayerTimer} />
+          <MakeYourMoveBanner currentPlayer={game.currentPlayer} />
+        </div>
+      )}
 
       {game.status === GameStatus.Finished && (
         <>

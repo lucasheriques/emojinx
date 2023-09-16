@@ -26,9 +26,15 @@ import {
 } from "@/components/ui/select";
 
 const formSchema = z.object({
-  roomName: z.string().trim().min(2, {
-    message: "Room name must be at least 2 characters.",
-  }),
+  roomName: z
+    .string()
+    .trim()
+    .min(2, {
+      message: "Room name must be at least 2 characters.",
+    })
+    .max(30, {
+      message: "Room name must be at most 30 characters.",
+    }),
   emojisAmount: z.string(),
 });
 
@@ -68,9 +74,13 @@ export default function CreateGameForm({ onFinish }: CreateGameFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       roomName: getRandomItemFromArray(randomRoomNames),
-      emojisAmount: emojisAmountOptions[0].value,
+      emojisAmount: "8",
     },
   });
+
+  const longestItemFromArray = emojisAmountOptions.reduce((a, b) =>
+    a.label.length > b.label.length ? a : b
+  );
 
   async function onSubmit({ roomName, emojisAmount }: FormSchema) {
     await createGame({ roomName, emojisAmount: parseInt(emojisAmount) });

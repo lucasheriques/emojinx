@@ -4,9 +4,7 @@ import DeleteGameButton from "@/components/delete-game-button";
 import useGame from "@/components/game/hooks/use-game";
 import useMakeMove, { MoveArgs } from "@/components/game/hooks/use-make-move";
 import usePlayerId from "@/components/game/hooks/use-player-id";
-import MakeYourMoveBanner from "@/components/game/make-your-move-banner";
 import NoInternetBanner from "@/components/game/no-internet-banner";
-import Timer from "@/components/game/timer";
 import { Button } from "@/components/ui/button";
 import { GameStatus } from "@/convex/types";
 import { useConvex } from "convex/react";
@@ -14,7 +12,6 @@ import { useTheme } from "next-themes";
 import useCountdownEffect from "./hooks/use-countdown-effect";
 import useGameCheckEffect from "./hooks/use-game-check-effect";
 import { useState } from "react";
-import GameContextMenu from "./game-context-menu";
 
 const gridSizes: {
   [key: number]: string;
@@ -67,24 +64,9 @@ export default function GameBoard() {
     handleMove,
   }));
 
-  const showMultiplayerTimer = game.players.length > 1;
-
-  const showMakeYourMoveBanner =
-    game.status === GameStatus.InProgress &&
-    hasInternetConnection &&
-    game.players.length > 1;
-
   return (
     <div className="flex flex-col items-center gap-8">
       <NoInternetBanner hasInternetConnection={hasInternetConnection} />
-      <div className="flex gap-8 items-center">
-        {showMultiplayerTimer && game.status === GameStatus.InProgress && (
-          <Timer timer={game.currentMultiplayerTimer} />
-        )}
-        {showMakeYourMoveBanner && (
-          <MakeYourMoveBanner currentPlayer={game.currentPlayer} />
-        )}
-      </div>
       <Grid emojiList={emojiListWithDisabledStatus} />
       <DeleteGameButton />
     </div>

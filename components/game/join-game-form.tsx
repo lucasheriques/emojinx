@@ -19,9 +19,15 @@ import { randomUserNames } from "@/lib/constants";
 import useJoinGame from "@/components/game/hooks/use-join-game";
 
 const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
+  name: z
+    .string()
+    .min(2, {
+      message: "Name must be at least 2 characters.",
+    })
+    .max(16, {
+      message: "Name must be at most 16 characters.",
+    })
+    .trim(),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
