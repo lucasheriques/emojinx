@@ -1,4 +1,5 @@
 import useGame from "@/components/game/hooks/use-game";
+import useMakeMove from "@/components/game/hooks/use-make-move";
 import useStartGame from "@/components/game/hooks/use-start-game";
 import JoinGameDialog from "@/components/game/join-game-dialog";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import Link from "next/link";
 export default function GameActions() {
   const game = useGame();
   const startGame = useStartGame();
+  const { forceValidateMove } = useMakeMove();
 
   if (!game) {
     return null;
@@ -33,6 +35,15 @@ export default function GameActions() {
           </Button>
         </>
       )}
+
+      {game.status === GameStatus.InProgress &&
+        game.emojiList.filter((emoji) => emoji.status === "revealed").length >=
+          2 &&
+        false && (
+          <Button onClick={forceValidateMove} variant="secondary">
+            Force validate move
+          </Button>
+        )}
 
       {game.status === GameStatus.Finished && (
         <>

@@ -5,8 +5,6 @@ import { api } from "@/convex/_generated/api";
 import usePlaySound from "@/hooks/use-play-sound";
 import { useMutation } from "convex/react";
 import { useAtomValue } from "jotai";
-// @ts-ignore
-import useSound from "use-sound";
 
 export type MoveArgs = {
   index: number;
@@ -22,6 +20,26 @@ export default function useMakeMove() {
   const playSound = usePlaySound();
   const playerId = usePlayerId();
   const { toast } = useToast();
+
+  const handleValidateMove = async () => {
+    const status = await validateMove({ gameId });
+    if (status.matched) {
+      playSound("matched");
+    } else {
+      playSound("failed");
+    }
+
+    if (status.isGameFinished) {
+      if (status.winnerId === playerId) {
+        playSound("victory");
+        toast({ title: "You won! 🎉🎉🎉" });
+      } else {
+        toast({ title: "You lost! 🥺🥺🥺" });
+      }
+    }
+
+    return status;
+  };
 
   const handleFirstMove = async ({ index }: MoveArgs) => {
     await makeFirstMove({
@@ -42,25 +60,11 @@ export default function useMakeMove() {
       winnerId: string;
     }>((resolve) =>
       setTimeout(async () => {
-        const status = await validateMove({ gameId });
-        if (status.matched) {
-          playSound("matched");
-        } else {
-          playSound("failed");
-        }
+        const status = await handleValidateMove();
 
         resolve(status);
       }, 1000)
     );
-
-    if (status.isGameFinished) {
-      if (status.winnerId === playerId) {
-        playSound("victory");
-        toast({ title: "You won! 🎉🎉🎉" });
-      } else {
-        toast({ title: "You lost! 🥺🥺🥺" });
-      }
-    }
 
     return status;
   };
@@ -78,5 +82,6 @@ export default function useMakeMove() {
     makeSecondMove: handleSecondMove,
     handleForceNextTurn,
     handleCountDown,
+    forceValidateMove: handleValidateMove,
   };
 }
