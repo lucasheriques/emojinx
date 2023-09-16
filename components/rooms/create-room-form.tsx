@@ -110,7 +110,7 @@ export default function CreateGameForm({ onFinish }: CreateGameFormProps) {
                 </FormControl>
                 <SelectContent>
                   {process.env.NODE_ENV !== "production" && (
-                    <SelectItem value="2">Quickest (Dev Only)</SelectItem>
+                    <SelectItem value="4">Quickest (Dev Only)</SelectItem>
                   )}
                   {emojisAmountOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>

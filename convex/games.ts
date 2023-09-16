@@ -330,6 +330,8 @@ export const validateCurrentMove = mutation({
       isGameFinished,
       winnerIds,
       matched: firstEmoji.status === "matched",
+      firstEmojiIndex,
+      secondEmojiIndex,
     };
   },
 });

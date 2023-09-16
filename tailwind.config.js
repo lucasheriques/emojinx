@@ -40,6 +40,9 @@ module.exports = {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
@@ -74,11 +77,21 @@ module.exports = {
         "pulse-red": {
           from: { color: "hsla(8, 100%, 57%, 1)" },
         },
+        "failed-outline": {
+          "0%, 100%": { outline: "2px solid transparent" },
+          "50%": { outline: "2px solid hsla(var(--destructive))" },
+        },
+        "matched-outline": {
+          "0%, 100%": { outline: "2px solid transparent" },
+          "50%": { outline: "2px solid hsla(var(--success))" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "pulse-red": "pulse-red 750ms",
+        "matched-outline": "matched-outline 1.5s",
+        "failed-outline": "failed-outline 1.5s",
       },
     },
   },

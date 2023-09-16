@@ -18,8 +18,6 @@ export default function useMakeMove() {
   const forceNextTurn = useMutation(api.games.forceNextTurn);
   const countDown = useMutation(api.games.countDown);
   const playSound = usePlaySound();
-  const playerId = usePlayerId();
-  const { toast } = useToast();
 
   const handleValidateMove = async () => {
     const status = await validateMove({ gameId });
@@ -28,6 +26,8 @@ export default function useMakeMove() {
     } else {
       playSound("failed");
     }
+
+    return status;
   };
 
   const handleFirstMove = async ({ index }: MoveArgs) => {
@@ -35,6 +35,10 @@ export default function useMakeMove() {
       gameId,
       index,
     });
+
+    return {
+      move: "first" as const,
+    };
   };
 
   const handleSecondMove = async ({ index }: MoveArgs) => {
@@ -43,9 +47,24 @@ export default function useMakeMove() {
       index,
     });
 
-    setTimeout(() => {
-      handleValidateMove();
-    }, 1000);
+    const status = await new Promise<{
+      isGameFinished: boolean;
+      winnerIds: string[];
+      matched: boolean;
+      firstEmojiIndex: number;
+      secondEmojiIndex: number;
+    }>((resolve) => {
+      setTimeout(() => {
+        const status = handleValidateMove();
+
+        resolve(status);
+      }, 1000);
+    });
+
+    return {
+      ...status,
+      move: "second" as const,
+    };
   };
 
   const handleForceNextTurn = async () => {
