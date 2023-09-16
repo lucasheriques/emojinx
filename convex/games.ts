@@ -335,3 +335,25 @@ export const validateCurrentMove = mutation({
     };
   },
 });
+
+export const tryRestoreGameState = mutation({
+  args: {
+    gameId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { _id, emojiList, currentMultiplayerTimer, multiplayerTimer } =
+      await getGameById(ctx, { gameId: args.gameId });
+
+    const fixedEmojiList = emojiList.map((emoji) => {
+      if (emoji.status === "revealed") {
+        emoji.status = "hidden";
+      }
+      return emoji;
+    });
+
+    return await ctx.db.patch(_id, {
+      emojiList: fixedEmojiList,
+      currentMultiplayerTimer: multiplayerTimer,
+    });
+  },
+});

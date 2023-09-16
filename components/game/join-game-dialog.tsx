@@ -25,13 +25,13 @@ export default function JoinGameDialog() {
   }
 
   if (gamePlayerMap[game._id]) {
-    return <Button onClick={leaveGame}>Leave game</Button>;
+    return <Button onClick={leaveGame}>Leave</Button>;
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Join game</Button>
+        <Button>Join</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

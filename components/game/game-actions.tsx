@@ -1,5 +1,4 @@
 import useGame from "@/components/game/hooks/use-game";
-import useMakeMove from "@/components/game/hooks/use-make-move";
 import useStartGame from "@/components/game/hooks/use-start-game";
 import JoinGameDialog from "@/components/game/join-game-dialog";
 import { Button } from "@/components/ui/button";
@@ -7,10 +6,12 @@ import { GameStatus } from "@/convex/types";
 import Link from "next/link";
 import Timer from "./timer";
 import MakeYourMoveBanner from "./make-your-move-banner";
+import { useState } from "react";
 
 export default function GameActions() {
   const game = useGame();
   const startGame = useStartGame();
+  const [copied, setCopied] = useState(false);
 
   if (!game) {
     return null;
@@ -18,6 +19,12 @@ export default function GameActions() {
 
   const handleStartGame = async () => {
     await startGame({ gameId: game?._id });
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const canStartGame = game.players.length >= 1;
@@ -29,12 +36,15 @@ export default function GameActions() {
       {game.status === GameStatus.NotStarted && (
         <>
           <JoinGameDialog />
+          <Button variant="secondary" onClick={handleCopyLink}>
+            {copied ? "Copied!" : "Copy link"}
+          </Button>
           <Button
             disabled={!canStartGame}
             onClick={handleStartGame}
             variant="destructive"
           >
-            Start game
+            Start
           </Button>
         </>
       )}

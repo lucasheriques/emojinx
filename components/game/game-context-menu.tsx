@@ -3,11 +3,9 @@ import {
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
-  ContextMenuShortcut,
-  ContextMenuSub,
-  ContextMenuSubContent,
-  ContextMenuSubTrigger,
   ContextMenuTrigger,
+  ContextMenuGroup,
+  ContextMenuLabel,
 } from "@/components/ui/context-menu";
 import { CopyIcon } from "@radix-ui/react-icons";
 import { ReactNode } from "react";
@@ -20,7 +18,7 @@ type GameContextMenuProps = {
 
 export default function GameContextMenu({ children }: GameContextMenuProps) {
   const { toast } = useToast();
-  const { forceValidateMove } = useMakeMove();
+  const { forceValidateMove, tryRestoreGameState } = useMakeMove();
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -35,19 +33,16 @@ export default function GameContextMenu({ children }: GameContextMenuProps) {
         {children}
       </ContextMenuTrigger>
       <ContextMenuContent className="w-48">
-        <ContextMenuItem onClick={handleCopyLink}>
-          <CopyIcon className="h-4 w-4 mr-2" />
-          Copy room link
-        </ContextMenuItem>
-        <ContextMenuSeparator />
-        <ContextMenuSub>
-          <ContextMenuSubTrigger>Game stuck?</ContextMenuSubTrigger>
-          <ContextMenuSubContent className="w-48">
-            <ContextMenuItem onClick={forceValidateMove}>
-              Recover game state
-            </ContextMenuItem>
-          </ContextMenuSubContent>
-        </ContextMenuSub>
+        <ContextMenuGroup>
+          <ContextMenuLabel>Troubleshooting</ContextMenuLabel>
+          <ContextMenuSeparator />
+          <ContextMenuItem onClick={forceValidateMove}>
+            Force move validation
+          </ContextMenuItem>
+          <ContextMenuItem onClick={tryRestoreGameState}>
+            Restore game state
+          </ContextMenuItem>
+        </ContextMenuGroup>
       </ContextMenuContent>
     </ContextMenu>
   );

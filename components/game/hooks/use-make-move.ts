@@ -24,6 +24,7 @@ export default function useMakeMove() {
   const validateMove = useMutation(api.games.validateCurrentMove);
   const forceNextTurn = useMutation(api.games.forceNextTurn);
   const countDown = useMutation(api.games.countDown);
+  const tryRestoreGameState = useMutation(api.games.tryRestoreGameState);
   const playSound = usePlaySound();
 
   const handleValidateMove = async () => {
@@ -70,6 +71,10 @@ export default function useMakeMove() {
     };
   };
 
+  const handleTryRestoreGameState = async () => {
+    await tryRestoreGameState({ gameId });
+  };
+
   const handleForceNextTurn = async () => {
     await forceNextTurn({ gameId });
   };
@@ -84,5 +89,6 @@ export default function useMakeMove() {
     handleForceNextTurn,
     handleCountDown,
     forceValidateMove: handleValidateMove,
+    tryRestoreGameState: handleTryRestoreGameState,
   };
 }
