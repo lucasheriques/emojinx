@@ -40,6 +40,10 @@ type CreateGameFormProps = {
 
 const emojisAmountOptions = [
   {
+    value: "4",
+    label: "Quickest — only four pairs!",
+  },
+  {
     value: "8",
     label: "Quick",
   },
@@ -109,9 +113,6 @@ export default function CreateGameForm({ onFinish }: CreateGameFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {process.env.NODE_ENV !== "production" && (
-                    <SelectItem value="4">Quickest (Dev Only)</SelectItem>
-                  )}
                   {emojisAmountOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
