@@ -127,7 +127,7 @@ function Grid({
             >
               {status === "hidden" && (resolvedTheme === "dark" ? "❔" : "❓")}
               {status !== "hidden" && value}
-              {value}
+              {emojiList.length === 4 && value}
             </Button>
           </li>
         );
