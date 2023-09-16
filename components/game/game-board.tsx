@@ -13,9 +13,8 @@ import { useConvex } from "convex/react";
 import { useTheme } from "next-themes";
 import useCountdownEffect from "./hooks/use-countdown-effect";
 import useGameCheckEffect from "./hooks/use-game-check-effect";
-import { api } from "@/convex/_generated/api";
 import { useState } from "react";
-import { set } from "react-hook-form";
+import GameContextMenu from "./game-context-menu";
 
 const gridSizes: {
   [key: number]: string;
@@ -77,7 +76,6 @@ export default function GameBoard() {
 
   return (
     <div className="flex flex-col items-center gap-8">
-      {game.winnerId}
       <NoInternetBanner hasInternetConnection={hasInternetConnection} />
       <div className="flex gap-8 items-center">
         {showMultiplayerTimer && game.status === GameStatus.InProgress && (

@@ -3,6 +3,7 @@ import useGame from "./hooks/use-game";
 import GameActions from "@/components/game/game-actions";
 import GameBoard from "@/components/game/game-board";
 import Scoreboard from "@/components/game/scoreboard";
+import GameContextMenu from "./game-context-menu";
 
 export default function GameScreen() {
   const game = useGame();
@@ -12,10 +13,12 @@ export default function GameScreen() {
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-8">
-      <Scoreboard />
-      <GameActions />
-      <GameBoard />
-    </div>
+    <GameContextMenu>
+      <div className="flex flex-1 flex-col items-center justify-center gap-8">
+        <Scoreboard />
+        <GameActions />
+        <GameBoard />
+      </div>
+    </GameContextMenu>
   );
 }
