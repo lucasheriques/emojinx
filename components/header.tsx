@@ -15,11 +15,6 @@ export default function Header() {
           <Link href="/">👾 emojinx</Link>
         </h1>
         <div className="flex items-center gap-2">
-          {playerName.length > 0 && (
-            <span className="text-sm text-muted-foreground">
-              Welcome back, {playerName}!
-            </span>
-          )}
           <SoundToggle />
           <ThemeToggle />
         </div>

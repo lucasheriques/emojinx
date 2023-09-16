@@ -8,6 +8,8 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Game } from "@/types";
 import CreateRoomDialog from "@/components/rooms/create-room-dialog";
 import { GameStatus } from "@/convex/types";
+import { useAtomValue } from "jotai";
+import { playerNameAtom } from "@/atoms/player/playerName";
 
 type RenderListProps = {
   title:
@@ -83,6 +85,7 @@ function RenderList({ title, games }: RenderListProps) {
 
 export default function RoomsList() {
   const games = useQuery(api.games.getGames);
+  const playerName = useAtomValue(playerNameAtom);
 
   if (!games) {
     return null;
@@ -99,7 +102,12 @@ export default function RoomsList() {
   );
 
   return (
-    <div className="flex flex-col gap-8 flex-1">
+    <div className="flex flex-col gap-4 md:gap-8 flex-1">
+      {playerName.length > 0 && (
+        <span className="text-sm text-muted-foreground">
+          Welcome back, {playerName}!
+        </span>
+      )}
       <RenderList games={availableRooms} title="Available game rooms" />
       {inProgressRooms.length > 0 && (
         <RenderList games={inProgressRooms} title="In progress game rooms" />
