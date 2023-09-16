@@ -63,7 +63,7 @@ export default function useMakeMove() {
     const status = await new Promise<{
       isGameFinished: boolean;
       matched: boolean;
-      winnerId: string;
+      winnerIds: string[];
     }>((resolve) =>
       setTimeout(async () => {
         const status = await handleValidateMove();
