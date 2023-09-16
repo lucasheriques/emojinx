@@ -24,7 +24,6 @@ export default defineSchema({
       v.literal(GameStatus.Finishing),
       v.literal(GameStatus.Finished)
     ),
-    winnerId: v.string(),
     winnerIds: v.array(v.string()),
   }),
 });

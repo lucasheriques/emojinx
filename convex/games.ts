@@ -48,7 +48,6 @@ export const createGame = mutation({
       moves: [[]],
       currentMultiplayerTimer: 15,
       multiplayerTimer: 15,
-      winnerId: "",
       winnerIds: [],
     });
     return game;
@@ -141,6 +140,32 @@ export const startGame = mutation({
     });
 
     return game;
+  },
+});
+
+export const restartGame = mutation({
+  args: {
+    gameId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const game = await getGameById(ctx, { gameId: args.gameId });
+
+    const players = shuffleArray(game.players).map((player) => ({
+      ...player,
+      points: 0,
+      errors: 0,
+    }));
+    const emojiList = generateEmojiArray(game.emojiList.length / 2);
+
+    await ctx.db.patch(game._id, {
+      status: GameStatus.NotStarted,
+      players,
+      emojiList,
+      currentPlayerIndex: 0,
+      moves: [[]],
+      currentMultiplayerTimer: game.multiplayerTimer,
+      winnerIds: [],
+    });
   },
 });
 

@@ -16,5 +16,4 @@ export type Game = {
     points: number;
   }[];
   roomName: string;
-  winnerId: string;
 };

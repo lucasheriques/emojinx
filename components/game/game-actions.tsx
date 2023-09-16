@@ -7,11 +7,14 @@ import Link from "next/link";
 import Timer from "./timer";
 import MakeYourMoveBanner from "./make-your-move-banner";
 import { useState } from "react";
+import { useSetAtom } from "jotai";
+import { playedFinishingSoundAtom } from "@/atoms/playedFinishingSoundAtom";
 
 export default function GameActions() {
   const game = useGame();
-  const startGame = useStartGame();
+  const { startGame, restartGame } = useStartGame();
   const [copied, setCopied] = useState(false);
+  const setPlayedSound = useSetAtom(playedFinishingSoundAtom);
 
   if (!game) {
     return null;
@@ -19,6 +22,11 @@ export default function GameActions() {
 
   const handleStartGame = async () => {
     await startGame({ gameId: game?._id });
+  };
+
+  const handleRestartGame = async () => {
+    setPlayedSound(false);
+    await restartGame({ gameId: game?._id });
   };
 
   const handleCopyLink = () => {
@@ -58,7 +66,7 @@ export default function GameActions() {
 
       {game.status === GameStatus.Finished && (
         <>
-          {/* <Button>Play again</Button> */}
+          <Button onClick={handleRestartGame}>Play again!</Button>
           <Link href="/">
             <Button variant="secondary">Leave game</Button>
           </Link>

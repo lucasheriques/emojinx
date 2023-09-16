@@ -6,6 +6,8 @@ import usePlaySound from "@/hooks/use-play-sound";
 import { GameStatus } from "@/convex/types";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useAtom } from "jotai";
+import { playedFinishingSoundAtom } from "@/atoms/playedFinishingSoundAtom";
 
 export default function useGameCheckEffect() {
   const game = useGame();
@@ -13,7 +15,7 @@ export default function useGameCheckEffect() {
   const playerId = usePlayerId();
   const { toast } = useToast();
   const finishGame = useMutation(api.games.finishGame);
-  const [playedSound, setPlayedSound] = useState(false);
+  const [playedSound, setPlayedSound] = useAtom(playedFinishingSoundAtom);
 
   useEffect(() => {
     if (game?.status !== GameStatus.Finishing || playedSound) {
