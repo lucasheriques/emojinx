@@ -18,6 +18,7 @@ import { api } from "@/convex/_generated/api";
 const gridSizes: {
   [key: number]: string;
 } = {
+  4: "grid-cols-2",
   16: "grid-cols-4",
   36: "grid-cols-4 sm:grid-cols-6",
   64: "grid-cols-4 sm:grid-cols-8",
