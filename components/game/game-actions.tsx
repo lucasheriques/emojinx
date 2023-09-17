@@ -9,11 +9,13 @@ import MakeYourMoveBanner from "./make-your-move-banner";
 import { useState } from "react";
 import { useSetAtom } from "jotai";
 import { playedFinishingSoundAtom } from "@/atoms/playedFinishingSoundAtom";
+import usePlayerId from "./hooks/use-player-id";
 
 export default function GameActions() {
   const game = useGame();
   const { startGame, restartGame } = useStartGame();
   const [copied, setCopied] = useState(false);
+  const playerId = usePlayerId();
   const setPlayedSound = useSetAtom(playedFinishingSoundAtom);
 
   if (!game) {
@@ -66,7 +68,8 @@ export default function GameActions() {
 
       {game.status === GameStatus.Finished && (
         <>
-          <Button onClick={handleRestartGame}>Play again!</Button>
+          {game.players.filter((player) => player.id === playerId).length >=
+            1 && <Button onClick={handleRestartGame}>Play again!</Button>}
           <Link href="/">
             <Button variant="secondary">Leave game</Button>
           </Link>
