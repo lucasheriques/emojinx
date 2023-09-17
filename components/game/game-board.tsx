@@ -10,10 +10,14 @@ import { useConvex } from "convex/react";
 import useCountdownEffect from "./hooks/use-countdown-effect";
 import useGameCheckEffect from "./hooks/use-game-check-effect";
 import Grid from "./grid";
+import { useState } from "react";
+import { MoveResponse } from "@/types";
 
 export default function GameBoard() {
   const game = useGame();
   const convex = useConvex();
+  const [loadingMove, setLoadingMove] = useState(false);
+
   useCountdownEffect();
   useGameCheckEffect();
 
@@ -25,11 +29,20 @@ export default function GameBoard() {
   }
 
   const handleMove = async (args: MoveArgs) => {
-    if (game.moves.at(-1)?.length === 0) {
-      return await makeFirstMove(args);
+    setLoadingMove(true);
+    let response: MoveResponse;
+
+    const numberOfRevealedEmojis = game.emojiList.filter(
+      (emoji) => emoji.status === "revealed"
+    ).length;
+    if (numberOfRevealedEmojis === 0) {
+      response = await makeFirstMove(args);
+    } else {
+      response = await makeSecondMove(args);
     }
 
-    return await makeSecondMove(args);
+    setLoadingMove(false);
+    return response;
   };
 
   const isCurrentPlayer = game.currentPlayer?.id === playerId;
@@ -38,7 +51,8 @@ export default function GameBoard() {
 
   const isBoardInteractive =
     game.emojiList.filter((emoji) => emoji.status === "revealed").length < 2 &&
-    hasInternetConnection;
+    hasInternetConnection &&
+    !loadingMove;
 
   const emojiListWithDisabledStatus = game.emojiList.map((emoji) => ({
     ...emoji,

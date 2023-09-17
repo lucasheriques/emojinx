@@ -17,3 +17,16 @@ export type Game = {
   }[];
   roomName: string;
 };
+
+export type MoveResponse =
+  | {
+      move: "first";
+    }
+  | {
+      move: "second";
+      isGameFinished: boolean;
+      winnerIds: string[];
+      matched: boolean;
+      firstEmojiIndex: number;
+      secondEmojiIndex: number;
+    };

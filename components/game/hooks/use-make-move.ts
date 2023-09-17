@@ -57,8 +57,8 @@ export default function useMakeMove() {
 
     const status = await new Promise<Omit<MakeMoveReturn, "move">>(
       (resolve) => {
-        setTimeout(() => {
-          const status = handleValidateMove();
+        setTimeout(async () => {
+          const status = await handleValidateMove();
 
           resolve(status);
         }, 1000);

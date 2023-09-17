@@ -2,6 +2,7 @@ import { useTheme } from "next-themes";
 import { MoveArgs } from "./hooks/use-make-move";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { MoveResponse } from "@/types";
 
 const gridSizes: {
   [key: number]: string;
@@ -15,25 +16,12 @@ const gridSizes: {
 
 const flippedStatus = ["revealed", "matched"];
 
-type currentStatus =
-  | {
-      move: "first";
-    }
-  | {
-      move: "second";
-      isGameFinished: boolean;
-      winnerIds: string[];
-      matched: boolean;
-      firstEmojiIndex: number;
-      secondEmojiIndex: number;
-    };
-
 type GridProps = {
   emojiList: {
     status: string;
     value: string;
     disabled: boolean;
-    handleMove: (args: MoveArgs) => Promise<currentStatus>;
+    handleMove: (args: MoveArgs) => Promise<MoveResponse>;
   }[];
 };
 
@@ -44,9 +32,7 @@ export default function Grid({ emojiList }: GridProps) {
     secondEmojiIndex: number;
     matched: boolean;
   } | null>(null);
-  const [currentStatus, setCurrentStatus] = useState<currentStatus | null>(
-    null
-  );
+  const [currentStatus, setCurrentStatus] = useState<MoveResponse | null>(null);
 
   useEffect(() => {
     if (!currentStatus || currentStatus.move === "first") {
