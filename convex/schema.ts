@@ -6,7 +6,6 @@ export default defineSchema({
   games: defineTable({
     currentPlayerIndex: v.number(),
     emojiList: v.array(v.object({ status: v.string(), value: v.string() })),
-    moves: v.array(v.array(v.object({ index: v.number() }))),
     currentMultiplayerTimer: v.number(),
     multiplayerTimer: v.number(),
     players: v.array(

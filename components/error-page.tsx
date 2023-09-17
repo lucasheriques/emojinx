@@ -12,6 +12,13 @@ export default function ErrorPage(props: FallbackProps) {
     window.location.reload();
   };
 
+  const handleGoHome = () => {
+    props.resetErrorBoundary();
+    // navigate to home
+    window.location.href = "/";
+    window.location.reload();
+  };
+
   return (
     <div
       className="relative flex-1 flex h-screen items-center justify-center p-16"
@@ -29,8 +36,11 @@ export default function ErrorPage(props: FallbackProps) {
 
         <h2 className="text-">{"We're"} working hard on the fix!</h2>
 
-        <div>
+        <div className="flex gap-4 justify-center">
           <Button onClick={handleRefreshState}>Try again</Button>
+          <Button onCanPlay={handleGoHome} variant="secondary">
+            Go to home
+          </Button>
         </div>
       </div>
     </div>

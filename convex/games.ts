@@ -5,14 +5,23 @@ import { createId } from "@paralleldrive/cuid2";
 import { generateEmojiArray, shuffleArray } from "./helpers/emojis";
 import { getPlayersWithMostPoints } from "./helpers/players";
 
-const getGameById = internalQuery({
+const validateGameId = internalQuery({
   args: { gameId: v.string() },
-  handler: async (ctx, args) => {
+  handler: (ctx, args) => {
     const gameId = ctx.db.normalizeId("games", args.gameId);
 
     if (gameId === null) {
       throw new Error("Game not found");
     }
+
+    return gameId;
+  },
+});
+
+const getGameById = internalQuery({
+  args: { gameId: v.string() },
+  handler: async (ctx, args) => {
+    const gameId = validateGameId(ctx, args);
 
     const game = await ctx.db.get(gameId);
 
@@ -45,7 +54,6 @@ export const createGame = mutation({
       status: GameStatus.NotStarted,
       players: [],
       currentPlayerIndex: 0,
-      moves: [[]],
       currentMultiplayerTimer: 15,
       multiplayerTimer: 15,
       winnerIds: [],
@@ -113,11 +121,9 @@ export const getGame = query({
 export const deleteGame = mutation({
   args: { gameId: v.string() },
   handler: async (ctx, args) => {
-    const game = await getGameById(ctx, { gameId: args.gameId });
+    const gameId = validateGameId(ctx, args);
 
-    await ctx.db.delete(game._id);
-
-    return game;
+    return await ctx.db.delete(gameId);
   },
 });
 
@@ -162,7 +168,6 @@ export const restartGame = mutation({
       players,
       emojiList,
       currentPlayerIndex: 0,
-      moves: [[]],
       currentMultiplayerTimer: game.multiplayerTimer,
       winnerIds: [],
     });
@@ -175,7 +180,7 @@ export const makeFirstMove = mutation({
     index: v.number(),
   },
   handler: async (ctx, args) => {
-    const { _id, moves, emojiList } = await getGameById(ctx, {
+    const { _id, emojiList } = await getGameById(ctx, {
       gameId: args.gameId,
     });
 
@@ -188,9 +193,8 @@ export const makeFirstMove = mutation({
     position.status = "revealed";
 
     emojiList[args.index] = position;
-    moves.at(-1)?.push({ index: args.index });
 
-    return await ctx.db.patch(_id, { emojiList, moves });
+    return await ctx.db.patch(_id, { emojiList });
   },
 });
 
@@ -200,7 +204,7 @@ export const makeSecondMove = mutation({
     index: v.number(),
   },
   handler: async (ctx, args) => {
-    const { _id, emojiList, moves } = await getGameById(ctx, {
+    const { _id, emojiList } = await getGameById(ctx, {
       gameId: args.gameId,
     });
 
@@ -213,10 +217,8 @@ export const makeSecondMove = mutation({
     position.status = "revealed";
 
     emojiList[args.index] = position;
-    moves.at(-1)?.push({ index: args.index });
-    moves.push([]);
 
-    return await ctx.db.patch(_id, { emojiList, moves });
+    return await ctx.db.patch(_id, { emojiList });
   },
 });
 
