@@ -321,7 +321,6 @@ export const validateCurrentMove = mutation({
     } else {
       firstEmoji.status = "hidden";
       secondEmoji.status = "hidden";
-      players[currentPlayerIndex].errors += 1;
       nextPlayerIndex = currentPlayerIndex + 1;
     }
 

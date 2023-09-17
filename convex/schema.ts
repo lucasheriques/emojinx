@@ -10,7 +10,6 @@ export default defineSchema({
     multiplayerTimer: v.number(),
     players: v.array(
       v.object({
-        errors: v.number(),
         id: v.string(),
         name: v.string(),
         points: v.number(),

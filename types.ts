@@ -7,9 +7,6 @@ export type Game = {
     value: string;
   }[];
   status: string;
-  moves: {
-    index: number;
-  }[][];
   players: {
     id: string;
     name: string;
