@@ -27,12 +27,10 @@ export default function ErrorPage(props: FallbackProps) {
           height={512}
         />
 
-        <h2 className="text-">
-          {"We're"} working hard on the fix! Please try again soon.
-        </h2>
+        <h2 className="text-">{"We're"} working hard on the fix!</h2>
 
         <div>
-          <Button onClick={handleRefreshState}>Go back home</Button>
+          <Button onClick={handleRefreshState}>Try again</Button>
         </div>
       </div>
     </div>
