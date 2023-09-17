@@ -4,17 +4,17 @@ import { GameStatus } from "./types";
 
 export default defineSchema({
   games: defineTable({
-    currentPlayerIndex: v.float64(),
+    currentPlayerIndex: v.number(),
     emojiList: v.array(v.object({ status: v.string(), value: v.string() })),
-    moves: v.array(v.array(v.object({ index: v.float64() }))),
+    moves: v.array(v.array(v.object({ index: v.number() }))),
     currentMultiplayerTimer: v.number(),
     multiplayerTimer: v.number(),
     players: v.array(
       v.object({
-        errors: v.float64(),
+        errors: v.number(),
         id: v.string(),
         name: v.string(),
-        points: v.float64(),
+        points: v.number(),
       })
     ),
     roomName: v.string(),
