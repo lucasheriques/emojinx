@@ -82,7 +82,6 @@ export const joinGame = mutation({
       id: createId(),
       name: args.name,
       points: 0,
-      errors: 0,
     };
 
     players.push(newPlayer);
@@ -159,7 +158,6 @@ export const restartGame = mutation({
     const players = shuffleArray(game.players).map((player) => ({
       ...player,
       points: 0,
-      errors: 0,
     }));
     const emojiList = generateEmojiArray(game.emojiList.length / 2);
 
