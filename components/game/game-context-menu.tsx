@@ -7,7 +7,6 @@ import {
   ContextMenuGroup,
   ContextMenuLabel,
 } from "@/components/ui/context-menu";
-import { CopyIcon } from "@radix-ui/react-icons";
 import { ReactNode } from "react";
 import { useToast } from "../ui/use-toast";
 import useMakeMove from "./hooks/use-make-move";
@@ -17,15 +16,7 @@ type GameContextMenuProps = {
 };
 
 export default function GameContextMenu({ children }: GameContextMenuProps) {
-  const { toast } = useToast();
   const { forceValidateMove, tryRestoreGameState } = useMakeMove();
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast({
-      title: "📋 Copied link to clipboard.",
-    });
-  };
 
   return (
     <ContextMenu>

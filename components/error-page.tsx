@@ -14,9 +14,7 @@ export default function ErrorPage(props: FallbackProps) {
 
   const handleGoHome = () => {
     props.resetErrorBoundary();
-    // navigate to home
     window.location.href = "/";
-    window.location.reload();
   };
 
   return (
@@ -38,7 +36,7 @@ export default function ErrorPage(props: FallbackProps) {
 
         <div className="flex gap-4 justify-center">
           <Button onClick={handleRefreshState}>Try again</Button>
-          <Button onCanPlay={handleGoHome} variant="secondary">
+          <Button onClick={handleGoHome} variant="secondary">
             Go to home
           </Button>
         </div>
