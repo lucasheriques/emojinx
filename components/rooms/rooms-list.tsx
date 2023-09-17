@@ -23,7 +23,7 @@ type RenderListProps = {
 const gameLength: {
   [key: number]: string;
 } = {
-  4: "Quickest",
+  8: "Quickest",
   16: "Quick",
   36: "Standard",
   64: "Epic",

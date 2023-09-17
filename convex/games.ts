@@ -310,7 +310,7 @@ export const validateCurrentMove = mutation({
     const secondEmoji = revealedEmojis[1];
     const secondEmojiIndex = emojiList.indexOf(secondEmoji);
 
-    let nextPlayerIndex = currentPlayerIndex + 1;
+    let nextPlayerIndex = currentPlayerIndex;
 
     if (firstEmoji.value === secondEmoji.value) {
       firstEmoji.status = "matched";
@@ -320,6 +320,7 @@ export const validateCurrentMove = mutation({
       firstEmoji.status = "hidden";
       secondEmoji.status = "hidden";
       players[currentPlayerIndex].errors += 1;
+      nextPlayerIndex = currentPlayerIndex + 1;
     }
 
     emojiList[firstEmojiIndex] = firstEmoji;
