@@ -68,7 +68,7 @@ const emojisAmountOptions = [
 ];
 
 export default function CreateGameForm({ onFinish }: CreateGameFormProps) {
-  const createGame = useMutation(api.games.createGame);
+  const createGame = useMutation(api.games.gameplay.createGame);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
