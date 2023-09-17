@@ -102,3 +102,16 @@ export const randomRoomNames = [
   "Cosmic Echoes",
   "Ocean Odyssey",
 ];
+
+export const errorMessages: string[] = [
+  "👾 Alert! A server cable has been devoured!",
+  "🦖 Server connection lost to a hungry dino!",
+  "🕷️ Oh no! A server cable got tangled in webs!",
+  "🧟‍♂️ Zombie apocalypse hit the server room!",
+  "🦇 Vampire bat chaos in the server cave!",
+  "🐉 Server cables roasted by a fire-breathing dragon!",
+  "🦄 Unicorns ran through the server cables!",
+  "👻 Ghostly interference - server cables vanished!",
+  "🐺 Werewolf server attack - cables shredded!",
+  "🦕 Prehistoric server problem - cables extinct!",
+];

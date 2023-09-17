@@ -10,6 +10,7 @@ import CreateRoomDialog from "@/components/rooms/create-room-dialog";
 import { GameStatus } from "@/convex/types";
 import { useAtomValue } from "jotai";
 import { playerNameAtom } from "@/atoms/player/playerName";
+import Loading from "../loading";
 
 type RenderListProps = {
   title:
@@ -88,7 +89,7 @@ export default function RoomsList() {
   const playerName = useAtomValue(playerNameAtom);
 
   if (!games) {
-    return null;
+    return <Loading />;
   }
 
   const availableRooms = games?.filter(

@@ -85,6 +85,10 @@ module.exports = {
           "0%, 100%": { outline: "2px solid transparent" },
           "50%": { outline: "2px solid hsla(var(--success))" },
         },
+        "jumping-text": {
+          "0%, 40%, 100%": { transform: "translateY(0)" },
+          "20%": { transform: "translateY(-0.2rem)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -92,6 +96,8 @@ module.exports = {
         "pulse-red": "pulse-red 750ms",
         "matched-outline": "matched-outline 1.35s",
         "failed-outline": "failed-outline 1.35s",
+        "jumping-text":
+          "jumping-text 1.5s ease-in-out infinite calc(0.1s * var(--i))",
       },
     },
   },
