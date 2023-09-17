@@ -5,5 +5,5 @@ import { useAtomValue } from "jotai";
 
 export default function useGame() {
   const gameId = useAtomValue(gameIdAtom);
-  return useQuery(api.games.getGame, { gameId });
+  return useQuery(api.games.get.getGame, { gameId });
 }

@@ -11,6 +11,7 @@ import { GameStatus } from "@/convex/types";
 import { useAtomValue } from "jotai";
 import { playerNameAtom } from "@/atoms/player/playerName";
 import Loading from "../loading";
+import useGames from "./hooks/use-games";
 
 type RenderListProps = {
   title:
@@ -85,7 +86,7 @@ function RenderList({ title, games }: RenderListProps) {
 }
 
 export default function RoomsList() {
-  const games = useQuery(api.games.getGames);
+  const games = useGames();
   const playerName = useAtomValue(playerNameAtom);
 
   if (!games) {

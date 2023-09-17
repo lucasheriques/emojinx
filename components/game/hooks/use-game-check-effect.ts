@@ -15,8 +15,7 @@ export default function useGameCheckEffect() {
   const playSound = usePlaySound();
   const playerId = usePlayerId();
   const { toast } = useToast();
-  const { forceValidateMove } = useMakeMove();
-  const finishGame = useMutation(api.games.finishGame);
+  const finishGame = useMutation(api.games.gameplay.finishGame);
   const [playedSound, setPlayedSound] = useAtom(playedFinishingSoundAtom);
 
   useEffect(() => {
@@ -54,24 +53,4 @@ export default function useGameCheckEffect() {
     setPlayedSound,
     toast,
   ]);
-
-  useEffect(() => {
-    const revealedEmojis = game?.emojiList.filter(
-      (emoji) => emoji.status === "revealed"
-    );
-
-    const interval = setInterval(() => {
-      if (revealedEmojis?.length === 2) {
-        const [first, second] = revealedEmojis;
-
-        if (first.value === second.value) {
-          playSound("matched");
-        } else {
-          playSound("failed");
-        }
-      }
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [game?.emojiList, playSound]);
 }

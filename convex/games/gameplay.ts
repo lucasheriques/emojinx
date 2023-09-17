@@ -1,45 +1,11 @@
-import { internalQuery, mutation, query } from "./_generated/server";
+import { mutation, query } from "../_generated/server";
 import { v } from "convex/values";
-import { GameStatus } from "./types";
-import { createId } from "@paralleldrive/cuid2";
-import { generateEmojiArray, shuffleArray } from "./helpers/emojis";
-import { getPlayersWithMostPoints } from "./helpers/players";
+import { GameStatus } from "../types";
 
-const validateGameId = internalQuery({
-  args: { gameId: v.string() },
-  handler: (ctx, args) => {
-    const gameId = ctx.db.normalizeId("games", args.gameId);
-
-    if (gameId === null) {
-      throw new Error("Game not found");
-    }
-
-    return gameId;
-  },
-});
-
-const getGameById = internalQuery({
-  args: { gameId: v.string() },
-  handler: async (ctx, args) => {
-    const gameId = validateGameId(ctx, args);
-
-    const game = await ctx.db.get(gameId);
-
-    if (game === null) {
-      throw new Error("Game not found");
-    }
-
-    const currentPlayer =
-      game.players.length > 1
-        ? game.players[game.currentPlayerIndex]
-        : game.players[0];
-
-    return {
-      ...game,
-      currentPlayer,
-    };
-  },
-});
+import { generateEmojiArray, shuffleArray } from "../helpers/emojis";
+import { getPlayersWithMostPoints } from "../helpers/players";
+import { getGameById } from "./get";
+import { validateGameId } from "./helpers";
 
 // Create a new task with the given text
 export const createGame = mutation({
@@ -59,70 +25,6 @@ export const createGame = mutation({
       winnerIds: [],
     });
     return game;
-  },
-});
-
-export const getGames = query({
-  handler: async (ctx) => {
-    return ctx.db.query("games").collect();
-  },
-});
-
-export const joinGame = mutation({
-  args: {
-    gameId: v.string(),
-    name: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const game = await getGameById(ctx, { gameId: args.gameId });
-
-    const players = game.players;
-
-    const newPlayer = {
-      id: createId(),
-      name: args.name,
-      points: 0,
-    };
-
-    players.push(newPlayer);
-
-    await ctx.db.patch(game._id, { players });
-
-    return newPlayer;
-  },
-});
-
-export const leaveGame = mutation({
-  args: {
-    gameId: v.string(),
-    playerId: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const game = await getGameById(ctx, { gameId: args.gameId });
-
-    const players = game.players.filter(
-      (player) => player.id !== args.playerId
-    );
-
-    await ctx.db.patch(game._id, { players });
-
-    return players;
-  },
-});
-
-export const getGame = query({
-  args: { gameId: v.string() },
-  handler: async (ctx, args) => {
-    return await getGameById(ctx, { gameId: args.gameId });
-  },
-});
-
-export const deleteGame = mutation({
-  args: { gameId: v.string() },
-  handler: async (ctx, args) => {
-    const gameId = validateGameId(ctx, args);
-
-    return await ctx.db.delete(gameId);
   },
 });
 
@@ -220,75 +122,6 @@ export const makeSecondMove = mutation({
   },
 });
 
-export const countDown = mutation({
-  args: {
-    gameId: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const {
-      _id,
-      multiplayerTimer,
-      currentMultiplayerTimer,
-      currentPlayerIndex,
-      players,
-    } = await getGameById(ctx, {
-      gameId: args.gameId,
-    });
-
-    if (!multiplayerTimer) {
-      return;
-    }
-
-    const nextTimer = currentMultiplayerTimer - 1;
-
-    if (nextTimer === 0) {
-      const nextPlayerIndex = currentPlayerIndex + 1;
-      return await ctx.db.patch(_id, {
-        currentPlayerIndex:
-          nextPlayerIndex >= players.length ? 0 : nextPlayerIndex,
-        currentMultiplayerTimer: multiplayerTimer,
-      });
-    }
-
-    await ctx.db.patch(_id, { currentMultiplayerTimer: nextTimer });
-  },
-});
-
-export const forceNextTurn = mutation({
-  args: {
-    gameId: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const { _id, players, currentPlayerIndex } = await getGameById(ctx, {
-      gameId: args.gameId,
-    });
-
-    const nextPlayerIndex = currentPlayerIndex + 1;
-
-    await ctx.db.patch(_id, {
-      currentPlayerIndex:
-        nextPlayerIndex >= players.length ? 0 : nextPlayerIndex,
-    });
-  },
-});
-
-export const finishGame = mutation({
-  args: {
-    gameId: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const gameId = ctx.db.normalizeId("games", args.gameId);
-
-    if (gameId === null) {
-      throw new Error("Game not found");
-    }
-
-    return await ctx.db.patch(gameId, {
-      status: GameStatus.Finished,
-    });
-  },
-});
-
 export const validateCurrentMove = mutation({
   args: {
     gameId: v.string(),
@@ -361,24 +194,19 @@ export const validateCurrentMove = mutation({
   },
 });
 
-export const tryRestoreGameState = mutation({
+export const finishGame = mutation({
   args: {
     gameId: v.string(),
   },
   handler: async (ctx, args) => {
-    const { _id, emojiList, currentMultiplayerTimer, multiplayerTimer } =
-      await getGameById(ctx, { gameId: args.gameId });
+    const gameId = ctx.db.normalizeId("games", args.gameId);
 
-    const fixedEmojiList = emojiList.map((emoji) => {
-      if (emoji.status === "revealed") {
-        emoji.status = "hidden";
-      }
-      return emoji;
-    });
+    if (gameId === null) {
+      throw new Error("Game not found");
+    }
 
-    return await ctx.db.patch(_id, {
-      emojiList: fixedEmojiList,
-      currentMultiplayerTimer: multiplayerTimer,
+    return await ctx.db.patch(gameId, {
+      status: GameStatus.Finished,
     });
   },
 });

@@ -8,7 +8,6 @@ import {
   ContextMenuLabel,
 } from "@/components/ui/context-menu";
 import { ReactNode } from "react";
-import { useToast } from "../ui/use-toast";
 import useMakeMove from "./hooks/use-make-move";
 
 type GameContextMenuProps = {
@@ -25,7 +24,7 @@ export default function GameContextMenu({ children }: GameContextMenuProps) {
       </ContextMenuTrigger>
       <ContextMenuContent className="w-48">
         <ContextMenuGroup>
-          <ContextMenuLabel>Troubleshooting</ContextMenuLabel>
+          <ContextMenuLabel>Troubleshoot</ContextMenuLabel>
           <ContextMenuSeparator />
           <ContextMenuItem onClick={forceValidateMove}>
             Force move validation

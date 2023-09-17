@@ -1,5 +1,4 @@
 import useCurrentGameId from "@/components/game/hooks/use-current-game-id";
-import useGame from "@/components/game/hooks/use-game";
 import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
@@ -10,7 +9,7 @@ export default function useDeleteGame() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const deleteMutation = useMutation(api.games.deleteGame);
+  const deleteMutation = useMutation(api.games.delete.deleteGame);
 
   return async function deleteGame() {
     router.replace("/");

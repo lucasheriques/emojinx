@@ -19,12 +19,14 @@ export type MoveArgs = {
 
 export default function useMakeMove() {
   const gameId = useAtomValue(gameIdAtom);
-  const makeFirstMove = useMutation(api.games.makeFirstMove);
-  const makeSecondMove = useMutation(api.games.makeSecondMove);
-  const validateMove = useMutation(api.games.validateCurrentMove);
-  const forceNextTurn = useMutation(api.games.forceNextTurn);
-  const countDown = useMutation(api.games.countDown);
-  const tryRestoreGameState = useMutation(api.games.tryRestoreGameState);
+  const makeFirstMove = useMutation(api.games.gameplay.makeFirstMove);
+  const makeSecondMove = useMutation(api.games.gameplay.makeSecondMove);
+  const validateMove = useMutation(api.games.gameplay.validateCurrentMove);
+  const forceNextTurn = useMutation(api.games.helpers.forceNextTurn);
+  const countDown = useMutation(api.games.helpers.countDown);
+  const tryRestoreGameState = useMutation(
+    api.games.helpers.tryRestoreGameState
+  );
   const playSound = usePlaySound();
 
   const handleValidateMove = async () => {

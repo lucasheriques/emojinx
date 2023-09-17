@@ -10,7 +10,7 @@ type UseJoinGameArgs = {
 };
 
 export default function useJoinGame({ onFinish }: UseJoinGameArgs) {
-  const joinGame = useMutation(api.games.joinGame);
+  const joinGame = useMutation(api.games.players.joinGame);
   const gameId = useCurrentGameId();
   const [gamePlayerMap, setGamePlayerMap] = useAtom(gamePlayerMapAtom);
   const setPlayerName = useSetAtom(playerNameAtom);

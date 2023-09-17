@@ -6,7 +6,7 @@ import { useAtom } from "jotai";
 
 export default function useLeaveGame() {
   const gameId = useCurrentGameId();
-  const leaveGame = useMutation(api.games.leaveGame);
+  const leaveGame = useMutation(api.games.players.leaveGame);
   const [gamePlayerMap, setGamePlayerMap] = useAtom(gamePlayerMapAtom);
 
   return function () {
