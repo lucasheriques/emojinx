@@ -27,12 +27,15 @@ export default function Scoreboard() {
     return null;
   }
 
-  const sortedPlayers = [...game.players].sort((a, b) => b.points - a.points);
+  const { players, winnerIds, roomName } = game;
+
+  const sortedPlayers = [...players].sort((a, b) => b.points - a.points);
+  const isDraw = winnerIds.length > 1;
 
   return (
     <div className="w-full">
       <h2 className="font-mono text-2xl pb-4 text-center">
-        {game.roomName} — Scoreboard
+        {roomName} — Scoreboard
       </h2>
       <ul ref={parent} className="max-w-lg mx-auto">
         <ScoreboardItem playerName="player" score="score" />
@@ -42,8 +45,16 @@ export default function Scoreboard() {
             score={player.points}
             playerName={
               <>
-                {player.name}{" "}
-                {player.id === storagePlayerId && <Badge>you</Badge>}
+                {player.name}
+                {player.id === storagePlayerId && (
+                  <Badge variant="secondary">you</Badge>
+                )}
+                {winnerIds.includes(player.id) &&
+                  (isDraw ? (
+                    <Badge variant="success">draw</Badge>
+                  ) : (
+                    <Badge variant="success">winner</Badge>
+                  ))}
               </>
             }
           />
