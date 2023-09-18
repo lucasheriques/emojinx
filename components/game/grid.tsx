@@ -32,20 +32,35 @@ export default function Grid({ emojiList }: GridProps) {
     secondEmojiIndex: number;
     matched: boolean;
   } | null>(null);
-  const [currentStatus, setCurrentStatus] = useState<MoveResponse | null>(null);
 
   useEffect(() => {
-    if (!currentStatus || currentStatus.move === "first") {
+    const revealedEmojisAndTheirIndexes = emojiList
+      .map((emoji, index) => ({ ...emoji, index }))
+      .filter((emoji) => emoji.status === "revealed");
+
+    if (revealedEmojisAndTheirIndexes.length === 0) {
+      return;
+    }
+
+    if (revealedEmojisAndTheirIndexes.length === 1) {
       setLastPairSelected(null);
       return;
     }
 
-    setLastPairSelected({
-      firstEmojiIndex: currentStatus.firstEmojiIndex,
-      secondEmojiIndex: currentStatus.secondEmojiIndex,
-      matched: currentStatus.matched,
-    });
-  }, [currentStatus]);
+    const timeout = setTimeout(
+      () =>
+        setLastPairSelected({
+          firstEmojiIndex: revealedEmojisAndTheirIndexes[0].index,
+          secondEmojiIndex: revealedEmojisAndTheirIndexes[1].index,
+          matched:
+            revealedEmojisAndTheirIndexes[0].value ===
+            revealedEmojisAndTheirIndexes[1].value,
+        }),
+      1000
+    );
+
+    return () => clearTimeout(timeout);
+  }, [emojiList]);
 
   return (
     <ul
@@ -80,9 +95,7 @@ export default function Grid({ emojiList }: GridProps) {
               disabled:cursor-not-allowed disabled:pointer-events-auto`}
               disabled={disabled}
               onClick={async () => {
-                const newStatus = await handleMove({ index });
-
-                setCurrentStatus(newStatus);
+                await handleMove({ index });
               }}
             >
               {status === "hidden" && (resolvedTheme === "dark" ? "❔" : "❓")}
