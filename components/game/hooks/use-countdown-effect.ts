@@ -10,11 +10,18 @@ export default function useCountdownEffect() {
   const { handleForceNextTurn, handleCountDown } = useMakeMove();
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-
-    if (!game) {
+    if (
+      !game ||
+      game.currentPlayer?.id !== playerId ||
+      game.status !== GameStatus.InProgress ||
+      game.players.length <= 1
+    ) {
       return;
     }
+
+    console.log("runnig eff");
+
+    let interval: NodeJS.Timeout;
 
     const startCountDown = () => {
       interval = setInterval(() => {
@@ -26,13 +33,7 @@ export default function useCountdownEffect() {
       await handleForceNextTurn();
     };
 
-    if (
-      game.status === GameStatus.InProgress &&
-      game.currentPlayer?.id === playerId &&
-      game.players.length > 1
-    ) {
-      startCountDown();
-    }
+    startCountDown();
 
     if (game.currentMultiplayerTimer === 0) {
       forceNextTurn();

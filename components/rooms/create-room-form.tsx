@@ -36,6 +36,15 @@ const formSchema = z.object({
       message: "Room name must be at most 30 characters.",
     }),
   emojisAmount: z.string(),
+  multiplayerTurnLength: z.coerce
+    .number()
+    .max(59, {
+      message: "Turn length must be at most 59 seconds.",
+    })
+    .min(5, {
+      message: "Turn length must be at least 5 seconds.",
+    })
+    .optional(),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -75,15 +84,20 @@ export default function CreateGameForm({ onFinish }: CreateGameFormProps) {
     defaultValues: {
       roomName: getRandomItemFromArray(randomRoomNames),
       emojisAmount: "8",
+      multiplayerTurnLength: 15,
     },
   });
 
-  const longestItemFromArray = emojisAmountOptions.reduce((a, b) =>
-    a.label.length > b.label.length ? a : b
-  );
-
-  async function onSubmit({ roomName, emojisAmount }: FormSchema) {
-    await createGame({ roomName, emojisAmount: parseInt(emojisAmount) });
+  async function onSubmit({
+    roomName,
+    emojisAmount,
+    multiplayerTurnLength,
+  }: FormSchema) {
+    await createGame({
+      roomName,
+      emojisAmount: parseInt(emojisAmount),
+      multiplayerTimer: multiplayerTurnLength,
+    });
     onFinish?.();
   }
 
@@ -92,7 +106,7 @@ export default function CreateGameForm({ onFinish }: CreateGameFormProps) {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         id="createGameForm"
-        className="space-y-8"
+        className="space-y-4 md:space-y-8"
       >
         <FormField
           control={form.control}
@@ -115,7 +129,7 @@ export default function CreateGameForm({ onFinish }: CreateGameFormProps) {
           name="emojisAmount"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Game Length</FormLabel>
+              <FormLabel>Game length</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -138,6 +152,22 @@ export default function CreateGameForm({ onFinish }: CreateGameFormProps) {
                 )}
                 Determines the number of emojis in the game. The more emojis,
                 the longer the game.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="multiplayerTurnLength"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>[Multiplayer] Turn length</FormLabel>
+              <FormControl>
+                <Input placeholder="15" type="number" {...field} />
+              </FormControl>
+              <FormDescription>
+                How long each player has to make their move, in seconds.
               </FormDescription>
               <FormMessage />
             </FormItem>

@@ -12,6 +12,7 @@ export const createGame = mutation({
   args: {
     roomName: v.string(),
     emojisAmount: v.optional(v.number()),
+    multiplayerTimer: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const game = await ctx.db.insert("games", {
@@ -20,8 +21,8 @@ export const createGame = mutation({
       status: GameStatus.NotStarted,
       players: [],
       currentPlayerIndex: 0,
-      currentMultiplayerTimer: 15,
-      multiplayerTimer: 15,
+      currentMultiplayerTimer: 0,
+      multiplayerTimer: args.multiplayerTimer ?? 15,
       winnerIds: [],
     });
     return game;
@@ -33,20 +34,20 @@ export const startGame = mutation({
     gameId: v.string(),
   },
   handler: async (ctx, args) => {
-    const game = await getGameById(ctx, { gameId: args.gameId });
-
-    const players = shuffleArray(game.players);
+    const { _id, multiplayerTimer, players } = await getGameById(ctx, {
+      gameId: args.gameId,
+    });
 
     if (players.length < 1) {
       throw new Error("Not enough players");
     }
 
-    await ctx.db.patch(game._id, {
+    shuffleArray(players);
+    return await ctx.db.patch(_id, {
       status: GameStatus.InProgress,
       players,
+      currentMultiplayerTimer: multiplayerTimer,
     });
-
-    return game;
   },
 });
 

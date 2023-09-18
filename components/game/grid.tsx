@@ -47,8 +47,6 @@ export default function Grid({ emojiList }: GridProps) {
     });
   }, [currentStatus]);
 
-  console.log({ lastPairSelected });
-
   return (
     <ul
       className={`grid ${
