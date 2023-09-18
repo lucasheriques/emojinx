@@ -6,8 +6,8 @@ import { GameStatus } from "@/convex/types";
 import Link from "next/link";
 import Timer from "./timer";
 import MakeYourMoveBanner from "./make-your-move-banner";
-import { useState } from "react";
-import { useSetAtom } from "jotai";
+import { useEffect, useState } from "react";
+import { useAtom, useSetAtom } from "jotai";
 import { playedFinishingSoundAtom } from "@/atoms/playedFinishingSoundAtom";
 import usePlayerId from "./hooks/use-player-id";
 
@@ -16,7 +16,13 @@ export default function GameActions() {
   const { startGame, restartGame } = useStartGame();
   const [copied, setCopied] = useState(false);
   const playerId = usePlayerId();
-  const setPlayedSound = useSetAtom(playedFinishingSoundAtom);
+  const [playedSound, setPlayedSound] = useAtom(playedFinishingSoundAtom);
+
+  useEffect(() => {
+    if (game?.status === GameStatus.NotStarted && playedSound) {
+      setPlayedSound(false);
+    }
+  }, [game?.status, playedSound, setPlayedSound]);
 
   if (!game) {
     return null;
@@ -27,7 +33,6 @@ export default function GameActions() {
   };
 
   const handleRestartGame = async () => {
-    setPlayedSound(false);
     await restartGame({ gameId: game?._id });
   };
 

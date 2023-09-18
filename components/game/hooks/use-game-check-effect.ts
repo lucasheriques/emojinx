@@ -8,7 +8,12 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useAtom } from "jotai";
 import { playedFinishingSoundAtom } from "@/atoms/playedFinishingSoundAtom";
-import useMakeMove from "./use-make-move";
+import { Game } from "@/types";
+
+function getWinners(game: Game) {
+  const { players, winnerIds } = game;
+  return players.filter((p) => winnerIds.includes(p.id));
+}
 
 export default function useGameCheckEffect() {
   const game = useGame();
@@ -23,27 +28,45 @@ export default function useGameCheckEffect() {
       return;
     }
 
+    const winners = getWinners(game);
+    const isPlayerInTheGame = game?.players.some((p) => p.id === playerId);
+
     const handleFinishGame = async () => {
       setPlayedSound(true);
       await finishGame({ gameId: game._id });
     };
 
-    if (game?.winnerIds.includes(playerId)) {
-      if (game?.winnerIds.length > 1) {
-        playSound("lost");
-        toast({ title: "It's a draw! 🤝🤝🤝" });
+    if (isPlayerInTheGame) {
+      const isWinner = winners.some((p) => p.id === playerId);
+
+      if (isWinner) {
+        if (game?.winnerIds.length > 1) {
+          playSound("lost");
+          toast({ title: "It's a draw! 🤝🤝🤝" });
+        } else {
+          playSound("victory");
+          toast({ title: "You won! 🎉🎉🎉" });
+        }
       } else {
-        playSound("victory");
-        toast({ title: "You won! 🎉🎉🎉" });
+        playSound("lost");
+        toast({ title: "You lost! 🥺🥺🥺" });
       }
     } else {
-      playSound("lost");
-      toast({ title: "You lost! 🥺🥺🥺" });
+      if (winners.length > 1) {
+        playSound("lost");
+        toast({ title: "It's a draw! 🤝🤝🤝" });
+      }
+
+      if (winners.length === 1) {
+        playSound("lost");
+        toast({ title: `${winners[0].name} won! 🎉🎉🎉` });
+      }
     }
 
     handleFinishGame();
   }, [
     finishGame,
+    game,
     game?._id,
     game?.status,
     game?.winnerIds,

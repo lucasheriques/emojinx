@@ -22,7 +22,7 @@ export default function ErrorPage(props: FallbackProps) {
       className="relative flex-1 flex h-screen items-center justify-center p-16"
       role="alert"
     >
-      <div className="flex flex-col gap-4 text-center">
+      <div className="flex flex-col gap-8 text-center">
         <h1 className="font-mono text-xl">{errorMessage}</h1>
 
         <Image

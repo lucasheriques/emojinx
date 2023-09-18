@@ -13,6 +13,7 @@ export type Game = {
     points: number;
   }[];
   roomName: string;
+  winnerIds: string[];
 };
 
 export type MoveResponse =
