@@ -6,6 +6,7 @@ import NextTopLoader from "nextjs-toploader";
 import Header from "@/components/header";
 import { Toaster } from "@/components/ui/toaster";
 import TailwindIndicator from "@/components/tailwind-indicator";
+import FloatingActionButton from "@/components/floating-action-button";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const chewy = Chewy({
@@ -31,7 +32,7 @@ export default function RootLayout({
         <Providers>
           <div className="min-h-full flex flex-col">
             <Header />
-            <main className="flex flex-1 p-4">
+            <main className="flex flex-1 p-4 relative">
               <div className="mx-auto max-w-7xl w-full flex">{children}</div>
             </main>
 

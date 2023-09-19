@@ -1,5 +1,5 @@
 import { emojiReactionsAtom } from "@/atoms/emojiReactions";
-import EmojiReactionsContextMenu from "@/components/emoji-reactions/emoji-reactions-context-menu";
+import CustomizeReactionsDialog from "@/components/emoji-reactions/customize-reactions-dialog";
 import useOnlinePresence from "@/components/game/hooks/use-online-presence";
 import usePlayerId from "@/components/game/hooks/use-player-id";
 import { Button } from "@/components/ui/button";
@@ -20,25 +20,23 @@ export default function EmojiReactions() {
     [];
 
   return (
-    <EmojiReactionsContextMenu>
-      <Card className="flex items-center p-4">
-        <span className="text-sm text-muted-foreground">Reactions</span>
-        <div className="flex">
-          {emojiReactions.map((reaction, i) => (
-            <Button
-              key={i}
-              onClick={() => handleEmojiReaction(reaction)}
-              variant="ghost"
-              disabled={reactions.length >= 3}
-            >
-              {reaction}
-            </Button>
-          ))}
-          <Button onClick={clearReactions} variant="ghost">
-            Clear
+    <Card className="flex items-center p-4">
+      <span className="text-sm text-muted-foreground">Reactions</span>
+      <div className="flex">
+        {emojiReactions.map((reaction, i) => (
+          <Button
+            key={i}
+            onClick={() => handleEmojiReaction(reaction)}
+            variant="ghost"
+            disabled={reactions.length >= 3}
+          >
+            {reaction}
           </Button>
-        </div>
-      </Card>
-    </EmojiReactionsContextMenu>
+        ))}
+        <Button onClick={clearReactions} variant="ghost">
+          Clear
+        </Button>
+      </div>
+    </Card>
   );
 }
