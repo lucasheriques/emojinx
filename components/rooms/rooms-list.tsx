@@ -61,9 +61,11 @@ function RenderList({ title, games }: RenderListProps) {
               >
                 <Card className="bg-primary-foreground w-full">
                   <CardHeader className="p-4">
-                    <CardTitle className="font-mono tracking-wider text-lg text-indigo-500 truncate flex items-center gap-2">
-                      {roomPassword.length > 0 && <LockClosedIcon />}
-                      {game.roomName}
+                    <CardTitle className="font-mono tracking-wider text-lg text-indigo-500 flex items-center gap-2">
+                      {roomPassword.length > 0 && (
+                        <LockClosedIcon className="min-w-[16px] w-4" />
+                      )}
+                      <span className="truncate">{game.roomName}</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="flex flex-col p-4 pt-0 text-sm text-muted-foreground font-medium">

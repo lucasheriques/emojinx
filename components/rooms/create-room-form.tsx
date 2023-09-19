@@ -36,6 +36,7 @@ import { EmojiCategories } from "@/convex/types";
 import { useSetAtom } from "jotai";
 import { defaultEmojiCategoriesAtom } from "@/atoms/defaultEmojiCategories";
 import { useState } from "react";
+import { roomPasswordInputAtom } from "@/atoms/roomPasswordInput";
 
 const EMOJI_CATEGORIES: {
   id: EmojiCategories;
@@ -131,7 +132,7 @@ export default function CreateGameForm({
 }: CreateGameFormProps) {
   const createGame = useMutation(api.games.gameplay.createGame);
   const setDefaultEmojiCategories = useSetAtom(defaultEmojiCategoriesAtom);
-  const [showPassword, setShowPassword] = useState(true);
+  const setRoomPasswordInput = useSetAtom(roomPasswordInputAtom);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -158,6 +159,7 @@ export default function CreateGameForm({
       emojiCategories,
       password,
     });
+    setRoomPasswordInput(password ?? "");
     setDefaultEmojiCategories(emojiCategories);
     onFinish?.();
   }
