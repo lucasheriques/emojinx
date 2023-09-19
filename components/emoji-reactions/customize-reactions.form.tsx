@@ -20,7 +20,7 @@ import useZodForm from "@/hooks/use-zod-form";
 const formSchema = z.object({
   emojis: z.array(
     z.object({
-      emoji: z.string(),
+      emoji: z.string().emoji(),
     })
   ),
 });

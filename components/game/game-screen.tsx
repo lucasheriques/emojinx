@@ -5,8 +5,6 @@ import GameActions, {
 } from "@/components/game/game-actions";
 import GameBoard, { GameBoardSkeleton } from "@/components/game/game-board";
 import Scoreboard, { ScoreboardSkeleton } from "@/components/game/scoreboard";
-import GameContextMenu from "./game-context-menu";
-import ScoreboardContextMenu from "./scoreboard-context-menu";
 import FloatingActionButton from "@/components/floating-action-button";
 
 export default function GameScreen() {
