@@ -6,7 +6,7 @@ import NextTopLoader from "nextjs-toploader";
 import Header from "@/components/header";
 import { Toaster } from "@/components/ui/toaster";
 import TailwindIndicator from "@/components/tailwind-indicator";
-import FloatingActionButton from "@/components/floating-action-button";
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const chewy = Chewy({
@@ -43,6 +43,7 @@ export default function RootLayout({
           <Toaster />
           <TailwindIndicator />
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
