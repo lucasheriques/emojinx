@@ -14,6 +14,7 @@ export type Game = {
   }[];
   roomName: string;
   winnerIds: string[];
+  multiplayerTimer: number;
 };
 
 export type MoveResponse =

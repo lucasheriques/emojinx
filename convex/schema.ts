@@ -23,5 +23,15 @@ export default defineSchema({
       v.literal(GameStatus.Finished)
     ),
     winnerIds: v.array(v.string()),
+    emojiCategories: v.array(
+      v.union(
+        v.literal("smiley"),
+        v.literal("animalsAndNature"),
+        v.literal("foodsAndDrinks"),
+        v.literal("travelsAndPlaces"),
+        v.literal("flags"),
+        v.literal("objects")
+      )
+    ),
   }),
 });

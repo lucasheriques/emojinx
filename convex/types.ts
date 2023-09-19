@@ -10,3 +10,15 @@ export type Player = {
   name: string;
   points: number;
 };
+
+export type EmojiCategories =
+  | "smiley"
+  | "animalsAndNature"
+  | "foodsAndDrinks"
+  | "travelsAndPlaces"
+  | "flags"
+  | "objects";
+
+export type EmojiListType = {
+  [key in EmojiCategories]: string[];
+};

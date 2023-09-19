@@ -12,9 +12,12 @@ import {
 import CreateGameForm from "./create-room-form";
 import { useState } from "react";
 import { Card, CardTitle } from "@/components/ui/card";
+import { useAtomValue } from "jotai";
+import { defaultEmojiCategoriesAtom } from "@/atoms/defaultEmojiCategories";
 
 export default function CreateRoomDialog() {
   const [open, setOpen] = useState(false);
+  const defaultEmojiCategories = useAtomValue(defaultEmojiCategoriesAtom);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -29,7 +32,10 @@ export default function CreateRoomDialog() {
         <DialogHeader>
           <DialogTitle>Create game</DialogTitle>
         </DialogHeader>
-        <CreateGameForm onFinish={() => setOpen(false)} />
+        <CreateGameForm
+          onFinish={() => setOpen(false)}
+          defaultEmojiCategories={defaultEmojiCategories}
+        />
         <DialogFooter>
           <Button type="submit" form="createGameForm">
             Create room

@@ -11,19 +11,30 @@ import { validateGameId } from "./helpers";
 export const createGame = mutation({
   args: {
     roomName: v.string(),
-    emojisAmount: v.optional(v.number()),
+    emojisAmount: v.number(),
     multiplayerTimer: v.optional(v.number()),
+    emojiCategories: v.array(
+      v.union(
+        v.literal("smiley"),
+        v.literal("animalsAndNature"),
+        v.literal("foodsAndDrinks"),
+        v.literal("travelsAndPlaces"),
+        v.literal("flags"),
+        v.literal("objects")
+      )
+    ),
   },
   handler: async (ctx, args) => {
     const game = await ctx.db.insert("games", {
       roomName: args.roomName,
-      emojiList: generateEmojiArray(args.emojisAmount ?? 8),
+      emojiList: generateEmojiArray(args.emojisAmount, args.emojiCategories),
       status: GameStatus.NotStarted,
       players: [],
       currentPlayerIndex: 0,
       currentMultiplayerTimer: 0,
       multiplayerTimer: args.multiplayerTimer ?? 15,
       winnerIds: [],
+      emojiCategories: args.emojiCategories,
     });
     return game;
   },

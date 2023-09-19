@@ -1,3 +1,5 @@
+import { EmojiCategories, EmojiListType } from "@/convex/types";
+
 export const randomUserNames = [
   "LuckyPanda92",
   "StarGazer123",
@@ -115,3 +117,14 @@ export const errorMessages: string[] = [
   "🐺 Werewolf server attack - cables shredded!",
   "🦕 Prehistoric server problem - cables extinct!",
 ];
+
+export const categoryToEmoji: {
+  [key in EmojiCategories]: string;
+} = {
+  smiley: "🧐",
+  animalsAndNature: "🦑",
+  foodsAndDrinks: "🍣",
+  travelsAndPlaces: "🗽",
+  flags: "🏳️‍🌈",
+  objects: "🎷",
+};

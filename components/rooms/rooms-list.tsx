@@ -12,6 +12,7 @@ import { useAtomValue } from "jotai";
 import { playerNameAtom } from "@/atoms/player/playerName";
 import Loading from "../loading";
 import useGames from "./hooks/use-games";
+import { categoryToEmoji } from "@/lib/constants";
 
 type RenderListProps = {
   title:
@@ -63,12 +64,15 @@ function RenderList({ title, games }: RenderListProps) {
                     {game.roomName}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="flex flex-col p-4 pt-0">
-                  <span className="text-sm text-muted-foreground">
-                    Players: {game.players.length}
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    Length: {gameLength[game.emojiList.length]}
+                <CardContent className="flex flex-col p-4 pt-0 text-sm text-muted-foreground font-medium">
+                  <span>Players: {game.players.length}</span>
+                  <span>Length: {gameLength[game.emojiList.length]}</span>
+                  <span>Turn: {game.multiplayerTimer} seconds</span>
+                  <span>
+                    Categories:{" "}
+                    {game.emojiCategories
+                      .map((category) => categoryToEmoji[category])
+                      .join(" ")}
                   </span>
                 </CardContent>
               </Card>
