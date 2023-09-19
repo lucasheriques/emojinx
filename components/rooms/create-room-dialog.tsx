@@ -28,7 +28,7 @@ export default function CreateRoomDialog() {
           </CardTitle>
         </Card>
       </DialogTrigger>
-      <DialogContent className="max-w-sm">
+      <DialogContent className="max-w-sm md:max-w-xl">
         <DialogHeader>
           <DialogTitle>Create game</DialogTitle>
         </DialogHeader>
