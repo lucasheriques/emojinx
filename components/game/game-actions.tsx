@@ -12,8 +12,7 @@ import { playedFinishingSoundAtom } from "@/atoms/playedFinishingSoundAtom";
 import usePlayerId from "./hooks/use-player-id";
 import { Skeleton } from "@/components/ui/skeleton";
 import useOnlinePresence from "./hooks/use-online-presence";
-import { TrashIcon } from "@radix-ui/react-icons";
-import { Card, CardContent, CardTitle } from "../ui/card";
+import { Card } from "../ui/card";
 
 export default function GameActions() {
   const game = useGame();

@@ -1,12 +1,13 @@
 import {
   ContextMenu,
   ContextMenuContent,
-  ContextMenuItem,
   ContextMenuTrigger,
   ContextMenuGroup,
+  ContextMenuCheckboxItem,
 } from "@/components/ui/context-menu";
 import { ReactNode } from "react";
-import useMakeMove from "./hooks/use-make-move";
+import { useAtom } from "jotai";
+import { skipOfflinePlayersAtom } from "@/atoms/skipOfflinePlayers";
 
 type GameContextMenuProps = {
   children: ReactNode;
@@ -15,7 +16,13 @@ type GameContextMenuProps = {
 export default function ScoreboardContextMenu({
   children,
 }: GameContextMenuProps) {
-  const { forceValidateMove, tryRestoreGameState } = useMakeMove();
+  const [skipOfflinePlayers, setSkipOfflinePlayers] = useAtom(
+    skipOfflinePlayersAtom
+  );
+
+  const handleSkipOfflinePlayers = () => {
+    setSkipOfflinePlayers(!skipOfflinePlayers);
+  };
 
   return (
     <ContextMenu>
@@ -24,9 +31,12 @@ export default function ScoreboardContextMenu({
       </ContextMenuTrigger>
       <ContextMenuContent className="w-48">
         <ContextMenuGroup>
-          <ContextMenuItem onClick={tryRestoreGameState}>
-            Restore game state
-          </ContextMenuItem>
+          <ContextMenuCheckboxItem
+            checked={skipOfflinePlayers}
+            onClick={handleSkipOfflinePlayers}
+          >
+            Skip offline players
+          </ContextMenuCheckboxItem>
         </ContextMenuGroup>
       </ContextMenuContent>
     </ContextMenu>
