@@ -12,7 +12,7 @@ import { playedFinishingSoundAtom } from "@/atoms/playedFinishingSoundAtom";
 import usePlayerId from "./hooks/use-player-id";
 import { Skeleton } from "@/components/ui/skeleton";
 import useOnlinePresence from "./hooks/use-online-presence";
-import { Card } from "../ui/card";
+import EmojiReactions from "@/components/emoji-reactions/emoji-reactions";
 
 export default function GameActions() {
   const game = useGame();
@@ -20,7 +20,6 @@ export default function GameActions() {
   const [copied, setCopied] = useState(false);
   const playerId = usePlayerId();
   const [playedSound, setPlayedSound] = useAtom(playedFinishingSoundAtom);
-  const [_, presences, updateMyPresence, clearReactions] = useOnlinePresence();
 
   useEffect(() => {
     if (game?.status === GameStatus.NotStarted && playedSound) {
@@ -31,10 +30,6 @@ export default function GameActions() {
   if (!game) {
     return null;
   }
-
-  const handleEmojiReaction = (emoji: string) => {
-    updateMyPresence(emoji);
-  };
 
   const handleStartGame = async () => {
     await startGame({ gameId: game?._id });
@@ -55,10 +50,6 @@ export default function GameActions() {
     game.players.some((player) => player.id === playerId);
 
   const isMultiplayer = game.players.length > 1;
-
-  const reactions =
-    presences?.find((presence) => presence.playerId === playerId)?.reactions ??
-    [];
 
   return (
     <div className="flex gap-4 w-full items-center justify-center">
@@ -82,35 +73,7 @@ export default function GameActions() {
         <div className="flex flex-col flex-1 items-center justify-center">
           {isMultiplayer && (
             <>
-              <Card className="flex items-center p-4">
-                <span className="text-sm text-muted-foreground">Reactions</span>
-                <div className="flex">
-                  <Button
-                    onClick={() => handleEmojiReaction("❤️")}
-                    variant="ghost"
-                    disabled={reactions.length >= 3}
-                  >
-                    ❤️
-                  </Button>
-                  <Button
-                    onClick={() => handleEmojiReaction("🎉")}
-                    variant="ghost"
-                    disabled={reactions.length >= 3}
-                  >
-                    🎉
-                  </Button>
-                  <Button
-                    onClick={() => handleEmojiReaction("😤")}
-                    variant="ghost"
-                    disabled={reactions.length >= 3}
-                  >
-                    😤
-                  </Button>
-                  <Button onClick={clearReactions} variant="ghost">
-                    Clear
-                  </Button>
-                </div>
-              </Card>
+              <EmojiReactions />
 
               <div className="flex gap-2 items-center justify-center">
                 <Timer timer={game.currentMultiplayerTimer} />

@@ -25,8 +25,8 @@ export default function GameScreen() {
     <div className="flex flex-1 flex-col items-center justify-center gap-4 md:gap-8">
       <ScoreboardContextMenu>
         <Scoreboard />
-        <GameActions />
       </ScoreboardContextMenu>
+      <GameActions />
       <GameContextMenu>
         <GameBoard />
       </GameContextMenu>
