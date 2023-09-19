@@ -35,7 +35,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { EmojiCategories } from "@/convex/types";
 import { useSetAtom } from "jotai";
 import { defaultEmojiCategoriesAtom } from "@/atoms/defaultEmojiCategories";
-import { useState } from "react";
 import { roomPasswordInputAtom } from "@/atoms/roomPasswordInput";
 
 const EMOJI_CATEGORIES: {
@@ -68,7 +67,9 @@ const formSchema = z.object({
     .max(16, {
       message: "Password must be at most 16 characters.",
     })
-    .optional(),
+    .trim()
+    .optional()
+    .or(z.literal("")),
   emojisAmount: z.string(),
   multiplayerTurnLength: z.coerce
     .number()

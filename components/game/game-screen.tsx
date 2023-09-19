@@ -10,23 +10,27 @@ import { useAtom } from "jotai";
 import { roomPasswordInputAtom } from "@/atoms/roomPasswordInput";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { useState } from "react";
+import { FormMessage } from "@/components/ui/form";
 
 export default function GameScreen() {
   const game = useGame();
-  const [roomPasswordInput, setRoomPasswordInput] = useAtom(
+  const [passwordInput, setPasswordInput] = useState("");
+  const [roomPasswordAtom, setRoomPasswordAtom] = useAtom(
     roomPasswordInputAtom
   );
+  const [submittedOnce, setSubmittedOnce] = useState(false);
 
   if (!game) {
     return (
@@ -39,7 +43,20 @@ export default function GameScreen() {
   }
 
   const isPasswordCorrect =
-    !game.password || game.password === roomPasswordInput;
+    !game.password || game.password === roomPasswordAtom;
+
+  const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    handleSubmit();
+  };
+
+  const handleSubmit = () => {
+    setSubmittedOnce(true);
+    if (isPasswordCorrect) {
+      return;
+    }
+    setRoomPasswordAtom(passwordInput);
+  };
 
   if (!isPasswordCorrect) {
     return (
@@ -54,22 +71,33 @@ export default function GameScreen() {
                 This room is password protected.
               </AlertDialogTitle>
               <AlertDialogDescription className="space-y-2">
-                <Label htmlFor="password" className="font-normal">
-                  Please enter the password to continue.
-                </Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={roomPasswordInput}
-                  onChange={(e) => setRoomPasswordInput(e.target.value)}
-                  autoFocus
-                />
+                <form onSubmit={handleSubmitForm}>
+                  <Label htmlFor="password" className="font-normal">
+                    Please enter the password to continue.
+                  </Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                    autoFocus
+                  />
+                  <span className="text-[0.8rem] font-medium text-pink-500">
+                    {submittedOnce &&
+                      !isPasswordCorrect &&
+                      "Incorrect password."}
+                  </span>
+                </form>
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <Link href="/">
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-              </Link>
+              <AlertDialogCancel>
+                <Link href="/">Cancel</Link>
+              </AlertDialogCancel>
+
+              <AlertDialogAction onClick={handleSubmit}>
+                Continue
+              </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
