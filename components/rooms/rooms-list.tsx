@@ -56,7 +56,7 @@ function RenderList({ title, games }: RenderListProps) {
             <Link
               href={`/games/${game._id}`}
               key={game._id}
-              className="flex-1 min-h-[114px]"
+              className="flex-1 min-h-[158px]"
             >
               <Card className="bg-primary-foreground">
                 <CardHeader className="p-4">
@@ -80,7 +80,7 @@ function RenderList({ title, games }: RenderListProps) {
           </li>
         ))}
         {title === "Available game rooms" && (
-          <li className="flex min-h-[118px]">
+          <li className="flex min-h-[158px]">
             <CreateRoomDialog />
           </li>
         )}

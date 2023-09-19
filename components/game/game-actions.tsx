@@ -43,7 +43,9 @@ export default function GameActions() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const canStartGame = game.players.length >= 1;
+  const canStartGame =
+    game.players.length >= 1 &&
+    game.players.some((player) => player.id === playerId);
 
   const isMultiplayer = game.players.length > 1;
 
