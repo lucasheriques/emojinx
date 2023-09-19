@@ -73,7 +73,10 @@ export const restartGame = mutation({
       ...player,
       points: 0,
     }));
-    const emojiList = generateEmojiArray(game.emojiList.length / 2);
+    const emojiList = generateEmojiArray(
+      game.emojiList.length / 2,
+      game.emojiCategories
+    );
 
     await ctx.db.patch(game._id, {
       status: GameStatus.NotStarted,
