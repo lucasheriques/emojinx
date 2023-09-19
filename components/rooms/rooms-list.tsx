@@ -1,8 +1,6 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { api } from "@/convex/_generated/api";
-import { useQuery } from "convex/react";
 import Link from "next/link";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Game } from "@/types";
@@ -13,6 +11,7 @@ import { playerNameAtom } from "@/atoms/player/playerName";
 import Loading from "../loading";
 import useGames from "./hooks/use-games";
 import { categoryToEmoji } from "@/lib/constants";
+import { LockClosedIcon } from "@radix-ui/react-icons";
 
 type RenderListProps = {
   title:
@@ -51,34 +50,38 @@ function RenderList({ title, games }: RenderListProps) {
         className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full"
         ref={parent}
       >
-        {games.map((game) => (
-          <li key={game._id} className="flex">
-            <Link
-              href={`/games/${game._id}`}
-              key={game._id}
-              className="flex flex-1 max-w-full"
-            >
-              <Card className="bg-primary-foreground w-full">
-                <CardHeader className="p-4">
-                  <CardTitle className="font-mono tracking-wider text-lg text-indigo-500 truncate">
-                    {game.roomName}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col p-4 pt-0 text-sm text-muted-foreground font-medium">
-                  <span>Players: {game.players.length}</span>
-                  <span>Length: {gameLength[game.emojiList.length]}</span>
-                  <span>Turn: {game.multiplayerTimer} seconds</span>
-                  <span>
-                    Categories:{" "}
-                    {game.emojiCategories
-                      .map((category) => categoryToEmoji[category])
-                      .join(" ")}
-                  </span>
-                </CardContent>
-              </Card>
-            </Link>
-          </li>
-        ))}
+        {games.map((game) => {
+          const roomPassword = game.password ?? "";
+          return (
+            <li key={game._id} className="flex">
+              <Link
+                href={`/games/${game._id}`}
+                key={game._id}
+                className="flex flex-1 max-w-full"
+              >
+                <Card className="bg-primary-foreground w-full">
+                  <CardHeader className="p-4">
+                    <CardTitle className="font-mono tracking-wider text-lg text-indigo-500 truncate flex items-center gap-2">
+                      {roomPassword.length > 0 && <LockClosedIcon />}
+                      {game.roomName}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex flex-col p-4 pt-0 text-sm text-muted-foreground font-medium">
+                    <span>Players: {game.players.length}</span>
+                    <span>Length: {gameLength[game.emojiList.length]}</span>
+                    <span>Turn: {game.multiplayerTimer} seconds</span>
+                    <span>
+                      Categories:{" "}
+                      {game.emojiCategories
+                        .map((category) => categoryToEmoji[category])
+                        .join(" ")}
+                    </span>
+                  </CardContent>
+                </Card>
+              </Link>
+            </li>
+          );
+        })}
         {title === "Available game rooms" && (
           <li className="flex min-h-[158px]">
             <CreateRoomDialog />

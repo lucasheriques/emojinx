@@ -12,7 +12,7 @@ export const createGame = mutation({
   args: {
     roomName: v.string(),
     emojisAmount: v.number(),
-    multiplayerTimer: v.optional(v.number()),
+    multiplayerTimer: v.number(),
     emojiCategories: v.array(
       v.union(
         v.literal("smiley"),
@@ -23,6 +23,7 @@ export const createGame = mutation({
         v.literal("objects")
       )
     ),
+    password: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const game = await ctx.db.insert("games", {
@@ -35,6 +36,7 @@ export const createGame = mutation({
       multiplayerTimer: args.multiplayerTimer ?? 15,
       winnerIds: [],
       emojiCategories: args.emojiCategories,
+      password: args.password,
     });
     return game;
   },
@@ -214,11 +216,7 @@ export const finishGame = mutation({
     gameId: v.string(),
   },
   handler: async (ctx, args) => {
-    const gameId = ctx.db.normalizeId("games", args.gameId);
-
-    if (gameId === null) {
-      throw new Error("Game not found");
-    }
+    const gameId = validateGameId(ctx, args);
 
     return await ctx.db.patch(gameId, {
       status: GameStatus.Finished,

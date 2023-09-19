@@ -18,6 +18,7 @@ export type Game = {
   winnerIds: string[];
   multiplayerTimer: number;
   emojiCategories: EmojiCategories[];
+  password?: string;
 };
 
 export type MoveResponse =

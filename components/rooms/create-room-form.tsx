@@ -33,8 +33,9 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { EmojiCategories } from "@/convex/types";
-import { useAtom, useSetAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { defaultEmojiCategoriesAtom } from "@/atoms/defaultEmojiCategories";
+import { useState } from "react";
 
 const EMOJI_CATEGORIES: {
   id: EmojiCategories;
@@ -58,6 +59,15 @@ const formSchema = z.object({
     .max(30, {
       message: "Room name must be at most 30 characters.",
     }),
+  password: z
+    .string()
+    .min(4, {
+      message: "Password must be at least 4 characters.",
+    })
+    .max(16, {
+      message: "Password must be at most 16 characters.",
+    })
+    .optional(),
   emojisAmount: z.string(),
   multiplayerTurnLength: z.coerce
     .number()
@@ -66,8 +76,7 @@ const formSchema = z.object({
     })
     .min(5, {
       message: "Turn length must be at least 5 seconds.",
-    })
-    .optional(),
+    }),
   emojiCategories: z
     .array(
       z.enum([
@@ -122,11 +131,13 @@ export default function CreateGameForm({
 }: CreateGameFormProps) {
   const createGame = useMutation(api.games.gameplay.createGame);
   const setDefaultEmojiCategories = useSetAtom(defaultEmojiCategoriesAtom);
+  const [showPassword, setShowPassword] = useState(true);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       roomName: defaultRoomName,
+      password: "",
       emojisAmount: "8",
       multiplayerTurnLength: 15,
       emojiCategories: defaultEmojiCategories,
@@ -138,12 +149,14 @@ export default function CreateGameForm({
     emojisAmount,
     multiplayerTurnLength,
     emojiCategories,
+    password,
   }: FormSchema) {
     await createGame({
       roomName,
       emojisAmount: parseInt(emojisAmount),
       multiplayerTimer: multiplayerTurnLength,
       emojiCategories,
+      password,
     });
     setDefaultEmojiCategories(emojiCategories);
     onFinish?.();
@@ -211,6 +224,23 @@ export default function CreateGameForm({
               <AccordionTrigger>Additional settings</AccordionTrigger>
               <AccordionContent>
                 <div className="space-y-4 md:space-y-8">
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <>
+                        <FormItem>
+                          <FormLabel>Room password</FormLabel>
+                          <FormControl>
+                            <Input type="password" {...field} />
+                          </FormControl>
+
+                          <FormMessage />
+                        </FormItem>
+                      </>
+                    )}
+                  />
+
                   <FormField
                     control={form.control}
                     name="multiplayerTurnLength"

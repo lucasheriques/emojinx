@@ -8,6 +8,7 @@ export default defineSchema({
     emojiList: v.array(v.object({ status: v.string(), value: v.string() })),
     currentMultiplayerTimer: v.number(),
     multiplayerTimer: v.number(),
+    password: v.optional(v.string()),
     players: v.array(
       v.object({
         id: v.string(),
