@@ -21,13 +21,14 @@ export default function EmojiReactions() {
 
   return (
     <Card className="flex items-center p-4">
-      <span className="text-sm text-muted-foreground">Reactions</span>
-      <div className="flex">
+      <div className="flex gap-2 items-center">
+        <span className="text-sm text-muted-foreground">Reactions</span>
         {emojiReactions.map((reaction, i) => (
           <Button
             key={i}
             onClick={() => handleEmojiReaction(reaction)}
             variant="ghost"
+            size="icon"
             disabled={reactions.length >= 3}
           >
             {reaction}

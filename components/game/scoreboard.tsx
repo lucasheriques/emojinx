@@ -16,7 +16,7 @@ type ScoreboardItemProps = {
 
 function ScoreboardItem({ playerName, score }: ScoreboardItemProps) {
   return (
-    <li className="grid grid-cols-5 md:grid-cols-6 first:text-xs first:dark:text-slate-300 first:text-stone-700 p-2 sm:p-3 even:bg-emerald-300 first:rounded-t-lg last:rounded-b-lg bg-rose-300 dark:even:bg-emerald-600/20 dark:odd:bg-rose-600/20">
+    <li className="flex justify-between first:text-xs first:dark:text-slate-300 first:text-stone-700 p-2 sm:p-3 even:bg-emerald-300 first:rounded-t-lg last:rounded-b-lg bg-rose-300 dark:even:bg-emerald-600/20 dark:odd:bg-rose-600/20">
       <div className="md:col-span-5 col-span-4 flex gap-2 items-center">
         {playerName}
       </div>
