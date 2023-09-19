@@ -34,4 +34,15 @@ export default defineSchema({
       )
     ),
   }),
+
+  presence: defineTable({
+    playerId: v.string(),
+    gameId: v.string(),
+    updated: v.number(),
+    data: v.any(),
+  })
+    // Index for fetching presence data
+    .index("by_game_updated", ["gameId", "updated"])
+    // Index for updating presence data
+    .index("by_user_game", ["playerId", "gameId"]),
 });

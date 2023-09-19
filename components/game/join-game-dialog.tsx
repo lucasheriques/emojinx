@@ -13,10 +13,12 @@ import { useAtomValue } from "jotai";
 import useGame from "@/components/game/hooks/use-game";
 import { gamePlayerMapAtom } from "@/atoms/player/gamePlayerMap";
 import useLeaveGame from "@/components/game/hooks/use-leave-game";
+import { playerNameAtom } from "@/atoms/player/playerName";
 
 export default function JoinGameDialog() {
   const game = useGame();
   const gamePlayerMap = useAtomValue(gamePlayerMapAtom);
+  const playerName = useAtomValue(playerNameAtom);
   const [open, setOpen] = React.useState(false);
   const leaveGame = useLeaveGame();
 
@@ -37,7 +39,10 @@ export default function JoinGameDialog() {
         <DialogHeader>
           <DialogTitle>Join game</DialogTitle>
         </DialogHeader>
-        <JoinGameForm onFinish={() => setOpen(false)} />
+        <JoinGameForm
+          onFinish={() => setOpen(false)}
+          defaultPlayerName={playerName}
+        />
         <DialogFooter>
           <Button type="submit" form="joinGameForm">
             Join

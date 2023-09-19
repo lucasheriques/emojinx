@@ -21,6 +21,7 @@ import type * as games_helpers from "../games/helpers";
 import type * as games_players from "../games/players";
 import type * as helpers_emojis from "../helpers/emojis";
 import type * as helpers_players from "../helpers/players";
+import type * as presence from "../presence";
 import type * as types from "../types";
 
 /**
@@ -39,6 +40,7 @@ declare const fullApi: ApiFromModules<{
   "games/players": typeof games_players;
   "helpers/emojis": typeof helpers_emojis;
   "helpers/players": typeof helpers_players;
+  presence: typeof presence;
   types: typeof types;
 }>;
 export declare const api: FilterApi<

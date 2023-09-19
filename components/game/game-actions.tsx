@@ -7,10 +7,11 @@ import Link from "next/link";
 import Timer from "./timer";
 import MakeYourMoveBanner from "./make-your-move-banner";
 import { useEffect, useState } from "react";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { playedFinishingSoundAtom } from "@/atoms/playedFinishingSoundAtom";
 import usePlayerId from "./hooks/use-player-id";
 import { Skeleton } from "@/components/ui/skeleton";
+import { playerNameAtom } from "@/atoms/player/playerName";
 
 export default function GameActions() {
   const game = useGame();

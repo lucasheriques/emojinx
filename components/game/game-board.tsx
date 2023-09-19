@@ -12,6 +12,7 @@ import useGameCheckEffect from "./hooks/use-game-check-effect";
 import Grid, { GridSkeleton } from "./grid";
 import { useState } from "react";
 import { MoveResponse } from "@/types";
+import DevOnly from "../dev-only";
 
 export default function GameBoard() {
   const game = useGame();
@@ -68,7 +69,9 @@ export default function GameBoard() {
     <div className="flex flex-col items-center gap-8">
       <NoInternetBanner hasInternetConnection={hasInternetConnection} />
       <Grid emojiList={emojiListWithDisabledStatus} />
-      {/* <DeleteGameButton /> */}
+      <DevOnly>
+        <DeleteGameButton />
+      </DevOnly>
     </div>
   );
 }

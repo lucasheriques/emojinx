@@ -12,8 +12,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useAtomValue } from "jotai";
-import { playerNameAtom } from "@/atoms/player/playerName";
 import { getRandomItemFromArray } from "@/lib/utils";
 import { randomUserNames } from "@/lib/constants";
 import useJoinGame from "@/components/game/hooks/use-join-game";
@@ -33,20 +31,23 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 type JoinGameFormProps = {
+  defaultPlayerName: string;
   onFinish?: () => void;
 };
 
-export default function JoinGameForm({ onFinish }: JoinGameFormProps) {
-  const playerName = useAtomValue(playerNameAtom);
+export default function JoinGameForm({
+  onFinish,
+  defaultPlayerName,
+}: JoinGameFormProps) {
   const joinGame = useJoinGame({ onFinish });
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name:
-        playerName === ""
+        defaultPlayerName === ""
           ? getRandomItemFromArray(randomUserNames)
-          : playerName,
+          : defaultPlayerName,
     },
   });
 
