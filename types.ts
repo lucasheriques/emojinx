@@ -1,3 +1,5 @@
+import { EmojiCategories } from "@/convex/types";
+
 export type Game = {
   _id: string;
   _creationTime: number;
@@ -15,6 +17,7 @@ export type Game = {
   roomName: string;
   winnerIds: string[];
   multiplayerTimer: number;
+  emojiCategories: EmojiCategories[];
 };
 
 export type MoveResponse =
