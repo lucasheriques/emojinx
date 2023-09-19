@@ -7,7 +7,5 @@ export default function useOnlinePresence() {
   const gameId = useAtomValue(gameIdAtom);
   const playerId = usePlayerId();
 
-  return usePresence(gameId, playerId, {
-    reactions: [] as string[],
-  });
+  return usePresence(gameId, playerId, []);
 }

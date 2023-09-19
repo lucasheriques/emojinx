@@ -54,15 +54,17 @@ export const forceNextTurn = mutation({
     gameId: v.string(),
   },
   handler: async (ctx, args) => {
-    const { _id, players, currentPlayerIndex } = await getGameById(ctx, {
-      gameId: args.gameId,
-    });
+    const { _id, players, currentPlayerIndex, multiplayerTimer } =
+      await getGameById(ctx, {
+        gameId: args.gameId,
+      });
 
     const nextPlayerIndex = currentPlayerIndex + 1;
 
     await ctx.db.patch(_id, {
       currentPlayerIndex:
         nextPlayerIndex >= players.length ? 0 : nextPlayerIndex,
+      currentMultiplayerTimer: multiplayerTimer,
     });
   },
 });

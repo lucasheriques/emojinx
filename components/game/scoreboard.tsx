@@ -37,12 +37,13 @@ export default function Scoreboard() {
   }
 
   const othersOnline = othersPresence?.filter(isOnline);
-  console.log({ myPresence });
-  console.log({ othersPresence });
 
   const { players, winnerIds, roomName } = game;
 
   const sortedPlayers = [...players].sort((a, b) => b.points - a.points);
+  const isGameParticipant = players.some(
+    (player) => player.id === storagePlayerId
+  );
   const isDraw = winnerIds.length > 1;
 
   return (
@@ -53,16 +54,25 @@ export default function Scoreboard() {
       <ul ref={parent} className="max-w-lg mx-auto">
         <ScoreboardItem playerName="player" score="score" />
         {sortedPlayers.map((player) => {
+          const reactions =
+            othersPresence?.find((presence) => presence.playerId === player.id)
+              ?.reactions ?? [];
+
           const isOnline =
             othersOnline?.some((presence) => presence.playerId === player.id) ||
             player.id === storagePlayerId;
+
           return (
             <ScoreboardItem
               key={player.id}
               score={player.points}
               playerName={
                 <>
-                  <StatusIndicator variant={isOnline ? "online" : "offline"} />
+                  {isGameParticipant && (
+                    <StatusIndicator
+                      variant={isOnline ? "online" : "offline"}
+                    />
+                  )}
                   {player.name}
                   {player.id === storagePlayerId && <Badge>you</Badge>}
                   {winnerIds.includes(player.id) &&
@@ -71,6 +81,7 @@ export default function Scoreboard() {
                     ) : (
                       <Badge variant="success">winner</Badge>
                     ))}
+                  <span className="animate-bounce">{reactions.join(" ")}</span>
                 </>
               }
             />

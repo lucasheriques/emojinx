@@ -39,7 +39,7 @@ export default defineSchema({
     playerId: v.string(),
     gameId: v.string(),
     updated: v.number(),
-    data: v.any(),
+    reactions: v.array(v.string()),
   })
     // Index for fetching presence data
     .index("by_game_updated", ["gameId", "updated"])

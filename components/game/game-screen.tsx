@@ -21,12 +21,12 @@ export default function GameScreen() {
   }
 
   return (
-    <GameContextMenu>
-      <div className="flex flex-1 flex-col items-center justify-center gap-4 md:gap-8">
-        <Scoreboard />
-        <GameActions />
+    <div className="flex flex-1 flex-col items-center justify-center gap-4 md:gap-8">
+      <Scoreboard />
+      <GameActions />
+      <GameContextMenu>
         <GameBoard />
-      </div>
-    </GameContextMenu>
+      </GameContextMenu>
+    </div>
   );
 }

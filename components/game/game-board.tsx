@@ -66,7 +66,7 @@ export default function GameBoard() {
   }));
 
   return (
-    <div className="flex flex-col items-center gap-8">
+    <div className="flex flex-col items-center gap-8 w-full">
       <NoInternetBanner hasInternetConnection={hasInternetConnection} />
       <Grid emojiList={emojiListWithDisabledStatus} />
       <DevOnly>

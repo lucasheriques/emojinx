@@ -8,7 +8,8 @@
  * - Check that the user is allowed to be in a given room.
  */
 import { v } from "convex/values";
-import { query, mutation } from "./_generated/server";
+import { query, mutation, internalMutation } from "./_generated/server";
+import { internal } from "./_generated/api";
 
 const LIST_LIMIT = 20;
 
@@ -23,8 +24,12 @@ const LIST_LIMIT = 20;
  * @param user - The user associated with the presence data.
  */
 export const update = mutation({
-  args: { gameId: v.string(), playerId: v.string(), data: v.any() },
-  handler: async (ctx, { gameId, playerId, data }) => {
+  args: {
+    gameId: v.string(),
+    playerId: v.string(),
+    reactions: v.array(v.string()),
+  },
+  handler: async (ctx, { gameId, playerId, reactions }) => {
     const existing = await ctx.db
       .query("presence")
       .withIndex("by_user_game", (q) =>
@@ -32,11 +37,14 @@ export const update = mutation({
       )
       .unique();
     if (existing) {
-      await ctx.db.patch(existing._id, { data, updated: Date.now() });
+      await ctx.db.patch(existing._id, {
+        reactions,
+        updated: Date.now(),
+      });
     } else {
       await ctx.db.insert("presence", {
         playerId,
-        data,
+        reactions,
         gameId,
         updated: Date.now(),
       });
@@ -82,11 +90,28 @@ export const list = query({
       .withIndex("by_game_updated", (q) => q.eq("gameId", gameId))
       .order("desc")
       .take(LIST_LIMIT);
-    return presence.map(({ _creationTime, updated, playerId, data }) => ({
+    return presence.map(({ _creationTime, updated, playerId, reactions }) => ({
       created: _creationTime,
       updated,
       playerId,
-      data,
+      reactions,
     }));
+  },
+});
+
+export const destructOldestReacion = internalMutation({
+  args: { gameId: v.string(), playerId: v.string() },
+  handler: async (ctx, { gameId, playerId }) => {
+    const existing = await ctx.db
+      .query("presence")
+      .withIndex("by_user_game", (q) =>
+        q.eq("playerId", playerId).eq("gameId", gameId)
+      )
+      .unique();
+    if (existing) {
+      const { reactions } = existing;
+      reactions.shift();
+      await ctx.db.patch(existing._id, { reactions, updated: Date.now() });
+    }
   },
 });

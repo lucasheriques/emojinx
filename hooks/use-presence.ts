@@ -1,14 +1,13 @@
 import { api } from "../convex/_generated/api";
 import { useQuery, useMutation, useConvex } from "convex/react";
-import { Value } from "convex/values";
 import { useCallback, useEffect, useState } from "react";
 import useSingleFlight from "./use-single-flight";
 
-export type PresenceData<D> = {
+export type PresenceData = {
   created: number;
   updated: number;
   playerId: string;
-  data: D;
+  reactions: string[];
 };
 
 const HEARTBEAT_PERIOD = 5000;
@@ -42,19 +41,16 @@ const OLD_MS = 10000;
  * @returns A list with 1. this user's data; 2. A list of other users' data;
  * 3. function to update this user's data. It will do a shallow merge.
  */
-export const usePresence = <T extends { [key: string]: Value }>(
+export const usePresence = (
   gameId: string,
   playerId: string,
-  initialData: T,
+  initialData: string[],
   heartbeatPeriod = HEARTBEAT_PERIOD
 ) => {
-  const [data, setData] = useState(initialData);
-  let presence: PresenceData<T>[] | undefined = useQuery(api.presence.list, {
+  const [reactions, setReactions] = useState(initialData);
+  let presence: PresenceData[] | undefined = useQuery(api.presence.list, {
     gameId,
   });
-  if (presence) {
-    presence = presence.filter((p) => p.playerId !== playerId);
-  }
   const updatePresence = useSingleFlight(useMutation(api.presence.update));
   const heartbeat = useSingleFlight(useMutation(api.presence.heartbeat));
 
@@ -62,22 +58,26 @@ export const usePresence = <T extends { [key: string]: Value }>(
     if (!gameId || !playerId) {
       return;
     }
-    void updatePresence({ gameId, playerId, data });
+    void updatePresence({ gameId, playerId, reactions });
     const intervalId = setInterval(() => {
       void heartbeat({ gameId, playerId });
     }, heartbeatPeriod);
     // Whenever we have any data change, it will get cleared.
     return () => clearInterval(intervalId);
-  }, [updatePresence, heartbeat, data, heartbeatPeriod, gameId, playerId]);
+  }, [updatePresence, heartbeat, reactions, heartbeatPeriod, gameId, playerId]);
 
   // Updates the data, merged with previous data state.
-  const updateData = useCallback((patch: Partial<T>) => {
-    setData((prevState) => {
-      return { ...prevState, ...patch };
+  const updateData = useCallback((patch: string) => {
+    setReactions((prevState) => {
+      return [...prevState, patch];
     });
   }, []);
 
-  return [data, presence, updateData] as const;
+  const clearReactions = useCallback(() => {
+    setReactions([]);
+  }, []);
+
+  return [reactions, presence, updateData, clearReactions] as const;
 };
 
 /**
@@ -87,7 +87,7 @@ export const usePresence = <T extends { [key: string]: Value }>(
  * @param now - If specified, the time it should consider to be "now".
  * @returns True if the user has updated their presence recently.
  */
-export const isOnline = <D>(presence: PresenceData<D>) => {
+export const isOnline = <D>(presence: PresenceData) => {
   return Date.now() - presence.updated < OLD_MS;
 };
 

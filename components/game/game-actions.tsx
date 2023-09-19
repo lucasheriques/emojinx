@@ -7,11 +7,13 @@ import Link from "next/link";
 import Timer from "./timer";
 import MakeYourMoveBanner from "./make-your-move-banner";
 import { useEffect, useState } from "react";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import { playedFinishingSoundAtom } from "@/atoms/playedFinishingSoundAtom";
 import usePlayerId from "./hooks/use-player-id";
 import { Skeleton } from "@/components/ui/skeleton";
-import { playerNameAtom } from "@/atoms/player/playerName";
+import useOnlinePresence from "./hooks/use-online-presence";
+import { TrashIcon } from "@radix-ui/react-icons";
+import { Card, CardContent, CardTitle } from "../ui/card";
 
 export default function GameActions() {
   const game = useGame();
@@ -19,6 +21,7 @@ export default function GameActions() {
   const [copied, setCopied] = useState(false);
   const playerId = usePlayerId();
   const [playedSound, setPlayedSound] = useAtom(playedFinishingSoundAtom);
+  const [_, presences, updateMyPresence, clearReactions] = useOnlinePresence();
 
   useEffect(() => {
     if (game?.status === GameStatus.NotStarted && playedSound) {
@@ -29,6 +32,10 @@ export default function GameActions() {
   if (!game) {
     return null;
   }
+
+  const handleEmojiReaction = (emoji: string) => {
+    updateMyPresence(emoji);
+  };
 
   const handleStartGame = async () => {
     await startGame({ gameId: game?._id });
@@ -50,8 +57,12 @@ export default function GameActions() {
 
   const isMultiplayer = game.players.length > 1;
 
+  const reactions =
+    presences?.find((presence) => presence.playerId === playerId)?.reactions ??
+    [];
+
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-4 w-full items-center justify-center">
       {game.status === GameStatus.NotStarted && (
         <>
           <JoinGameDialog />
@@ -68,10 +79,43 @@ export default function GameActions() {
         </>
       )}
 
-      {game.status === GameStatus.InProgress && isMultiplayer && (
-        <div className="flex items-center">
-          <Timer timer={game.currentMultiplayerTimer} />
-          <MakeYourMoveBanner currentPlayer={game.currentPlayer} />
+      {game.status === GameStatus.InProgress && (
+        <div className="flex flex-col flex-1 items-center justify-center">
+          <Card className="flex items-center p-4">
+            <span className="text-sm text-muted-foreground">Reactions</span>
+            <div className="flex">
+              <Button
+                onClick={() => handleEmojiReaction("❤️")}
+                variant="ghost"
+                disabled={reactions.length >= 3}
+              >
+                ❤️
+              </Button>
+              <Button
+                onClick={() => handleEmojiReaction("🎉")}
+                variant="ghost"
+                disabled={reactions.length >= 3}
+              >
+                🎉
+              </Button>
+              <Button
+                onClick={() => handleEmojiReaction("😤")}
+                variant="ghost"
+                disabled={reactions.length >= 3}
+              >
+                😤
+              </Button>
+              <Button onClick={clearReactions} variant="ghost">
+                Clear
+              </Button>
+            </div>
+          </Card>
+          {isMultiplayer && (
+            <div className="flex gap-2 items-center justify-center">
+              <Timer timer={game.currentMultiplayerTimer} />
+              <MakeYourMoveBanner currentPlayer={game.currentPlayer} />
+            </div>
+          )}
         </div>
       )}
 

@@ -19,7 +19,7 @@ export default function GameContextMenu({ children }: GameContextMenuProps) {
 
   return (
     <ContextMenu>
-      <ContextMenuTrigger className="flex flex-1">
+      <ContextMenuTrigger className="flex flex-col items-center justify-center gap-4 md:gap-8 w-full">
         {children}
       </ContextMenuTrigger>
       <ContextMenuContent className="w-48">
