@@ -5,12 +5,15 @@ import { GameStatus } from "@/convex/types";
 import usePlayerId from "./use-player-id";
 import useOnlinePresence from "./use-online-presence";
 import { isOnline } from "@/hooks/use-presence";
+import { useAtomValue } from "jotai";
+import { skipOfflinePlayersAtom } from "@/atoms/skipOfflinePlayers";
 
 export default function useCountdownEffect() {
   const game = useGame();
   const playerId = usePlayerId();
   const { handleForceNextTurn, handleCountDown } = useMakeMove();
   const [_, presences] = useOnlinePresence();
+  const skipOffinePlayers = useAtomValue(skipOfflinePlayersAtom);
 
   const onlinePlayers = presences?.filter(isOnline);
 
@@ -23,7 +26,7 @@ export default function useCountdownEffect() {
       await handleForceNextTurn();
     };
 
-    if (!isCurrentPlayerOnline) {
+    if (!isCurrentPlayerOnline && skipOffinePlayers) {
       forceNextTurn();
       return;
     }

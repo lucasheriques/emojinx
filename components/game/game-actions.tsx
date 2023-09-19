@@ -81,40 +81,43 @@ export default function GameActions() {
 
       {game.status === GameStatus.InProgress && (
         <div className="flex flex-col flex-1 items-center justify-center">
-          <Card className="flex items-center p-4">
-            <span className="text-sm text-muted-foreground">Reactions</span>
-            <div className="flex">
-              <Button
-                onClick={() => handleEmojiReaction("❤️")}
-                variant="ghost"
-                disabled={reactions.length >= 3}
-              >
-                ❤️
-              </Button>
-              <Button
-                onClick={() => handleEmojiReaction("🎉")}
-                variant="ghost"
-                disabled={reactions.length >= 3}
-              >
-                🎉
-              </Button>
-              <Button
-                onClick={() => handleEmojiReaction("😤")}
-                variant="ghost"
-                disabled={reactions.length >= 3}
-              >
-                😤
-              </Button>
-              <Button onClick={clearReactions} variant="ghost">
-                Clear
-              </Button>
-            </div>
-          </Card>
           {isMultiplayer && (
-            <div className="flex gap-2 items-center justify-center">
-              <Timer timer={game.currentMultiplayerTimer} />
-              <MakeYourMoveBanner currentPlayer={game.currentPlayer} />
-            </div>
+            <>
+              <Card className="flex items-center p-4">
+                <span className="text-sm text-muted-foreground">Reactions</span>
+                <div className="flex">
+                  <Button
+                    onClick={() => handleEmojiReaction("❤️")}
+                    variant="ghost"
+                    disabled={reactions.length >= 3}
+                  >
+                    ❤️
+                  </Button>
+                  <Button
+                    onClick={() => handleEmojiReaction("🎉")}
+                    variant="ghost"
+                    disabled={reactions.length >= 3}
+                  >
+                    🎉
+                  </Button>
+                  <Button
+                    onClick={() => handleEmojiReaction("😤")}
+                    variant="ghost"
+                    disabled={reactions.length >= 3}
+                  >
+                    😤
+                  </Button>
+                  <Button onClick={clearReactions} variant="ghost">
+                    Clear
+                  </Button>
+                </div>
+              </Card>
+
+              <div className="flex gap-2 items-center justify-center">
+                <Timer timer={game.currentMultiplayerTimer} />
+                <MakeYourMoveBanner currentPlayer={game.currentPlayer} />
+              </div>
+            </>
           )}
         </div>
       )}

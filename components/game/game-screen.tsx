@@ -6,6 +6,7 @@ import GameActions, {
 import GameBoard, { GameBoardSkeleton } from "@/components/game/game-board";
 import Scoreboard, { ScoreboardSkeleton } from "@/components/game/scoreboard";
 import GameContextMenu from "./game-context-menu";
+import ScoreboardContextMenu from "./scoreboard-context-menu";
 
 export default function GameScreen() {
   const game = useGame();
@@ -22,8 +23,10 @@ export default function GameScreen() {
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-4 md:gap-8">
-      <Scoreboard />
-      <GameActions />
+      <ScoreboardContextMenu>
+        <Scoreboard />
+        <GameActions />
+      </ScoreboardContextMenu>
       <GameContextMenu>
         <GameBoard />
       </GameContextMenu>
