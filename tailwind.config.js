@@ -87,7 +87,7 @@ module.exports = {
         },
         "jumping-text": {
           "0%, 40%, 100%": { transform: "translateY(0)" },
-          "20%": { transform: "translateY(-0.2rem)" },
+          "20%": { transform: "translateY(-0.3rem)" },
         },
       },
       animation: {
