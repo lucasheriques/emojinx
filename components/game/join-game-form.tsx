@@ -35,6 +35,8 @@ type JoinGameFormProps = {
   onFinish?: () => void;
 };
 
+const randomUserName = getRandomItemFromArray(randomUserNames);
+
 export default function JoinGameForm({
   onFinish,
   defaultPlayerName,
@@ -44,10 +46,7 @@ export default function JoinGameForm({
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name:
-        defaultPlayerName === ""
-          ? getRandomItemFromArray(randomUserNames)
-          : defaultPlayerName,
+      name: defaultPlayerName === "" ? randomUserName : defaultPlayerName,
     },
   });
 
@@ -69,10 +68,7 @@ export default function JoinGameForm({
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input
-                  placeholder={getRandomItemFromArray(randomUserNames)}
-                  {...field}
-                />
+                <Input placeholder={randomUserName} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

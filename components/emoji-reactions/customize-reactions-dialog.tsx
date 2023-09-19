@@ -26,9 +26,9 @@ export default function CustomizeReactionsDialog() {
           Customize reactions
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle>Customize Emojis</DialogTitle>
+          <DialogTitle>Customize reactions</DialogTitle>
         </DialogHeader>
         <CustomizeReactionsForm onFinish={() => setOpen(false)} />
         <DialogFooter>

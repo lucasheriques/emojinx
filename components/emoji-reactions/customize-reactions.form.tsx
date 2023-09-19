@@ -20,10 +20,14 @@ import useZodForm from "@/hooks/use-zod-form";
 const formSchema = z.object({
   emojis: z.array(
     z.object({
-      emoji: z.string().emoji(),
+      emoji: z.string().emoji({
+        message: "Invalid emoji",
+      }),
     })
   ),
 });
+
+const defaultEmojis = ["️️❤️", "🎉", "😤"];
 
 type FormSchema = z.infer<typeof formSchema>;
 
@@ -50,7 +54,14 @@ export default function CustomizeReactionsForm({
 
   async function onSubmit(values: FormSchema) {
     console.log({ values });
-    setEmojiReactions(Object.values(values.emojis).map((emoji) => emoji.emoji));
+    setEmojiReactions(
+      Object.values(values.emojis).map((emoji, i) => {
+        if (!emoji.emoji) {
+          return defaultEmojis[i];
+        }
+        return emoji.emoji;
+      })
+    );
     onFinish?.();
   }
 
@@ -59,16 +70,30 @@ export default function CustomizeReactionsForm({
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         id="emojiReactionsForm"
-        className="space-y-8"
+        className="grid grid-cols-3 items-start gap-8"
       >
         {fields.map((field, i) => (
-          <FormItem key={field.id}>
-            <FormLabel>Emoji</FormLabel>
-            <FormControl>
-              <Input {...form.register(`emojis.${i}.emoji`)} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+          // <FormItem key={field.id}>
+          //   <FormLabel>Emoji</FormLabel>
+          //   <FormControl>
+          //     <Input {...form.register(`emojis.${i}.emoji`)} />
+          //   </FormControl>
+          //   <FormMessage />
+          // </FormItem>
+          <FormField
+            control={form.control}
+            key={field.id}
+            name={`emojis.${i}.emoji`}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Emoji {i + 1}</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         ))}
       </form>
     </Form>

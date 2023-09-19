@@ -110,6 +110,8 @@ const emojisAmountOptions = [
   },
 ];
 
+const defaultRoomName = getRandomItemFromArray(randomRoomNames);
+
 export default function CreateGameForm({
   defaultEmojiCategories,
   onFinish,
@@ -120,7 +122,7 @@ export default function CreateGameForm({
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      roomName: getRandomItemFromArray(randomRoomNames),
+      roomName: defaultRoomName,
       emojisAmount: "8",
       multiplayerTurnLength: 15,
       emojiCategories: defaultEmojiCategories,
@@ -144,7 +146,7 @@ export default function CreateGameForm({
   }
 
   return (
-    <ScrollArea className="max-h-96 md:max-h-full">
+    <ScrollArea className="max-h-96 md:max-h-[500px]">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -158,10 +160,7 @@ export default function CreateGameForm({
               <FormItem>
                 <FormLabel>Room name</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder={getRandomItemFromArray(randomRoomNames)}
-                    {...field}
-                  />
+                  <Input placeholder={defaultRoomName} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

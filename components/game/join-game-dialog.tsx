@@ -35,7 +35,7 @@ export default function JoinGameDialog() {
       <DialogTrigger asChild>
         <Button>Join</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-sm">
         <DialogHeader>
           <DialogTitle>Join game</DialogTitle>
         </DialogHeader>
