@@ -52,13 +52,13 @@ function RenderList({ title, games }: RenderListProps) {
         ref={parent}
       >
         {games.map((game) => (
-          <li key={game._id} className="">
+          <li key={game._id} className="flex">
             <Link
               href={`/games/${game._id}`}
               key={game._id}
-              className="flex-1 min-h-[158px]"
+              className="flex flex-1 max-w-full"
             >
-              <Card className="bg-primary-foreground">
+              <Card className="bg-primary-foreground w-full">
                 <CardHeader className="p-4">
                   <CardTitle className="font-mono tracking-wider text-lg text-indigo-500 truncate">
                     {game.roomName}
