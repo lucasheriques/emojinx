@@ -68,16 +68,20 @@ const formSchema = z.object({
       message: "Turn length must be at least 5 seconds.",
     })
     .optional(),
-  emojiCategories: z.array(
-    z.enum([
-      "smiley",
-      "animalsAndNature",
-      "foodsAndDrinks",
-      "travelsAndPlaces",
-      "flags",
-      "objects",
-    ])
-  ),
+  emojiCategories: z
+    .array(
+      z.enum([
+        "smiley",
+        "animalsAndNature",
+        "foodsAndDrinks",
+        "travelsAndPlaces",
+        "flags",
+        "objects",
+      ])
+    )
+    .min(1, {
+      message: "You must select at least one emoji category.",
+    }),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
