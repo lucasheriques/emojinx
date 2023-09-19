@@ -3,6 +3,8 @@ import { MoveArgs } from "./hooks/use-make-move";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MoveResponse } from "@/types";
+import { Skeleton } from "@/components/ui/skeleton";
+import { range } from "@/lib/utils";
 
 const gridSizes: {
   [key: number]: string;
@@ -105,5 +107,16 @@ export default function Grid({ emojiList }: GridProps) {
         );
       })}
     </ul>
+  );
+}
+
+export function GridSkeleton() {
+  const skeletons = range(0, 16);
+  return (
+    <div className={`grid ${gridSizes[8]} gap-x-2 sm:gap-x-4 gap-y-4`}>
+      {skeletons.map((i) => (
+        <Skeleton key={i} className="w-[70px] h-[50px]" />
+      ))}
+    </div>
   );
 }

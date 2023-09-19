@@ -9,7 +9,7 @@ import { GameStatus } from "@/convex/types";
 import { useConvex } from "convex/react";
 import useCountdownEffect from "./hooks/use-countdown-effect";
 import useGameCheckEffect from "./hooks/use-game-check-effect";
-import Grid from "./grid";
+import Grid, { GridSkeleton } from "./grid";
 import { useState } from "react";
 import { MoveResponse } from "@/types";
 
@@ -68,7 +68,15 @@ export default function GameBoard() {
     <div className="flex flex-col items-center gap-8">
       <NoInternetBanner hasInternetConnection={hasInternetConnection} />
       <Grid emojiList={emojiListWithDisabledStatus} />
-      <DeleteGameButton />
+      {/* <DeleteGameButton /> */}
+    </div>
+  );
+}
+
+export function GameBoardSkeleton() {
+  return (
+    <div className="flex flex-col items-center gap-8">
+      <GridSkeleton />
     </div>
   );
 }

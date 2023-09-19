@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useAtom, useSetAtom } from "jotai";
 import { playedFinishingSoundAtom } from "@/atoms/playedFinishingSoundAtom";
 import usePlayerId from "./hooks/use-player-id";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function GameActions() {
   const game = useGame();
@@ -80,6 +81,15 @@ export default function GameActions() {
           </Link>
         </>
       )}
+    </div>
+  );
+}
+
+export function GameActionsSkeleton() {
+  return (
+    <div className="flex gap-4">
+      <Skeleton className="w-24 h-9" />
+      <Skeleton className="w-24 h-9" />
     </div>
   );
 }
