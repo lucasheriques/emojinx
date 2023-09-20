@@ -26,7 +26,7 @@ export default function JoinGameDialog() {
     return null;
   }
 
-  if (gamePlayerMap[game._id]) {
+  if (gamePlayerMap[game._id ?? ""]) {
     return <Button onClick={leaveGame}>Leave</Button>;
   }
 

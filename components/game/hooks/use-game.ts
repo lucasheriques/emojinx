@@ -5,5 +5,14 @@ import { useAtomValue } from "jotai";
 
 export default function useGame() {
   const gameId = useAtomValue(gameIdAtom);
-  return useQuery(api.games.get.getGame, { gameId });
+
+  const game = useQuery(api.games.get.getGame, { gameId });
+
+  return {
+    ...game,
+    players: game?.players ?? [],
+    emojiList: game?.emojiList ?? [],
+    winnerIds: game?.winnerIds ?? [],
+    currentPlayer: game?.players.at(game?.currentPlayerIndex) ?? undefined,
+  };
 }

@@ -10,7 +10,7 @@ import { useAtom } from "jotai";
 import { playedFinishingSoundAtom } from "@/atoms/playedFinishingSoundAtom";
 import { Game } from "@/types";
 
-function getWinners(game: Game) {
+function getWinners(game: ReturnType<typeof useGame>) {
   const { players, winnerIds } = game;
   return players.filter((p) => winnerIds.includes(p.id));
 }
@@ -33,7 +33,7 @@ export default function useGameCheckEffect() {
 
     const handleFinishGame = async () => {
       setPlayedSound(true);
-      await finishGame({ gameId: game._id });
+      await finishGame({ gameId: game._id ?? "" });
     };
 
     if (isPlayerInTheGame) {

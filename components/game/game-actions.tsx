@@ -32,11 +32,11 @@ export default function GameActions() {
   }
 
   const handleStartGame = async () => {
-    await startGame({ gameId: game?._id });
+    await startGame({ gameId: game?._id ?? "" });
   };
 
   const handleRestartGame = async () => {
-    await restartGame({ gameId: game?._id });
+    await restartGame({ gameId: game?._id ?? "" });
   };
 
   const handleCopyLink = () => {
@@ -46,10 +46,10 @@ export default function GameActions() {
   };
 
   const canStartGame =
-    game.players.length >= 1 &&
-    game.players.some((player) => player.id === playerId);
+    (game.players?.length ?? 0) >= 1 &&
+    game.players?.some((player) => player.id === playerId);
 
-  const isMultiplayer = game.players.length > 1;
+  const isMultiplayer = game.players?.length > 1;
 
   return (
     <div className="flex gap-4 w-full items-center justify-center">
@@ -76,7 +76,7 @@ export default function GameActions() {
               <EmojiReactions />
 
               <div className="flex gap-2 items-center justify-center">
-                <Timer timer={game.currentMultiplayerTimer} />
+                <Timer timer={game.currentMultiplayerTimer ?? 1} />
                 <MakeYourMoveBanner currentPlayer={game.currentPlayer} />
               </div>
             </>
@@ -88,8 +88,10 @@ export default function GameActions() {
         <div className="flex flex-col flex-1 items-center justify-center gap-4">
           <EmojiReactions />
           <div className="flex gap-2 items-center justify-center">
-            {game.players.filter((player) => player.id === playerId).length >=
-              1 && <Button onClick={handleRestartGame}>Play again!</Button>}
+            {(game.players?.filter((player) => player.id === playerId) ?? [])
+              .length >= 1 && (
+              <Button onClick={handleRestartGame}>Play again!</Button>
+            )}
             <Link href="/">
               <Button variant="secondary">Leave game</Button>
             </Link>

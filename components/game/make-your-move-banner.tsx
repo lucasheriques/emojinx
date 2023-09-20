@@ -2,7 +2,7 @@ import usePlayerId from "@/components/game/hooks/use-player-id";
 import { SmallBanner } from "@/components/ui/banner";
 
 type MakeYourMoveBannerProps = {
-  currentPlayer: {
+  currentPlayer?: {
     id: string;
     name: string;
   };
@@ -12,7 +12,7 @@ export default function MakeYourMoveBanner({
   currentPlayer,
 }: MakeYourMoveBannerProps) {
   const playerId = usePlayerId();
-  const isCurrentPlayer = currentPlayer.id === playerId;
+  const isCurrentPlayer = currentPlayer?.id === playerId;
 
   return (
     <SmallBanner
@@ -21,7 +21,7 @@ export default function MakeYourMoveBanner({
     >
       {isCurrentPlayer
         ? `${currentPlayer.name}, it's your turn!`
-        : `Waiting ${currentPlayer.name}...`}
+        : `Waiting ${currentPlayer?.name}...`}
     </SmallBanner>
   );
 }
