@@ -18,8 +18,12 @@ export default function useCountdownEffect() {
   const onlinePlayers = presences?.filter(isOnline);
 
   useEffect(() => {
+    if (!game || game.status !== GameStatus.InProgress) {
+      return;
+    }
+
     const isCurrentPlayerOnline = !!onlinePlayers?.find(
-      (player) => player.playerId === game?.currentPlayer.id
+      (player) => player.playerId === game?.currentPlayer?.id
     );
 
     const forceNextTurn = async () => {
@@ -31,12 +35,7 @@ export default function useCountdownEffect() {
       return;
     }
 
-    if (
-      !game ||
-      game.currentPlayer?.id !== playerId ||
-      game.status !== GameStatus.InProgress ||
-      game.players.length <= 1
-    ) {
+    if (game.currentPlayer?.id !== playerId || game.players.length <= 1) {
       return;
     }
 
