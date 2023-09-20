@@ -23,7 +23,7 @@ export default function useCountdownEffect() {
     }
 
     const isCurrentPlayerOnline = !!onlinePlayers?.find(
-      (player) => player.playerId === game?.currentPlayer?.id
+      (player) => player.playerId === game?.players[game.currentPlayerIndex].id
     );
 
     const forceNextTurn = async () => {

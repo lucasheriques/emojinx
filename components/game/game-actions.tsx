@@ -85,13 +85,16 @@ export default function GameActions() {
       )}
 
       {game.status === GameStatus.Finished && (
-        <>
-          {game.players.filter((player) => player.id === playerId).length >=
-            1 && <Button onClick={handleRestartGame}>Play again!</Button>}
-          <Link href="/">
-            <Button variant="secondary">Leave game</Button>
-          </Link>
-        </>
+        <div className="flex flex-col flex-1 items-center justify-center gap-4">
+          <EmojiReactions />
+          <div className="flex gap-2 items-center justify-center">
+            {game.players.filter((player) => player.id === playerId).length >=
+              1 && <Button onClick={handleRestartGame}>Play again!</Button>}
+            <Link href="/">
+              <Button variant="secondary">Leave game</Button>
+            </Link>
+          </div>
+        </div>
       )}
     </div>
   );
