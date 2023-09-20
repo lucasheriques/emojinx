@@ -22,7 +22,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useState } from "react";
-import { FormMessage } from "@/components/ui/form";
 
 export default function GameScreen() {
   const game = useGame();

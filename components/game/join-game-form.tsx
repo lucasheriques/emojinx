@@ -46,7 +46,10 @@ export default function JoinGameForm({
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: defaultPlayerName === "" ? randomUserName : defaultPlayerName,
+      name:
+        defaultPlayerName === ""
+          ? getRandomItemFromArray(randomUserNames)
+          : defaultPlayerName,
     },
   });
 

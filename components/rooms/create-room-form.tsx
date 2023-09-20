@@ -138,7 +138,7 @@ export default function CreateGameForm({
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      roomName: defaultRoomName,
+      roomName: getRandomItemFromArray(randomRoomNames),
       password: "",
       emojisAmount: "8",
       multiplayerTurnLength: 15,
