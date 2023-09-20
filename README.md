@@ -10,6 +10,8 @@ It features:
 
 It's easy to setup, doesn't require login, just open it, create a room, invite your friends and enjoy!
 
+[Check the demo here](https://www.loom.com/share/e7dee280db8d4c1788312de7b4a24337?sid=b78564c0-08f7-4bf6-adf9-99008843e23f).
+
 # The Tech
 
 It's made using a NextJS frontend (using app router but almost no server components) and Convex, which is a TypeScript-first real-time backend.
@@ -31,12 +33,3 @@ pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-## Known Issues
-
-For some reason, the `use-presence.ts` hook was not working properly when testing from my Windows PC, which caused weird behaviors between clients.
-
-It worked fine using Chrome on iOS, Android and MacOS, but Windows did not work using any browser. Maybe it's an isolated issue with my personal PC,
-but if you join a room from a PC and everyone else appears to be offline I recommend trying a different client.
-
-I'll try to pinpoint this issue later.

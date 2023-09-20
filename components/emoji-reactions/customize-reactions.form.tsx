@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { getRandomItemFromArray } from "@/lib/utils";
-import { randomUserNames } from "@/lib/constants";
+import { RANDOM_USER_NAMES } from "@/lib/constants";
 import { useAtom } from "jotai";
 import { emojiReactionsAtom } from "@/atoms/emojiReactions";
 import useZodForm from "@/hooks/use-zod-form";

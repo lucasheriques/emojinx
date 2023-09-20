@@ -24,6 +24,7 @@ export default defineSchema({
       v.literal(GameStatus.Finished)
     ),
     winnerIds: v.array(v.string()),
+    skipOfflinePlayers: v.boolean(),
     emojiCategories: v.array(
       v.union(
         v.literal("smiley"),
@@ -34,6 +35,7 @@ export default defineSchema({
         v.literal("objects")
       )
     ),
+    skippedLastPlayer: v.optional(v.boolean()),
   }),
 
   presence: defineTable({

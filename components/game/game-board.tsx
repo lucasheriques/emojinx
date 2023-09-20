@@ -19,13 +19,13 @@ export default function GameBoard() {
   const convex = useConvex();
   const [loadingMove, setLoadingMove] = useState(false);
 
-  useCountdownEffect();
+  // useCountdownEffect();
   useGameCheckEffect();
 
   const { makeFirstMove, makeSecondMove } = useMakeMove();
   const playerId = usePlayerId();
 
-  if (!game) {
+  if (game.loading) {
     return null;
   }
 

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { getRandomItemFromArray } from "@/lib/utils";
-import { randomUserNames } from "@/lib/constants";
+import { RANDOM_USER_NAMES } from "@/lib/constants";
 import useJoinGame from "@/components/game/hooks/use-join-game";
 
 const formSchema = z.object({
@@ -35,7 +35,7 @@ type JoinGameFormProps = {
   onFinish?: () => void;
 };
 
-const randomUserName = getRandomItemFromArray(randomUserNames);
+const randomUserName = getRandomItemFromArray(RANDOM_USER_NAMES);
 
 export default function JoinGameForm({
   onFinish,
@@ -48,7 +48,7 @@ export default function JoinGameForm({
     defaultValues: {
       name:
         defaultPlayerName === ""
-          ? getRandomItemFromArray(randomUserNames)
+          ? getRandomItemFromArray(RANDOM_USER_NAMES)
           : defaultPlayerName,
     },
   });

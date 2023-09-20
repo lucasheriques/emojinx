@@ -10,7 +10,7 @@ import { useAtomValue } from "jotai";
 import { playerNameAtom } from "@/atoms/player/playerName";
 import Loading from "../loading";
 import useGames from "./hooks/use-games";
-import { categoryToEmoji } from "@/lib/constants";
+import { CATEGORY_TO_EMOJI } from "@/lib/constants";
 import { LockClosedIcon } from "@radix-ui/react-icons";
 
 type RenderListProps = {
@@ -40,11 +40,24 @@ function RenderList({ title, games }: RenderListProps) {
     "Finished game rooms": "text-rose-500",
   };
 
+  const listDescription = {
+    "Available game rooms": "Create or join an existing room to play!",
+    "In progress game rooms":
+      "You can join one of these rooms to watch a game.",
+    "Finished game rooms":
+      "These rooms have finished, but you can join to check the final score.",
+  };
+
   return (
-    <div>
-      <h2 className={`pb-4 text-xl font-semibold ${titleColor[title]}`}>
-        {title}
-      </h2>
+    <div className="grid gap-4">
+      <div>
+        <h2 className={`text-xl font-semibold ${titleColor[title]}`}>
+          {title}
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          {listDescription[title]}
+        </p>
+      </div>
 
       <ul
         className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full"
@@ -75,7 +88,7 @@ function RenderList({ title, games }: RenderListProps) {
                     <span>
                       Categories:{" "}
                       {game.emojiCategories
-                        .map((category) => categoryToEmoji[category])
+                        .map((category) => CATEGORY_TO_EMOJI[category])
                         .join(" ")}
                     </span>
                   </CardContent>
@@ -115,9 +128,9 @@ export default function RoomsList() {
   return (
     <div className="flex flex-col gap-4 md:gap-8 flex-1">
       {playerName.length > 0 && (
-        <span className="text-sm text-muted-foreground">
-          Welcome back, {playerName}!
-        </span>
+        <p className="text-sm text-muted-foreground font-medium">
+          Welcome back, {playerName}! 👋
+        </p>
       )}
       <RenderList games={availableRooms} title="Available game rooms" />
       {inProgressRooms.length > 0 && (

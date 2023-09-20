@@ -36,6 +36,7 @@ import { EmojiCategories } from "@/convex/types";
 import { useSetAtom } from "jotai";
 import { defaultEmojiCategoriesAtom } from "@/atoms/defaultEmojiCategories";
 import { roomPasswordInputAtom } from "@/atoms/roomPasswordInput";
+import { useRouter } from "next/navigation";
 
 const EMOJI_CATEGORIES: {
   id: EmojiCategories;
@@ -99,6 +100,7 @@ type FormSchema = z.infer<typeof formSchema>;
 
 type CreateGameFormProps = {
   defaultEmojiCategories: EmojiCategories[];
+  redirectToRoom?: boolean;
   onFinish?: () => void;
 };
 
@@ -129,11 +131,13 @@ const defaultRoomName = getRandomItemFromArray(randomRoomNames);
 
 export default function CreateGameForm({
   defaultEmojiCategories,
+  redirectToRoom = false,
   onFinish,
 }: CreateGameFormProps) {
   const createGame = useMutation(api.games.gameplay.createGame);
   const setDefaultEmojiCategories = useSetAtom(defaultEmojiCategoriesAtom);
   const setRoomPasswordInput = useSetAtom(roomPasswordInputAtom);
+  const router = useRouter();
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -153,7 +157,7 @@ export default function CreateGameForm({
     emojiCategories,
     password,
   }: FormSchema) {
-    await createGame({
+    const game = await createGame({
       roomName,
       emojisAmount: parseInt(emojisAmount),
       multiplayerTimer: multiplayerTurnLength,
@@ -163,6 +167,10 @@ export default function CreateGameForm({
     setRoomPasswordInput(password ?? "");
     setDefaultEmojiCategories(emojiCategories);
     onFinish?.();
+
+    if (redirectToRoom) {
+      router.push(`/games/${game}`);
+    }
   }
 
   return (
@@ -171,7 +179,7 @@ export default function CreateGameForm({
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           id="createGameForm"
-          className="space-y-4 md:space-y-8"
+          className="space-y-4 md:space-y-8 px-1"
         >
           <FormField
             control={form.control}

@@ -8,6 +8,7 @@ import { ReactNode } from "react";
 import DevOnly from "../dev-only";
 import StatusIndicator from "../status-indicator";
 import useOnlinePresence from "./hooks/use-online-presence";
+import { CATEGORY_TO_EMOJI } from "@/lib/constants";
 
 type ScoreboardItemProps = {
   playerName: ReactNode;
@@ -32,7 +33,7 @@ export default function Scoreboard() {
 
   const [myPresence, othersPresence, updateMyPresence] = useOnlinePresence();
 
-  if (!game) {
+  if (game.loading) {
     return null;
   }
 
@@ -47,11 +48,18 @@ export default function Scoreboard() {
   const isDraw = winnerIds.length > 1;
 
   return (
-    <div className="w-full">
-      <h2 className="font-mono text-2xl pb-4 text-center">
-        {roomName} — Scoreboard
-      </h2>
-      <ul ref={parent} className="max-w-lg mx-auto">
+    <div className="w-full grid gap-4">
+      <div className="space-y-1 md:space-y-2">
+        <div className="flex gap-2 justify-center">
+          {game.emojiCategories.map((category, i) => (
+            <span key={i}>{CATEGORY_TO_EMOJI[category]}</span>
+          ))}
+        </div>
+        <h2 className="font-mono text-2xl text-center">
+          {roomName} — Scoreboard
+        </h2>
+      </div>
+      <ul ref={parent} className="max-w-lg mx-auto w-full">
         <ScoreboardItem playerName="player" score="score" />
         {sortedPlayers.map((player) => {
           const reactions =

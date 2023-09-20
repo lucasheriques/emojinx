@@ -22,7 +22,7 @@ export default function JoinGameDialog() {
   const [open, setOpen] = React.useState(false);
   const leaveGame = useLeaveGame();
 
-  if (!game) {
+  if (game.loading) {
     return null;
   }
 

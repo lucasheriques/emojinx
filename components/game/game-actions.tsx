@@ -9,34 +9,44 @@ import MakeYourMoveBanner from "./make-your-move-banner";
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { playedFinishingSoundAtom } from "@/atoms/playedFinishingSoundAtom";
-import usePlayerId from "./hooks/use-player-id";
 import { Skeleton } from "@/components/ui/skeleton";
-import useOnlinePresence from "./hooks/use-online-presence";
 import EmojiReactions from "@/components/emoji-reactions/emoji-reactions";
+import CreateRoomDialog from "@/components/rooms/create-room-dialog";
+import useIsPlayerInTheGame from "@/components/game/hooks/use-is-player-in-the-game";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function GameActions() {
   const game = useGame();
   const { startGame, restartGame } = useStartGame();
   const [copied, setCopied] = useState(false);
-  const playerId = usePlayerId();
   const [playedSound, setPlayedSound] = useAtom(playedFinishingSoundAtom);
+  const isPlayerInTheGame = useIsPlayerInTheGame();
 
   useEffect(() => {
+    if (game.loading) {
+      return;
+    }
+
     if (game?.status === GameStatus.NotStarted && playedSound) {
       setPlayedSound(false);
     }
-  }, [game?.status, playedSound, setPlayedSound]);
+  }, [game.loading, game, playedSound, setPlayedSound]);
 
-  if (!game) {
+  if (game.loading) {
     return null;
   }
 
   const handleStartGame = async () => {
-    await startGame({ gameId: game?._id ?? "" });
+    await startGame();
   };
 
   const handleRestartGame = async () => {
-    await restartGame({ gameId: game?._id ?? "" });
+    await restartGame();
   };
 
   const handleCopyLink = () => {
@@ -44,10 +54,6 @@ export default function GameActions() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
-  const canStartGame =
-    (game.players?.length ?? 0) >= 1 &&
-    game.players?.some((player) => player.id === playerId);
 
   const isMultiplayer = game.players?.length > 1;
 
@@ -59,25 +65,48 @@ export default function GameActions() {
           <Button variant="secondary" onClick={handleCopyLink}>
             {copied ? "Copied!" : "Copy link"}
           </Button>
-          <Button
-            disabled={!canStartGame}
-            onClick={handleStartGame}
-            variant="destructive"
+          <TooltipProvider
+            disableHoverableContent={!isPlayerInTheGame}
+            delayDuration={300}
           >
-            Start
-          </Button>
+            <Tooltip>
+              <TooltipTrigger>
+                <Button
+                  disabled={!isPlayerInTheGame}
+                  onClick={handleStartGame}
+                  variant="destructive"
+                >
+                  Start
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <div className="text-center">
+                  You can start the game after you join the room.
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </>
       )}
 
       {game.status === GameStatus.InProgress && (
         <div className="flex flex-col flex-1 items-center justify-center">
+          {!isPlayerInTheGame && (
+            <CreateRoomDialog
+              buttonText="Wanna play? Create your room!"
+              redirectToRoom
+            />
+          )}
           {isMultiplayer && (
             <>
               <EmojiReactions />
 
               <div className="flex gap-2 items-center justify-center">
                 <Timer timer={game.currentMultiplayerTimer ?? 1} />
-                <MakeYourMoveBanner currentPlayer={game.currentPlayer} />
+                <MakeYourMoveBanner
+                  currentPlayer={game.currentPlayer}
+                  skippingPlayer={game.skippedLastPlayer}
+                />
               </div>
             </>
           )}
@@ -88,12 +117,12 @@ export default function GameActions() {
         <div className="flex flex-col flex-1 items-center justify-center gap-4">
           <EmojiReactions />
           <div className="flex gap-2 items-center justify-center">
-            {(game.players?.filter((player) => player.id === playerId) ?? [])
-              .length >= 1 && (
+            {isPlayerInTheGame && (
               <Button onClick={handleRestartGame}>Play again!</Button>
             )}
+            <CreateRoomDialog buttonText="New room" redirectToRoom />
             <Link href="/">
-              <Button variant="secondary">Leave game</Button>
+              <Button variant="outline">Room list</Button>
             </Link>
           </div>
         </div>

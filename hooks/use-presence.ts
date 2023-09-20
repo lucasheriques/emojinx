@@ -87,7 +87,7 @@ export const usePresence = (
  * @param now - If specified, the time it should consider to be "now".
  * @returns True if the user has updated their presence recently.
  */
-export const isOnline = <D>(presence: PresenceData) => {
+export const isOnline = (presence: PresenceData) => {
   return Date.now() - presence.updated < OLD_MS;
 };
 

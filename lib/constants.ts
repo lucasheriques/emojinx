@@ -1,6 +1,6 @@
 import { EmojiCategories, EmojiListType } from "@/convex/types";
 
-export const randomUserNames = [
+export const RANDOM_USER_NAMES = [
   "LuckyPanda92",
   "StarGazer123",
   "CoffeeLover86",
@@ -105,7 +105,7 @@ export const randomRoomNames = [
   "Ocean Odyssey",
 ];
 
-export const errorMessages: string[] = [
+export const ERROR_MESSAGES: string[] = [
   "👾 Alert! A server cable has been devoured!",
   "🦖 Server connection lost to a hungry dino!",
   "🕷️ Oh no! A server cable got tangled in webs!",
@@ -118,7 +118,7 @@ export const errorMessages: string[] = [
   "🦕 Prehistoric server problem - cables extinct!",
 ];
 
-export const categoryToEmoji: {
+export const CATEGORY_TO_EMOJI: {
   [key in EmojiCategories]: string;
 } = {
   smiley: "🧐",

@@ -31,7 +31,7 @@ export default function GameScreen() {
   );
   const [submittedOnce, setSubmittedOnce] = useState(false);
 
-  if (!game) {
+  if (game.loading) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-4 md:gap-8">
         <ScoreboardSkeleton />

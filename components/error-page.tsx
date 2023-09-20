@@ -1,11 +1,11 @@
-import { errorMessages } from "@/lib/constants";
+import { ERROR_MESSAGES } from "@/lib/constants";
 import { getRandomItemFromArray } from "@/lib/utils";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { FallbackProps } from "react-error-boundary";
 
 export default function ErrorPage(props: FallbackProps) {
-  const errorMessage = getRandomItemFromArray(errorMessages);
+  const errorMessage = getRandomItemFromArray(ERROR_MESSAGES);
 
   const handleRefreshState = () => {
     props.resetErrorBoundary();

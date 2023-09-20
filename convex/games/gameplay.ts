@@ -1,4 +1,9 @@
-import { mutation, query } from "../_generated/server";
+import {
+  internalMutation,
+  internalQuery,
+  mutation,
+  query,
+} from "../_generated/server";
 import { v } from "convex/values";
 import { GameStatus } from "../types";
 
@@ -6,6 +11,10 @@ import { generateEmojiArray, shuffleArray } from "../helpers/emojis";
 import { getPlayersWithMostPoints } from "../helpers/players";
 import { getGameById } from "./get";
 import { validateGameId } from "./helpers";
+import { internal } from "../_generated/api";
+import { isPlayerOffline } from "../presence";
+
+export let interval: NodeJS.Timeout;
 
 // Create a new task with the given text
 export const createGame = mutation({
@@ -37,8 +46,88 @@ export const createGame = mutation({
       winnerIds: [],
       emojiCategories: args.emojiCategories,
       password: args.password,
+      skipOfflinePlayers: true,
     });
     return game;
+  },
+});
+
+export const getNextPlayerTurnInformation = (
+  game: Awaited<ReturnType<typeof getGameById>>,
+  isNextPlayerOffline: boolean
+) => {
+  const { multiplayerTimer, currentPlayerIndex, players, skipOfflinePlayers } =
+    game;
+
+  const nextPlayerIndex =
+    currentPlayerIndex + 1 >= players.length ? 0 : currentPlayerIndex + 1;
+
+  const shouldSkipNextPlayer = skipOfflinePlayers && isNextPlayerOffline;
+
+  return {
+    currentPlayerIndex: nextPlayerIndex,
+    currentMultiplayerTimer: shouldSkipNextPlayer ? 3 : multiplayerTimer,
+    skippedLastPlayer: shouldSkipNextPlayer,
+  };
+};
+
+export const goToNextTurn = internalMutation({
+  args: {
+    gameId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const game = await getGameById(ctx, {
+      gameId: args.gameId,
+    });
+
+    const nextPlayerIndex =
+      game.currentPlayerIndex + 1 >= game.players.length
+        ? 0
+        : game.currentPlayerIndex + 1;
+
+    const nextPlayer = game.players[nextPlayerIndex];
+
+    const isNextPlayerOffline = await isPlayerOffline(ctx, {
+      gameId: args.gameId,
+      playerId: nextPlayer.id,
+    });
+
+    await ctx.db.patch(game._id, {
+      ...getNextPlayerTurnInformation(game, isNextPlayerOffline),
+    });
+  },
+});
+
+export const countDown = internalMutation({
+  args: {
+    gameId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { _id, currentMultiplayerTimer, emojiList, status } =
+      await getGameById(ctx, {
+        gameId: args.gameId,
+      });
+
+    const nextTimer = currentMultiplayerTimer - 1;
+    const isGameFinished =
+      emojiList.every((emoji) => emoji.status === "matched") ||
+      status === GameStatus.Finishing ||
+      status === GameStatus.Finished;
+
+    if (nextTimer === 0) {
+      // go to next turn
+      await goToNextTurn(ctx, args);
+    } else {
+      await ctx.db.patch(_id, { currentMultiplayerTimer: nextTimer });
+    }
+
+    if (!isGameFinished) {
+      await ctx.scheduler.runAfter(
+        1000,
+        internal.games.gameplay.countDown,
+        args
+      );
+    }
   },
 });
 
@@ -55,12 +144,21 @@ export const startGame = mutation({
       throw new Error("Not enough players");
     }
 
+    if (players.length === 1) {
+      return await ctx.db.patch(_id, {
+        status: GameStatus.InProgress,
+      });
+    }
+
     shuffleArray(players);
-    return await ctx.db.patch(_id, {
+
+    await ctx.db.patch(_id, {
       status: GameStatus.InProgress,
       players,
       currentMultiplayerTimer: multiplayerTimer,
     });
+
+    await ctx.scheduler.runAfter(1000, internal.games.gameplay.countDown, args);
   },
 });
 
@@ -144,8 +242,9 @@ export const validateCurrentMove = mutation({
     gameId: v.string(),
   },
   handler: async (ctx, args) => {
-    const { _id, emojiList, players, currentPlayerIndex, multiplayerTimer } =
-      await getGameById(ctx, { gameId: args.gameId });
+    const game = await getGameById(ctx, { gameId: args.gameId });
+
+    const { _id, emojiList, players, currentPlayerIndex } = game;
 
     const revealedEmojis = emojiList.filter(
       (emoji) => emoji.status === "revealed"
@@ -169,7 +268,8 @@ export const validateCurrentMove = mutation({
     } else {
       firstEmoji.status = "hidden";
       secondEmoji.status = "hidden";
-      nextPlayerIndex = currentPlayerIndex + 1;
+      nextPlayerIndex =
+        currentPlayerIndex + 1 >= players.length ? 0 : currentPlayerIndex + 1;
     }
 
     emojiList[firstEmojiIndex] = firstEmoji;
@@ -183,6 +283,13 @@ export const validateCurrentMove = mutation({
       (player) => player.id
     );
 
+    const nextPlayer = players[nextPlayerIndex];
+
+    const isNextPlayerOffline = await isPlayerOffline(ctx, {
+      gameId: args.gameId,
+      playerId: nextPlayer.id,
+    });
+
     if (isGameFinished) {
       await ctx.db.patch(_id, {
         emojiList,
@@ -195,9 +302,8 @@ export const validateCurrentMove = mutation({
       await ctx.db.patch(_id, {
         emojiList,
         players,
-        currentPlayerIndex:
-          nextPlayerIndex >= players.length ? 0 : nextPlayerIndex,
-        currentMultiplayerTimer: multiplayerTimer + 1,
+        ...getNextPlayerTurnInformation(game, isNextPlayerOffline),
+        currentPlayerIndex: nextPlayerIndex,
       });
     }
 

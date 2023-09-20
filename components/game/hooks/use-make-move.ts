@@ -23,7 +23,6 @@ export default function useMakeMove() {
   const makeSecondMove = useMutation(api.games.gameplay.makeSecondMove);
   const validateMove = useMutation(api.games.gameplay.validateCurrentMove);
   const forceNextTurn = useMutation(api.games.helpers.forceNextTurn);
-  const countDown = useMutation(api.games.helpers.countDown);
   const tryRestoreGameState = useMutation(
     api.games.helpers.tryRestoreGameState
   );
@@ -81,15 +80,10 @@ export default function useMakeMove() {
     await forceNextTurn({ gameId });
   };
 
-  const handleCountDown = async () => {
-    await countDown({ gameId });
-  };
-
   return {
     makeFirstMove: handleFirstMove,
     makeSecondMove: handleSecondMove,
     handleForceNextTurn,
-    handleCountDown,
     forceValidateMove: handleValidateMove,
     tryRestoreGameState: handleTryRestoreGameState,
   };

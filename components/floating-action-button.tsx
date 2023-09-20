@@ -2,7 +2,9 @@
 
 import { skipOfflinePlayersAtom } from "@/atoms/skipOfflinePlayers";
 import CustomizeReactionsDialog from "@/components/emoji-reactions/customize-reactions-dialog";
+import useGame from "@/components/game/hooks/use-game";
 import useMakeMove from "@/components/game/hooks/use-make-move";
+import useToggleSkipOfflinePlayers from "@/components/game/hooks/use-toggle-skip-offline-players";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -12,15 +14,19 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
+import { api } from "@/convex/_generated/api";
 import { MagicWandIcon } from "@radix-ui/react-icons";
+import { useMutation } from "convex/react";
 import { useAtom } from "jotai";
 
 export default function FloatingActionButton() {
   const { forceValidateMove, tryRestoreGameState } = useMakeMove();
+  const [skip, toggleSkip] = useToggleSkipOfflinePlayers();
+  const game = useGame();
 
-  const [skipOfflinePlayers, setSkipOfflinePlayers] = useAtom(
-    skipOfflinePlayersAtom
-  );
+  if (game.loading) {
+    return null;
+  }
 
   return (
     <Popover>
@@ -38,8 +44,8 @@ export default function FloatingActionButton() {
           <div className="items-center flex space-x-2">
             <Checkbox
               id="skip-offline-players"
-              checked={skipOfflinePlayers}
-              onClick={() => setSkipOfflinePlayers(!skipOfflinePlayers)}
+              checked={skip}
+              onClick={toggleSkip}
             />
             <Label htmlFor="skip-offline-players">Skip offline players</Label>
           </div>

@@ -14,6 +14,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as crons from "../crons";
 import type * as games_delete from "../games/delete";
 import type * as games_gameplay from "../games/gameplay";
 import type * as games_get from "../games/get";
@@ -33,6 +34,7 @@ import type * as types from "../types";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  crons: typeof crons;
   "games/delete": typeof games_delete;
   "games/gameplay": typeof games_gameplay;
   "games/get": typeof games_get;

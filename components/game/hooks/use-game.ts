@@ -8,6 +8,12 @@ export default function useGame() {
 
   const game = useQuery(api.games.get.getGame, { gameId });
 
+  if (!game) {
+    return {
+      loading: true,
+    } as const;
+  }
+
   return {
     ...game,
     players: game?.players ?? [],

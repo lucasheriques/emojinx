@@ -8,8 +8,14 @@
  * - Check that the user is allowed to be in a given room.
  */
 import { v } from "convex/values";
-import { query, mutation, internalMutation } from "./_generated/server";
+import {
+  query,
+  mutation,
+  internalMutation,
+  internalQuery,
+} from "./_generated/server";
 import { internal } from "./_generated/api";
+import { GameStatus } from "./types";
 
 const LIST_LIMIT = 20;
 
@@ -113,5 +119,39 @@ export const destructOldestReacion = internalMutation({
       reactions.shift();
       await ctx.db.patch(existing._id, { reactions, updated: Date.now() });
     }
+  },
+});
+
+export const removeStaleGame = internalMutation({
+  handler: async (ctx) => {
+    const gamesInProgress = await ctx.db
+      .query("games")
+      .filter((q) => q.eq(q.field("status"), GameStatus.InProgress))
+      .collect();
+
+    const gamesWithOnlyOfflinePlayers = gamesInProgress.filter(async (game) => {
+      const presences = await list(ctx, { gameId: game._id });
+
+      return (
+        presences.filter((presence) => Date.now() - presence.updated < 10000)
+          .length === 0
+      );
+    });
+
+    const moveGamesToFinished = gamesWithOnlyOfflinePlayers.map((game) => {
+      return ctx.db.patch(game._id, { status: GameStatus.Finished });
+    });
+
+    await Promise.all(moveGamesToFinished);
+  },
+});
+
+export const isPlayerOffline = internalQuery({
+  args: { gameId: v.string(), playerId: v.string() },
+  handler: async (ctx, { gameId, playerId }) => {
+    const presences = await list(ctx, { gameId });
+    const presence = presences.find((p) => p.playerId === playerId);
+
+    return presence ? Date.now() - presence.updated > 10000 : true;
   },
 });

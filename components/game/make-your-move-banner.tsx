@@ -6,10 +6,12 @@ type MakeYourMoveBannerProps = {
     id: string;
     name: string;
   };
+  skippingPlayer?: boolean;
 };
 
 export default function MakeYourMoveBanner({
   currentPlayer,
+  skippingPlayer,
 }: MakeYourMoveBannerProps) {
   const playerId = usePlayerId();
   const isCurrentPlayer = currentPlayer?.id === playerId;
@@ -21,7 +23,9 @@ export default function MakeYourMoveBanner({
     >
       {isCurrentPlayer
         ? `${currentPlayer.name}, it's your turn!`
-        : `Waiting ${currentPlayer?.name}...`}
+        : `${skippingPlayer ? "Skipping" : "Waiting"} ${
+            currentPlayer?.name
+          }...`}
     </SmallBanner>
   );
 }
