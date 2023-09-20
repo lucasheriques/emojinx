@@ -58,7 +58,7 @@ export default function Grid({ emojiList }: GridProps) {
             revealedEmojisAndTheirIndexes[0].value ===
             revealedEmojisAndTheirIndexes[1].value,
         }),
-      1000
+      600
     );
 
     return () => clearTimeout(timeout);
