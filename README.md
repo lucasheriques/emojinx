@@ -1,34 +1,42 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is [emojinx](http://emojinx.lucasfaria.dev/), an emoji-themed multiplayer matching game.
+
+It features:
+
+- Single player and multiplayer mode
+- Custom game settings (length, emoji categories, password protected, turn timer)
+- Online presence
+- Automatically skip offline players turns
+- Animations and sounds
+
+It's easy to setup, doesn't require login, just open it, create a room, invite your friends and enjoy!
+
+# The Tech
+
+It's made using a NextJS frontend (using app router but almost no server components) and Convex, which is a TypeScript-first real-time backend.
+
+The frontend is deployed on Vercel.
 
 ## Getting Started
 
-First, run the development server:
+First, run Convex backend service:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+npx convex dev
+```
+
+Then, run NextJS development server:
+
+```bash
 pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Known Issues
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+For some reason, the `use-presence.ts` hook was not working properly when testing from my Windows PC, which caused weird behaviors between clients.
 
-## Learn More
+It worked fine using Chrome on iOS, Android and MacOS, but Windows did not work using any browser. Maybe it's an isolated issue with my personal PC,
+but if you join a room from a PC and everyone else appears to be offline I recommend trying a different client.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+I'll try to pinpoint this issue later.
