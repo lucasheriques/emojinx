@@ -19,6 +19,7 @@ export default function SoundToggle() {
       className="transition-all"
     >
       {enableSound ? <SpeakerLoudIcon /> : <SpeakerOffIcon />}
+      <span className="sr-only">Toggle theme</span>
     </Button>
   );
 }
