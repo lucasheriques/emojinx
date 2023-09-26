@@ -79,21 +79,26 @@ export const goToNextTurn = internalMutation({
     const game = await getGameById(ctx, {
       gameId: args.gameId,
     });
+    const { currentPlayerIndex, players, _id: gameId, emojiList } = game;
 
     const nextPlayerIndex =
-      game.currentPlayerIndex + 1 >= game.players.length
-        ? 0
-        : game.currentPlayerIndex + 1;
+      currentPlayerIndex + 1 >= players.length ? 0 : currentPlayerIndex + 1;
 
-    const nextPlayer = game.players[nextPlayerIndex];
+    const nextPlayer = players[nextPlayerIndex];
 
     const isNextPlayerOffline = await isPlayerOffline(ctx, {
-      gameId: args.gameId,
+      gameId,
       playerId: nextPlayer.id,
     });
 
-    await ctx.db.patch(game._id, {
+    await ctx.db.patch(gameId, {
       ...getNextPlayerTurnInformation(game, isNextPlayerOffline),
+      emojiList: emojiList.map((emoji) => {
+        if (emoji.status === "revealed") {
+          emoji.status = "hidden";
+        }
+        return emoji;
+      }),
     });
   },
 });
@@ -115,7 +120,6 @@ export const countDown = internalMutation({
       status === GameStatus.Finished;
 
     if (nextTimer === 0) {
-      // go to next turn
       await goToNextTurn(ctx, args);
     } else {
       await ctx.db.patch(_id, { currentMultiplayerTimer: nextTimer });
