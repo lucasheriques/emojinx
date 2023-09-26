@@ -220,7 +220,7 @@ export default function CreateGameForm({
                 <FormDescription>
                   {parseInt(form.getValues("emojisAmount")) >= 32 && (
                     <span className="block md:hidden dark:text-cyan-400 text-cyan-600 font-medium">
-                      This length works in bigger screens.
+                      This length works best in bigger screens.
                     </span>
                   )}
                   Determines the number of emojis in the game. The more emojis,
